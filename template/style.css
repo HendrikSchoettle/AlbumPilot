@@ -1,0 +1,136 @@
+/* 
+File: template/style.css – AlbumPilot Plugin for Piwigo
+Author: Hendrik Schöttle
+License: MIT License
+SPDX-License-Identifier: MIT
+*/
+
+.album-sync-wrapper {
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  font-size: 15px;
+  color: #222;
+  line-height: 1.3;
+}
+
+
+.album-sync-wrapper {
+  max-width: 1200px;
+  margin: 30px auto 0 auto;
+  padding-left: 20px;
+  text-align: left;
+}
+
+.album-settings-box {
+  display: inline-block;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  padding: 16px 20px 8px 20px;
+  max-width: 100%;
+}
+
+.album-select {
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 10px 0;
+}
+
+.option-line {
+  margin-top: 10px;
+}
+
+.step-list-wrapper {
+  padding-left: 20px;
+  padding-top: 20px;
+}
+
+.step-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.options-block {
+  margin: 20px 0;
+  padding-left: 20px;
+}
+
+.options-heading {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.hidden-checkbox {
+  display: none;
+}
+
+.button-row {
+  padding-left: 20px;
+}
+
+.button-row .btn {
+  margin-top: 15px;
+  margin-right: 10px;
+}
+
+.sync-steps {
+  margin-top: 20px;
+  padding-left: 20px;
+}
+
+.sync-log {
+  margin-top: 20px;
+  padding: 10px 20px;
+}
+
+.progress-log {
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  line-height: 1.3;
+  color: #333;
+}
+
+.sync-step-block,
+.sync-success-block {
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  line-height: 1.3;
+  padding: 4px 0;
+  white-space: normal;
+}
+
+.sync-step-block.error {
+  color: #c00;
+}
+
+.sync-step-block strong {
+  color: #000;
+}
+
+.step-heading {
+  margin: 20px 0 6px 0;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.progress-heading {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: left !important;
+}
+
+#album-list {
+  width: auto;
+  max-width: 100%;
+  min-width: 480px;
+  height: 300px;
+}
+
+
+.step-checkbox:disabled + label,
+.step-checkbox:disabled + span,
+li:has(.step-checkbox:disabled) {
+  color: #d88 !important;
+  opacity: 0.6;
+}
+
