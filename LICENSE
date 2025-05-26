@@ -24,9 +24,17 @@ SOFTWARE.
 
 Note on License Compatibility:
 
-While the MIT License is generally considered permissive and compatible with the
-GNU General Public License (GPL) in all versions, the license text as such may
-also be interpreted as supporting a stricter interpretation. Therefore, while
-this software is licensed under the MIT License, its inclusion in a project
-licensed under the GPL is intended to be interpreted as permissible under the
-terms of this MIT License, acknowledging its permissive nature.
+While the MIT License is generally regarded as permissive and compatible
+with all versions of the GNU General Public License (GPL), the wording of
+the license may, in some interpretations, suggest a stricter reading.
+
+To avoid any ambiguity: although this software is licensed under the MIT
+License, it is the licensor’s intention and understanding that it may be
+combined with, and distributed as part of, a larger work licensed under the
+GPL (in any version) or any other copyleft license. Accordingly, the
+distribution of such a combined or derivative work under the terms of the GPL
+or any other copyleft license is considered permissible under this licensing
+approach.
+
+This clarification is provided to reflect the intended permissive nature of
+the MIT License in this context.
