@@ -67,19 +67,25 @@ Corresponds to the **“Repair and optimize database”** function on the **Main
 ### Step 10: Run Integrity Check  
 Corresponds to clicking the **“Check database integrity”** button on the **Maintenance** page. It performs a consistency check across the database and file system to identify and report errors or missing data.
 
-## Additional Features
+## Additional Features and Options
 
 - **State Preservation of Checkbox Settings**  
   AlbumPilot remembers your selections across sessions, so you do not need to reselect options each time. You can reset these stored settings manually if needed.
 
-- **Process Only New or Changed Files**  
-  The plugin processes only files that are new or have changed since the last sync, minimizing unnecessary processing and speeding up runs. This behavior applies to all steps **except Step 4, which processes all files** in the selected albums regardless of changes.
+- **Simulation Mode**  
+  Executes all selected steps in a dry-run mode. No thumbnails, video posters, checksums, or metadata are written. This allows previewing the number of actions that would be taken. Steps 1 and 6-10 are skipped entirely in simulation mode. 
 
-- **Album Filtering and Search**  
-  Easily filter and search albums within the plugin interface for quick selection.
+- **Include Subalbums Option**  
+  Applies to steps 1-5. When enabled, AlbumPilot processes not only the selected album but also all its nested subalbums recursively.
+
+- **Per-Step Execution Control**  
+  Each of the 10 steps can be individually enabled or disabled. Plugin-dependent steps (e.g., SmartAlbums or VideoJS) are automatically disabled if the required plugins are not active.
+
+- **Album Selection Scope**  
+  Album selection applies only to steps 1-5, which operate specifically on the selected album (and optionally subalbums). Steps 6-10 are global and run independently of any album selection.
 
 - **Select All / Deselect All**  
-  Quickly select or deselect all albums in the current view to simplify batch operations.
+  Quickly select or deselect all steps with one click to simplify setup.
 
 - **Synchronization Status and Logs**  
   A detailed log is written during synchronization, showing step-by-step progress and errors if they occur. Ensure the web server has write permissions on the plugin directory for logging to work properly.
@@ -91,7 +97,7 @@ Corresponds to clicking the **“Check database integrity”** button on the **M
 
 The plugin currently does not display the number of thumbnails generated during Step 2 (Thumbnail Generation) within the user interface. This information is recorded and available in the log file (`album_pilot.log`), but it is not shown in the progress panel of the plugin UI. Future updates may improve UI feedback to include this data for better transparency.
 
-Originally, the synchronization progress was intended to be freshly initialized at each start, resetting all counters and states. However, at present, progress is currently stored between runs to attempt resuming where it left off. This approach is however not reliable and sometimes resets the states as intended. Contributions or suggestions for a fix are welcome.
+Originally, the synchronization progress was intended to be freshly initialized at each start, resetting all counters and states. However, at present, progress is currently stored between runs to attempt resuming where it left off. This approach is however not reliable and sometimes resets the states as intended. To fully reset, users can toggle simulation mode on and off and run the process twice, which clears the progress state. Contributions or suggestions for a fix are welcome.
 
 When generating video posters via the built-in VideoJS plugin tools (“Generate missing posters”) for videos that have been processed with AlbumPilot, it is necessary to check "Update Metadata" as some metadata will not be generated or updated by AlbumPilot.
 
