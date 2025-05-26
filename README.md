@@ -44,6 +44,8 @@ AlbumPilot generates missing thumbnails for images in all resolutions defined by
 ### Step 3: Generate Video Posters  
 For video files, this step generates preview images ("video posters") using the "filmstrip" effect, which captures a frame 4 seconds into the video. This requires the **piwigo-videojs** plugin to be installed and active, it is otherwise disabled. Video posters are generated only for videos that do not yet have a poster image.
 
+Note: The poster generation itself works reliably. However, metadata such as video duration is not automatically updated during this step. If you later use the VideoJS plugin’s own sync interface to regenerate posters (via "Generate missing posters"), you must also check “Update Metadata” in that plugin — otherwise the poster generation via VideoJS plugin will fail.
+
 ### Step 4: Update Metadata  
 This step updates photo metadata (EXIF, IPTC, etc.) for images in the selected album(s) and optionally their subalbums. The process is done in small batches (chunks) to avoid PHP timeout issues common with large libraries. While the metadata update in step 1 is restricted to new or changed images, this step processes all items in the selected Album. **Note:** This step can be very slow and resource-intensive, so it should only be run when necessary.
 
@@ -90,6 +92,8 @@ Corresponds to clicking the **“Check database integrity”** button on the **M
 The plugin currently does not display the number of thumbnails generated during Step 2 (Thumbnail Generation) within the user interface. This information is recorded and available in the log file (`album_pilot.log`), but it is not shown in the progress panel of the plugin UI. Future updates may improve UI feedback to include this data for better transparency.
 
 Originally, the synchronization progress was intended to be freshly initialized at each start, resetting all counters and states. However, at present, progress is currently stored between runs to attempt resuming where it left off. This approach is however not reliable and sometimes resets the states as intended. Contributions or suggestions for a fix are welcome.
+
+When generating video posters via the built-in VideoJS plugin tools (“Generate missing posters”) for videos that have been processed with AlbumPilot, it is necessary to check "Update Metadata" as some metadata will not be generated or updated by AlbumPilot.
 
 ## Installation
 
