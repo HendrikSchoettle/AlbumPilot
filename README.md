@@ -44,6 +44,9 @@ AlbumPilot generates missing thumbnails for images in all resolutions defined by
 ### Step 3: Generate Video Posters  
 For video files, this step generates preview images ("video posters") using the "filmstrip" effect, which captures a frame 4 seconds into the video. This requires the **piwigo-videojs** plugin to be installed and active, it is otherwise disabled. Video posters are generated only for videos that do not yet have a poster image.
 
+*Example screenshot: Video thumbnail generation with progress feedback*  
+![Video poster generation screenshot](screenshots/AlbumPilot_video_poster_generation.png)
+
 ### Step 4: Update Metadata  
 This step updates photo metadata (EXIF, IPTC, etc.) for images in the selected album(s) and optionally their subalbums. The process is done in small batches (chunks) to avoid PHP timeout issues common with large libraries. While the metadata update in step 1 is restricted to new or changed images, this step processes all items in the selected Album. **Note:** This step can be very slow and resource-intensive, so it should only be run when necessary.
 
