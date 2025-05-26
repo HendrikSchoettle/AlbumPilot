@@ -99,7 +99,9 @@ The plugin currently does not display the number of thumbnails generated during 
 
 Originally, the synchronization progress was intended to be freshly initialized at each start, resetting all counters and states. However, at present, progress is currently stored between runs to attempt resuming where it left off. This approach is however not reliable and sometimes resets the states as intended. To fully reset, users can toggle simulation mode on and off and run the process twice, which clears the progress state. Contributions or suggestions for a fix are welcome.
 
-When generating video posters via the built-in VideoJS plugin tools (“Generate missing posters”) for videos that have been processed with AlbumPilot, it is necessary to check "Update Metadata" as some metadata will not be generated or updated by AlbumPilot.
+When generating video posters via the built-in VideoJS plugin tools (“Generate missing posters”) for videos that have been processed with AlbumPilot previously, it is necessary to check "Update Metadata" as some metadata will not be generated or updated by AlbumPilot.
+
+When interrupting the synchronization process, the database may not be updated. Tough thumbnails have been created, they may appear missing.
 
 ## Installation
 
