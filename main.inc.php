@@ -1,12 +1,11 @@
 <?php
 /*
 Plugin Name: AlbumPilot
-Version: 0.1.0
+Version: 0.1.1
 Description: Batch processing: Media sync, thumbs, video posters, maintenance
 Author: Hendrik Schöttle
 Has Settings: true
-License: MIT License
-SPDX-License-Identifier: MIT
+SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
 */
 
 if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');

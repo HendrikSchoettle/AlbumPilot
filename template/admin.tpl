@@ -1,8 +1,7 @@
 {*
 File: template/admin.tpl – AlbumPilot Plugin for Piwigo
 Author: Hendrik Schöttle
-License: MIT License
-SPDX-License-Identifier: MIT
+SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
 *}
 
 <div class="album-sync-wrapper">

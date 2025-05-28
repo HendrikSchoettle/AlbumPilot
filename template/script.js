@@ -1,8 +1,7 @@
 /*
 File: template/script.js – AlbumPilot Plugin for Piwigo
 Author: Hendrik Schöttle
-License: MIT License
-SPDX-License-Identifier: MIT
+SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
 */
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -30,7 +29,7 @@ function resetProgress() {
 }
 
 
-// ✅ Helper function for saving synchronization settings
+// Helper function for saving synchronization settings
 function saveSyncSettings(settingsObj) {
   fetch('admin.php?page=plugin-AlbumPilot', {
     method: 'POST',
@@ -44,7 +43,7 @@ function saveSyncSettings(settingsObj) {
 }
 	
 
-// ✅ Robust against invalid JSON responses (e.g. PHP warnings as HTML)
+// Robust against invalid JSON responses (e.g. PHP warnings as HTML)
 async function fetchSafeJSON(url, options = {}) {
   try {
     const res = await fetch(url, { credentials: 'same-origin', ...options });
@@ -70,7 +69,7 @@ async function fetchSafeJSON(url, options = {}) {
   }
 }
 
-// ✅ Simple and reusable for all AJAX step executions
+// Simple and reusable for all AJAX step executions
 function handleJsonStep(url, onSuccess) {
   const log = document.getElementById('progress-log');
 
@@ -93,7 +92,7 @@ function handleJsonStep(url, onSuccess) {
   });
 }
 
-// ✅ Extract configuration from global JS object safely
+// Extract configuration from global JS object safely
 const config = window.AlbumPilotConfig || {};
 let settings = config.savedSettings;
 
@@ -183,7 +182,7 @@ document.getElementById('select-all-steps').addEventListener('change', function 
   saveSyncSettings(syncSettings);
 });
 
-// ✅ Apply saved checkbox settings after load
+// Apply saved checkbox settings after load
 if (savedSettings) {
   if ('simulate' in savedSettings) {
     document.getElementById('simulate-mode').checked = savedSettings['simulate'] === '1';
@@ -240,7 +239,7 @@ if (select) {
 
   document.getElementById('start-sync').addEventListener('click', async function () {
   
-// ✅ Security mechanism: prevent double clicks + warn before leaving
+// Security mechanism: prevent double clicks + warn before leaving
 if (window.syncInProgress) return; // Already running? → Do nothing
 
 const simulate = document.getElementById('simulate-mode')?.checked || false;
@@ -304,6 +303,7 @@ if (selectedSteps.length === 0) {
 }
 
 await resetProgress();
+offset = 0;
 
 window.syncInProgress = true;
 
@@ -390,7 +390,10 @@ function next() {
 
       function fetchChunk() {
         // Handle step 4 like step 5 regarding the offset parameter
-        const fetchUrl = (step.id === 'step5' || step.id === 'step4') ? step.url + '&offset=' + offset : step.url;
+        const fetchUrl = (['step2', 'step4', 'step5'].includes(step.id))
+  ? step.url + '&offset=' + offset
+  : step.url;
+
 
         handleJsonStep(fetchUrl, (data) => {
           const logEntries = Array.isArray(data.log) ? data.log : [data.log];

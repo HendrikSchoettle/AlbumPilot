@@ -2,8 +2,7 @@
 /*
 File: language/de_DE/plugin.lang.php – AlbumPilot Plugin for Piwigo
 Author: Hendrik Schöttle
-License: MIT License
-SPDX-License-Identifier: MIT
+SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
 */
 
 $lang['AlbumPilot_description'] = 'Automatisiert die Synchronisation und Wartung nach dem Medienimport (inkl. Videos, Smart-Alben usw.).';
@@ -114,6 +113,12 @@ $lang['log_video_output'] = 'Ausgabe: %s';
 $lang['log_video_unreadable_poster'] = 'Poster konnte nicht verarbeitet werden – ungültiges oder beschädigtes JPEG: %s';
 $lang['log_video_unknown_gd_error'] = 'Unbekannter GD-Fehler';
 $lang['log_video_summary'] = 'Es wurden %d Video-Poster generiert.';
+
+$lang['log_step_completed_with_count'] = 'Schritt abgeschlossen: %s für %d %s.';
+$lang['step_video'] = 'Videos';
+$lang['step_thumbnail'] = 'Thumbnails';
+$lang['step_checksum'] = 'Bilder';
+$lang['step_metadata'] = 'Bilder';
 
 $lang['log_sync_step1_start'] = 'Starte Synchronisation (Dateien)';
 $lang['log_sync_step1_options'] = 'Optionen: %s, %s, %s';

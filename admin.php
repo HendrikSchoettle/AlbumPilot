@@ -2,46 +2,7 @@
 /*
 File: admin.php – AlbumPilot Plugin for Piwigo
 Author: Hendrik Schöttle
-License: MIT
-SPDX-License-Identifier: MIT
-
-Copyright (c) 2025 Dr. Hendrik Schöttle
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-Note on License Compatibility:
-
-While the MIT License is generally regarded as permissive and compatible
-with all versions of the GNU General Public License (GPL), the wording of
-the license may, in some interpretations, suggest a stricter reading.
-
-To avoid any ambiguity: although this software is licensed under the MIT
-License, it is the licensor’s intention and understanding that it may be
-combined with, and distributed as part of, a larger work licensed under the
-GPL (in any version) or any other copyleft license. Accordingly, the
-distribution of such a combined or derivative work under the terms of the GPL
-or any other copyleft license is considered permissible under this licensing
-approach.
-
-This clarification is provided to reflect the intended permissive nature of
-the MIT License in this context.
-
+SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
 */
 
 // Clear output buffers for clean JSON responses in AJAX contexts
@@ -380,7 +341,18 @@ if (!isset($_SESSION['thumb_progress'])) {
   }
 
   $done = $index >= count($queue);
-  if ($done) unset($_SESSION['thumb_progress']);
+  $summary = '';
+
+  if ($done) {
+    $summary = "✅ " . sprintf(
+      l10n('log_step_completed_with_count'),
+      l10n('step_generate_thumbnails'),
+      $prog['generated'],
+      l10n('step_thumbnail')
+    );
+    log_message($summary);
+    unset($_SESSION['thumb_progress']);
+  }
 
   header('Content-Type: application/json');
   echo json_encode([
@@ -389,9 +361,9 @@ if (!isset($_SESSION['thumb_progress'])) {
     'offset'    => $index,
     'done'      => $done,
     'total'     => $prog['totalThumbnails'],
-    'log'       => $log
+    'log'       => $log,
+    'summary'   => $summary
   ]);
-
   exit;
 }
 
@@ -433,6 +405,44 @@ function log_message($message) {
 function count_total_images() {
   $result = pwg_db_fetch_assoc(pwg_query("SELECT COUNT(*) AS cnt FROM " . IMAGES_TABLE));
   return (int)$result['cnt'];
+}
+
+// Optional: insert/update VideoJS metadata after poster creation
+function extract_video_metadata($video_path) {
+  $cmd = "ffprobe -v quiet -print_format json -show_streams " . escapeshellarg($video_path);
+  exec($cmd, $output, $retval);
+  if ($retval !== 0) return [];
+
+  $json = json_decode(implode("\n", $output), true);
+  foreach ($json['streams'] as $stream) {
+    if ($stream['codec_type'] === 'video') {
+      return [
+        'width' => $stream['width'] ?? null,
+        'height' => $stream['height'] ?? null,
+        'duration' => isset($stream['duration']) ? round($stream['duration']) : 0
+      ];
+    }
+  }
+  return [];
+}
+
+function insert_videojs_metadata($image_id, $video_path) {
+  $meta = extract_video_metadata($video_path);
+  if (empty($meta)) return;
+
+  $metadata = [
+    'DurationSeconds' => $meta['duration'],
+    'width' => $meta['width'],
+    'height' => $meta['height'],
+    'filesize' => @filesize($video_path),
+    'date_creation' => date('Y-m-d'),
+  ];
+
+  $serialized = pwg_db_real_escape_string(serialize($metadata));
+  $query = "INSERT INTO " . $GLOBALS['prefixeTable'] . "image_videojs (id, metadata, date_metadata_update)
+            VALUES ($image_id, '$serialized', NOW())
+            ON DUPLICATE KEY UPDATE metadata = '$serialized', date_metadata_update = NOW()";
+  pwg_query($query);
 }
 
 // --- Special: Update metadata  ---
@@ -482,8 +492,12 @@ if (
       'simulate'  => $simulate
     ];
 
-    log_message("🔍 " . l10n('log_metadata_scan_start'));
-    log_message("🧮 " . sprintf(l10n('log_total_images_to_process'), count($images)));
+    $msg1 = "🔍 " . l10n('log_metadata_scan_start');
+    $msg2 = "🧮 " . sprintf(l10n('log_total_images_to_process'), count($images));
+    log_message($msg1);
+    log_message($msg2);
+    $log[] = $msg1;
+    $log[] = $msg2;
 
     echo json_encode([
       'processed' => 0,
@@ -552,12 +566,18 @@ if (
   $done = $index >= $total;
   $summary = '';
 
-  if ($done) {
-    $summary = "✅ " . sprintf(l10n('log_metadata_summary'), $updated);
-    log_message($summary);
+  if ($done) {    
+    $summary = "✅ " . sprintf(
+      l10n('log_step_completed_with_count'),
+      l10n('step_update_metadata'),
+      $updated,
+      l10n('step_metadata')
+    );
+
+	log_message($summary);
     unset($_SESSION['meta_progress']);
   }
-
+  
   echo json_encode([
     'processed' => $processed,
     'updated'   => $updated,
@@ -633,9 +653,13 @@ if (isset($_GET['calculate_md5'], $_GET['pwg_token']) && $_GET['pwg_token'] === 
       'simulate'  => $simulate
     ];
 
-    log_message("🔍 " . l10n('log_md5_scan_start'));
-    $logLine="🧮 " . sprintf(l10n('log_md5_total_to_calculate'), $total);
-	log_message($logLine);    
+    $scanStartMsg = "🔍 " . l10n('log_md5_scan_start');
+    $log[] = $scanStartMsg;
+    log_message($scanStartMsg);
+
+    $countMsg = "🧮 " . sprintf(l10n('log_md5_total_to_calculate'), $total);
+    $log[] = $countMsg;
+    log_message($countMsg);
 	
 	echo json_encode([
       'processed' => 0,
@@ -643,9 +667,10 @@ if (isset($_GET['calculate_md5'], $_GET['pwg_token']) && $_GET['pwg_token'] === 
       'offset'    => 0,
       'done'      => false,
       'total'     => $total,
-      'log'       => $logLine,
+      'log'       => $log,
       'summary'   => ''
     ]);
+
     exit;
   }
 
@@ -715,7 +740,14 @@ while ($index < $total && $processed < $chunkSize) {
 
 $done = $index >= $total;
 if ($done) {
-  $summary = "✅ " .l10n('log_md5_summary');
+  $summary = "✅ " . sprintf(
+    l10n('log_step_completed_with_count'),
+    l10n('step_calculate_checksums'),
+    $generated,
+    l10n('step_checksum')
+  );
+
+  log_message($summary); 
   unset($_SESSION['md5_progress']);
 }
 
@@ -800,28 +832,38 @@ if (
         $missingPosters[] = $img;
       }
     }
+    
+    $log[] = "🔍 " . l10n('log_video_scan_start');
+    log_message("🔍 " . l10n('log_video_scan_start'));
 
-    if (count($missingPosters) === 0) {
-      $msg = l10n('log_video_nothing_to_do');
-      $log[] = "🟢 $msg";
-      log_message("🟢 $msg");
+    $posterCount = count($missingPosters);
+    $countMsg = sprintf(l10n('log_video_total_to_generate'), $posterCount);
+    $countLine = "🧮 " . $countMsg;
+    log_message($countLine);
+    $log[] = $countLine;
+  
+    if ($posterCount === 0) {
       unset($_SESSION['video_progress']);
+
+      $summary = "✅ " . sprintf(
+        l10n('log_step_completed_with_count'),
+        l10n('step_generate_video_posters'),
+        0,
+        l10n('step_video')
+      );
+      log_message($summary);
+
       echo json_encode([
         'processed' => 0,
         'generated' => 0,
         'offset'    => 0,
         'done'      => true,
         'total'     => 0,
-        'log'       => implode("\n", $log)
+        'log'       => $log,
+        'summary'   => $summary
       ]);
       exit;
     }
-
-    log_message("🔍 " . l10n('log_video_scan_start'));
-    $countMsg = sprintf(l10n('log_video_total_to_generate'), count($missingPosters));
-    $countLine = "🧮 " . $countMsg;
-    log_message($countLine);
-    $log[] = $countLine;
 
     $_SESSION['video_progress'] = [
       'albumId'   => $cat_id,
@@ -829,10 +871,11 @@ if (
       'images'    => $missingPosters,
       'index'     => 0,
       'generated' => 0,
-      'total'     => count($missingPosters),
+      'total'     => $posterCount,
       'simulate'  => $simulate
     ];
   }
+
 
   $prog = &$_SESSION['video_progress'];
   $images = &$prog['images'];
@@ -890,6 +933,9 @@ if (
           $cmd = 'ffmpeg -ss 4 -i "' . $filename . '" -vcodec mjpeg -vframes 1 -an -f rawvideo -y "' . $poster . '" 2>&1';
           exec($cmd);
 
+          // After successful poster generation, insert/update videojs metadata
+          insert_videojs_metadata((int)$img['id'], $filename);
+
           if (function_exists('add_movie_frame')) {
             $testImage = @imagecreatefromjpeg($poster);
             if ($testImage === false) {
@@ -937,9 +983,15 @@ if (
 
   $done = $index >= $total;
   if ($done) {
-    unset($_SESSION['video_progress']);
-    $summary = "✅ " . sprintf(l10n('log_video_summary'), $generated);
-    log_message($summary); // Nur ins Logfile, nicht ins UI-Log
+    unset($_SESSION['video_progress']);    
+	$summary = "✅ " . sprintf(
+      l10n('log_step_completed_with_count'),
+      l10n('step_generate_video_posters'),
+      $generated,
+      l10n('step_video')
+    );
+
+    log_message($summary); 
   }
 
   echo json_encode([

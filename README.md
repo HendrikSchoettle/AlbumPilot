@@ -1,7 +1,7 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 0.1.0  
-**Release Date:** 2025-05-26  
+**Version:** 0.1.1
+**Release Date:** 2025-05-28  
 **Tested with:** Piwigo 15.5.0
 
 ---
@@ -9,7 +9,10 @@
 ## Table of Contents
 
 - [Overview](#overview)
-- [Synchronization Steps](#synchronization-steps)
+  - [What's New in v0.1.1](#whats-new-in-v0.1.1)
+  - [Changes & Improvements](#changes--improvements)
+  - [Removed/Resolved Issues](#removedresolved-issues)
+- [Synchronization Steps](#synchronization-steps)- [Synchronization Steps](#synchronization-steps)
   - [Step 1: Sync Files](#step-1-sync-files)
   - [Step 2: Generate Thumbnails](#step-2-generate-thumbnails)
   - [Step 3: Generate Video Posters](#step-3-generate-video-posters)
@@ -33,6 +36,36 @@
 
 AlbumPilot automates several key synchronization steps within Piwigo, saving you time and effort during album management. It allows you to batch process file synchronization, thumbnail generation, video poster creation, metadata updates, checksum calculations, and other features with a simple, user-friendly interface.
 
+---
+
+## What's New in v0.1.1
+
+### Changes & Improvements
+
+- **License Change:**  
+  AlbumPilot is now released under a triple license:  
+  MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later.  
+  Previously, it was licensed under MIT only.
+
+- **Video Metadata Writing Added:**  
+  The plugin now updates metadata (such as duration and resolution) for video files during the metadata update step (Step 4). This closes a previous gap where video files lacked associated metadata after synchronization.
+
+- **Improved Log Symbol Consistency:**  
+  Log messages across all sync steps now consistently use visual prefixes. Previously inconsistent symbol usage between steps has been aligned.
+
+- **Bugfixes:**  
+  Corrected issues where log output was not shown when invalid JSON was returned from the server.  
+
+### Removed/Resolved Issues
+
+- **Missing Logs at Step Start**  
+  Step-specific logs (e.g., “Generating Thumbnails…”) are now reliably recorded at the very start of each step, even on first run.
+
+- **Broken JSON Error on Start**  
+  Previous issues where requests could cause malformed JSON and a UI error have been resolved. Now all steps return properly formatted JSON or display fallback diagnostics.
+
+---
+
 ## Synchronization Steps
 
 ### Step 1: Sync Files  
@@ -43,8 +76,6 @@ AlbumPilot generates missing thumbnails for images in all resolutions defined by
 
 ### Step 3: Generate Video Posters  
 For video files, this step generates preview images ("video posters") using the "filmstrip" effect, which captures a frame 4 seconds into the video. This requires the **piwigo-videojs** plugin to be installed and active, it is otherwise disabled. Video posters are generated only for videos that do not yet have a poster image.
-
-Note: The poster generation itself works reliably. However, metadata such as video duration is not automatically updated during this step. If you later use the VideoJS plugin’s own sync interface to regenerate posters (via "Generate missing posters"), you must also check “Update Metadata” in that plugin — otherwise the poster generation via VideoJS plugin will fail.
 
 ### Step 4: Update Metadata  
 This step updates photo metadata (EXIF, IPTC, etc.) for images in the selected album(s) and optionally their subalbums. The process is done in small batches (chunks) to avoid PHP timeout issues common with large libraries. While the metadata update in step 1 is restricted to new or changed images, this step processes all items in the selected Album. **Note:** This step can be very slow and resource-intensive, so it should only be run when necessary.
@@ -95,13 +126,7 @@ Corresponds to clicking the **“Check database integrity”** button on the **M
 
 ## Known Limitations / Issues
 
-The plugin currently does not display the number of thumbnails generated during Step 2 (Thumbnail Generation) within the user interface. This information is recorded and available in the log file (`album_pilot.log`), but it is not shown in the progress panel of the plugin UI. Future updates may improve UI feedback to include this data for better transparency.
-
 Originally, the synchronization progress was intended to be freshly initialized at each start, resetting all counters and states. However, at present, progress is currently stored between runs to attempt resuming where it left off. This approach is however not reliable and sometimes resets the states as intended. To fully reset, users can toggle simulation mode on and off and run the process twice, which clears the progress state. Contributions or suggestions for a fix are welcome.
-
-When generating video posters via the built-in VideoJS plugin tools (“Generate missing posters”) for videos that have been processed with AlbumPilot previously, it is necessary to check "Update Metadata" as some metadata will not be generated or updated by AlbumPilot.
-
-When interrupting the synchronization process, the database may not be updated. Tough thumbnails have been created, they may appear missing.
 
 ## Installation
 
@@ -152,5 +177,11 @@ Feel free to use and adapt it as you wish. I hope it makes your Piwigo synchroni
 
 ---
 
-**License:** MIT License  
+**License:**  
+This project is triple-licensed under the following terms — you may choose the one that best fits your needs:
+
+1. MIT License (MIT)  
+2. GNU Lesser General Public License v2.1 or (at your option) any later version (LGPL-2.1-or-later)  
+3. GNU General Public License v2.0 or (at your option) any later version (GPL-2.0-or-later)
+
 © 2025 Hendrik Schöttle
