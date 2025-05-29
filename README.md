@@ -130,7 +130,7 @@ Originally, the synchronization progress was intended to be freshly initialized 
 
 ## Installation
 
-1. Upload the `AlbumPilot` plugin folder to your Piwigo plugins directory.  
+1. Upload the `AlbumPilot` plugin folder to your Piwigo plugins directory. Make sure it is named `AlbumPilot` only (remove any additional version number). 
 2. Activate the plugin via the Piwigo administration panel.  
 3. Ensure the web server has write permissions on the plugin directory to enable log writing.  
 4. For full functionality, install and activate the **piwigo-videojs** and **SmartAlbums** plugins as needed.
