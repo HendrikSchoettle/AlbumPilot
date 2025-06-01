@@ -23,7 +23,7 @@ SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
   display: inline-block;
   border: 2px solid #ccc;
   border-radius: 6px;
-  padding: 16px 20px 8px 20px;
+  padding: 0px 20px 8px 20px;
   max-width: 100%;
 }
 
@@ -131,4 +131,45 @@ SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
 li:has(.step-checkbox:disabled) {
   color: #d88 !important;
   opacity: 0.6;
+}
+
+.sync-steps {
+  margin-top: 20px;
+  padding-left: 20px;
+  list-style: none; 
+}
+
+.button-row + .album-settings-box {
+  margin-top: 30px;
+}
+
+.mt-block {
+  margin-top: 30px;
+}
+
+
+.album-settings-box textarea {
+  display: block;
+  width: 100%;
+  min-width: 800px; /* war 600px */
+  max-width: 100%;
+  box-sizing: border-box;
+  font-family: monospace;
+  font-size: 13px;
+  height: 64px;
+  resize: none;
+}
+
+.album-settings-box.external-url-block {
+  width: 100%;
+  max-width: 1000px;
+  min-width: 700px;
+}
+
+.sync-log h4.progress-heading {
+  color: #000;
+}
+
+#sync-steps-list-pre li:nth-child(4) {
+  margin-bottom: 16px;
 }

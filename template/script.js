@@ -6,32 +6,31 @@ SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
 
 document.addEventListener('DOMContentLoaded', function () {
 
+
+
 function t(key) {
   return window.AlbumPilotLang?.[key] || key;
 }
 	
 function resetProgress() {
-  return fetch('admin.php?page=plugin-AlbumPilot&reset_progress=1&pwg_token=' + token, {
+  return fetch(config.pluginPageUrl + '&reset_progress=1&pwg_token=' + token, {
     credentials: 'same-origin'
   })
   .then(res => res.json())
-  .then(data => {    
-    if (!data.success) {
+  .then(data => {
+    if (!data?.success) {
       console.warn(window.AlbumPilotLang.reset_error);
     }
-
-
   })
   .catch(err => {
     console.error(window.AlbumPilotLang.reset_error_details, err);
-
   });
 }
 
-
 // Helper function for saving synchronization settings
 function saveSyncSettings(settingsObj) {
-  fetch('admin.php?page=plugin-AlbumPilot', {
+  fetch(pluginPageUrl, {
+
     method: 'POST',
     credentials: 'same-origin',
     headers: { 'Content-Type': 'application/json' },
@@ -41,7 +40,6 @@ function saveSyncSettings(settingsObj) {
     })
   });
 }
-	
 
 // Robust against invalid JSON responses (e.g. PHP warnings as HTML)
 async function fetchSafeJSON(url, options = {}) {
@@ -94,7 +92,67 @@ function handleJsonStep(url, onSuccess) {
 
 // Extract configuration from global JS object safely
 const config = window.AlbumPilotConfig || {};
+const pluginPageUrl = config.pluginPageUrl || '';
+
+// Normalize plugin URL to ensure leading slash
+const safePluginUrl = pluginPageUrl.startsWith('/') ? pluginPageUrl : '/' + pluginPageUrl;
+const root = config.rootUrl;
+const token = config.token;
+
+
+// Function for generating external URL
+function generateExternalUrlFromSelection() {
+  const albumId = document.querySelector('#album-list')?.value;
+  const simulate = document.querySelector('#simulate-mode')?.checked;
+  const onlyNew = document.querySelector('#only-new-files')?.checked;
+  const includeSubalbums = document.querySelector('#include-subalbums')?.checked;
+
+  const textArea = document.getElementById('external-url-chain');
+  if (!textArea) return;
+
+  // Collect selected steps (IDs only, e.g., "1", "2", "5")
+  const selectedStepIds = [...new Set(
+    Array.from(document.querySelectorAll('.step-list input[type=checkbox]:checked'))
+      .map(cb => {
+        const match = cb.id.match(/^step(\d+)$/);
+        return match ? match[1] : null;
+      })
+      .filter(Boolean)
+  )];
+
+  // ⚠️ No album selected
+  if (!albumId) {
+    const msg = window.AlbumPilotLang?.select_album_alert || 'Please select an album.';
+    textArea.value = '⚠️ ' + msg;
+    return;
+  }
+
+  // ⚠️ No steps selected
+  if (selectedStepIds.length === 0) {
+    const msg = window.AlbumPilotLang?.select_step_alert || 'Please select at least one step.';
+    textArea.value = '⚠️ ' + msg;
+    return;
+  }
+
+  // ✅ All inputs valid – generate external URL
+  const base = new URL(window.location.href);
+  const fullPath = new URL(config.pluginPageUrl, base);
+
+  fullPath.searchParams.set('external_batch', '1');
+  fullPath.searchParams.set('album', albumId);
+  fullPath.searchParams.set('simulate', simulate ? '1' : '0');
+  fullPath.searchParams.set('onlynew', onlyNew ? '1' : '0');
+  fullPath.searchParams.set('subalbums', includeSubalbums ? '1' : '0');
+  fullPath.searchParams.set('steps', selectedStepIds.join(','));
+
+  const url = fullPath.toString();
+  textArea.value = url;
+  textArea.setAttribute('value', url); // Optional: supports older browsers
+}
+
 let settings = config.savedSettings;
+
+
 
 if (typeof settings === 'string') {
   try {
@@ -106,8 +164,6 @@ if (typeof settings === 'string') {
 }
 
 const savedSettings = settings;
-const root = config.rootUrl;
-const token = config.token;
 
 const stepsPre = document.getElementById('sync-steps-list-pre');
 const stepsPost = document.getElementById('sync-steps-list-post');
@@ -116,13 +172,14 @@ const isVideoJSActive = window.AlbumPilotConfig.videojsActive === true;
 const isSmartAlbumsActive = window.AlbumPilotConfig.smartalbumsActive === true;
 
 // Define step list with labels and URLs
+
 const urls = [].concat(
   [
-    ['step1', t('step_sync_files'), root + 'admin.php?page=plugin-AlbumPilot&wrapped_sync=1&pwg_token=' + token],
-    ['step2', t('step_generate_thumbnails'), root + 'admin.php?page=plugin-AlbumPilot&generate_image_thumbs=1&album_id=ALBUM_ID&pwg_token=' + token],
-    ['step3', t('step_generate_video_posters') + (isVideoJSActive ? '' : ' (' + t('videojs_not_active') + ')'), root + 'admin.php?page=plugin-AlbumPilot&video_thumb_block=1&cat_id=ALBUM_ID&pwg_token=' + token],
-    ['step4', t('step_update_metadata'), root + 'admin.php?page=plugin-AlbumPilot&update_metadata_for_album=ALBUM_ID&pwg_token=' + token],
-    ['step5', t('step_calculate_checksums'), root + 'admin.php?page=plugin-AlbumPilot&calculate_md5=1&album_id=ALBUM_ID&pwg_token=' + token]
+    ['step1', t('step_sync_files'), root + pluginPageUrl + '&wrapped_sync=1&pwg_token=' + token],
+    ['step2', t('step_generate_thumbnails'), root + pluginPageUrl + '&generate_image_thumbs=1&album_id=ALBUM_ID&pwg_token=' + token],
+    ['step3', t('step_generate_video_posters') + (isVideoJSActive ? '' : ' (' + t('videojs_not_active') + ')'), root + pluginPageUrl + '&video_thumb_block=1&cat_id=ALBUM_ID&pwg_token=' + token],
+    ['step4', t('step_calculate_checksums'), root + pluginPageUrl + '&calculate_md5=1&album_id=ALBUM_ID&pwg_token=' + token],
+    ['step5', t('step_update_metadata'), root + pluginPageUrl + '&update_metadata_for_album=ALBUM_ID&pwg_token=' + token],
   ],
   [
     ['step6', t('step_reassign_smart_albums') + (isSmartAlbumsActive ? '' : ' (' + t('smartalbums_not_active') + ')'), root + 'admin.php?page=plugin-SmartAlbums-cat_list&smart_generate=all'],
@@ -144,7 +201,7 @@ urls.forEach((step, index) => {
   checkbox.id = step[0];
 
   // By default, step 4 is disabled, all others enabled
-  checkbox.checked = step[0] !== 'step4';
+  checkbox.checked = step[0] !== 'step5';
 
   // Disable step 3 if VideoJS is not active
   if (step[0] === 'step3' && !isVideoJSActive) {
@@ -163,6 +220,16 @@ urls.forEach((step, index) => {
   const targetList = index <= 4 ? stepsPre : stepsPost;
   targetList.appendChild(li);
 });
+
+
+generateExternalUrlFromSelection();
+
+
+// Wait until checkboxes are rendered
+setTimeout(() => {
+  autoStartFromExternalParams();
+}, 300);
+
 
 // Handle "Select all steps" toggle + save state
 document.getElementById('select-all-steps').addEventListener('change', function () {
@@ -202,6 +269,8 @@ if (savedSettings) {
   }
 }
 
+
+
 // Album selector handling
 const select = document.getElementById('album-list');
 const hiddenInput = document.getElementById('album-select');
@@ -210,7 +279,8 @@ if (select) {
   select.addEventListener('change', function () {
     hiddenInput.value = this.value;
 
-    fetch('admin.php?page=plugin-AlbumPilot', {
+    fetch(pluginPageUrl, {
+
       method: 'POST',
       credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
@@ -234,11 +304,23 @@ if (select) {
       selectedOption.selected = true;
       select.scrollTop = selectedOption.offsetTop - select.clientHeight / 2;
     }
+	generateExternalUrlFromSelection(); 
   }
 }
 
+// Event-Listener for updating existing URL
+['simulate-mode', 'only-new-files', 'include-subalbums', 'album-select', 'select-all-steps'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('change', generateExternalUrlFromSelection);
+});
+
+document.querySelectorAll('.step-checkbox').forEach(cb => {
+  cb.addEventListener('change', generateExternalUrlFromSelection);
+});
+
   document.getElementById('start-sync').addEventListener('click', async function () {
-  
+  generateExternalUrlFromSelection(); // Ensure current URL is regenerated
+
 // Security mechanism: prevent double clicks + warn before leaving
 if (window.syncInProgress) return; // Already running? → Do nothing
 
@@ -247,7 +329,7 @@ const onlyNew = document.getElementById('only-new-files')?.checked || false;
 const includeSubalbums = document.getElementById('include-subalbums')?.checked || false;
 const albumId = hiddenInput.value;
 
-fetch('admin.php?page=plugin-AlbumPilot&sync_begin=1'
+fetch(config.pluginPageUrl + '&sync_begin=1'
   + '&album=' + albumId
   + '&simulate=' + (simulate ? '1' : '0')
   + '&onlynew=' + (onlyNew ? '1' : '0')
@@ -352,7 +434,7 @@ function next() {
 
     document.getElementById('progress-log').innerHTML += '<div><strong>✅ ' + t('workflow_finished') + '</strong></div>';
 
-    fetch('admin.php?page=plugin-AlbumPilot&sync_end=1&pwg_token=' + token, {
+    fetch(config.pluginPageUrl + '&sync_end=1&pwg_token=' + token, {
       credentials: 'same-origin'
     });
 
@@ -621,10 +703,10 @@ document.getElementById('reset-settings').addEventListener('click', function () 
     if (cb) {
       // Only activate if not disabled
       if (!cb.disabled) {
-        cb.checked = id !== 'step4';
+        cb.checked = id !== 'step5';
       }
       // Always store value — disabled steps always "0"
-      syncSettings[id] = (!cb.disabled && id !== 'step4') ? '1' : '0';
+      syncSettings[id] = (!cb.disabled && id !== 'step5') ? '1' : '0';
     }
   });
 
@@ -640,5 +722,98 @@ document.getElementById('reset-settings').addEventListener('click', function () 
 
   saveSyncSettings(syncSettings);
 });
+
+
+// --- Auto-start sync when triggered via external_run URL parameter ---
+function autoStartFromExternalParams() {
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.get('external_run') !== '1') {
+    return;
+  }
+
+  const albumId = params.get('album') || '';
+  const simulate = params.get('simulate') === '1';
+  const onlyNew = params.get('onlynew') === '1';
+  const subalbums = params.get('subalbums') === '1';
+  const stepIds = (params.get('steps') || '')
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
+
+  // Select album
+  const albumSelect = document.getElementById('album-list');
+  const albumHidden = document.getElementById('album-select');
+  if (albumSelect && albumId) {
+    albumSelect.value = albumId;
+    albumHidden.value = albumId;
+  }
+
+  // Set options
+  const simulateCheckbox = document.getElementById('simulate-mode');
+  const onlyNewCheckbox = document.getElementById('only-new-files');
+  const includeSubalbumsCheckbox = document.getElementById('include-subalbums');
+
+  if (simulateCheckbox) {
+    simulateCheckbox.checked = simulate;
+    simulateCheckbox.dispatchEvent(new Event('change'));
+  }
+  if (onlyNewCheckbox) {
+    onlyNewCheckbox.checked = onlyNew;
+    onlyNewCheckbox.dispatchEvent(new Event('change'));
+  }
+  if (includeSubalbumsCheckbox) {
+    includeSubalbumsCheckbox.checked = subalbums;
+    includeSubalbumsCheckbox.dispatchEvent(new Event('change'));
+  }
+
+  // Enable steps
+  stepIds.forEach(id => {
+    const stepCheckbox = document.getElementById('step' + id);
+    if (stepCheckbox && !stepCheckbox.disabled) {
+      stepCheckbox.checked = true;
+      stepCheckbox.dispatchEvent(new Event('change'));
+    }
+  });
+
+// Start sync (robust bei langsamer Initialisierung)
+function waitAndStartSyncWithFocusCheck() {
+  const startBtn = document.getElementById('start-sync');
+
+  if (!startBtn || !document.getElementById('album-list')?.value) {
+    return setTimeout(waitAndStartSyncWithFocusCheck, 200);
+  }
+
+  // Warten auf Sichtbarkeit & Fokus
+  if (document.visibilityState !== 'visible' || !document.hasFocus()) {
+    return setTimeout(waitAndStartSyncWithFocusCheck, 200);
+  }
+
+  // Sicherstellen, dass DOM komplett stabil ist
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      try {
+        const event = new MouseEvent('click', {
+          bubbles: true,
+          cancelable: true,
+          view: window
+        });
+
+        startBtn.dispatchEvent(event);
+        console.log('[AlbumPilot] Triggered start-sync via simulated click');
+      } catch (e) {
+        console.warn('[AlbumPilot] Fallback to .click():', e);
+        startBtn.click();
+      }
+    }, 100);
+  });
+}
+
+waitAndStartSyncWithFocusCheck();
+
+
+
+}
+
 
 });

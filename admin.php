@@ -25,6 +25,60 @@ if (!defined('ALBUM_PILOT_PATH')) {
 check_status(ACCESS_ADMINISTRATOR);
 include_once(PHPWG_PLUGINS_PATH . 'piwigo-videojs/include/function_frame.php');
 
+// Execute chain of external URLs (sent via POST or GET)
+if (isset($_GET['external_batch']) && $_GET['external_batch'] === '1') {
+    if (!is_admin()) {
+        echo "Access denied – admin login required.";
+        exit;
+    }
+
+    $album = $_GET['album'] ?? '';
+    $simulate = $_GET['simulate'] ?? '0';
+    $onlyNew = $_GET['onlynew'] ?? '0';
+    $subalbums = $_GET['subalbums'] ?? '0';
+    $steps = explode(',', $_GET['steps'] ?? '');
+    $token = get_pwg_token();
+
+    // Determine album path for logging
+    $albumPath = '(not set)';
+    if (is_numeric($album)) {
+        $albumId = (int)$album;
+        $albumData = pwg_db_fetch_assoc(pwg_query("SELECT name, uppercats FROM " . CATEGORIES_TABLE . " WHERE id = $albumId"));
+        if ($albumData) {
+            $ids = explode(',', $albumData['uppercats']);
+            $names = [];
+            foreach ($ids as $id) {
+                $r = pwg_db_fetch_assoc(pwg_query("SELECT name FROM " . CATEGORIES_TABLE . " WHERE id = " . (int)$id));
+                if ($r) $names[] = $r['name'];
+            }
+            $albumPath = implode(' / ', $names);
+        }
+    }
+
+    // Log sync start (batch)
+    log_message("🟢 " . l10n('log_sync_started') . " (User ID: " . (int)$user['id'] . ")" . ' ' . l10n('log_sync_mode_batch'));
+    log_message("📋 " . l10n('log_sync_options') . ": " .
+        l10n('simulate_mode') . " = " . ($simulate === '1' ? l10n('yes') : l10n('no')) . ", " .
+        l10n('only_new_files') . " = " . ($onlyNew === '1' ? l10n('yes') : l10n('no')) . ", " .
+        l10n('include_subalbums') . " = " . ($subalbums === '1' ? l10n('yes') : l10n('no')) . ", " .
+        l10n('selected_album') . " = \"$albumPath\"");
+
+    // Instead of direct execution: forward to GUI with parameters
+
+    $queryParams = [
+        'external_run' => '1',
+        'album' => $album,
+        'simulate' => $simulate,
+        'onlynew' => $onlyNew,
+        'subalbums' => $subalbums,
+        'steps' => implode(',', $steps)
+    ];
+
+    $redirectUrl = get_root_url() . 'admin.php?page=plugin-' . basename(__DIR__) . '&' . http_build_query($queryParams);
+    header('Location: ' . $redirectUrl);
+    exit;
+}
+
 // Handle session progress reset request
 if (isset($_GET['reset_progress']) && $_GET['reset_progress'] === '1' && $_GET['pwg_token'] === get_pwg_token()) {
   if (session_status() === PHP_SESSION_NONE) {
@@ -135,7 +189,7 @@ if (
 
   $log = [];
 
-  // 🟡 First run – initialize session
+// Step 1: First request - initialize processing queue and store it in session
 if (!isset($_SESSION['thumb_progress'])) {
   $msg = l10n('log_scan_missing_thumbs');
   $log[] = "🔍 " . $msg;
@@ -466,7 +520,7 @@ if (
 
   $log = [];
 
-  // === 1. Initial call: initialize session ===
+  // Step 1: First request - collect items to process and store them in the session
   if (!isset($_SESSION['meta_progress'])) {
     $albums = [$albumId];
     if ($includeSubalbums) {
@@ -510,7 +564,7 @@ if (
     exit;
   }
 
-  // === 2. Subsequent calls: process more images ===
+  // Step 2: Follow-up requests - process the next batch of items from the queue
   $prog = &$_SESSION['meta_progress'];
   $queue = &$prog['queue'];
   $index = &$prog['index'];
@@ -1063,10 +1117,22 @@ if (isset($_GET['wrapped_sync'], $_GET['pwg_token']) && $_GET['pwg_token'] === g
   exit;
 }
 
-
-// --- Default admin page ---
 load_language('plugin.lang', ALBUM_PILOT_PATH);
+
+// Full language pack for Smarty
 $template->assign('LANG', $lang);
+
+// Reduced language pack for frontend JS (until 'end_frontend_section')
+$lang_frontend = array();
+foreach ($lang as $key => $value) {
+  if ($key === 'end_frontend_section') {
+    break;
+  }
+  $lang_frontend[$key] = $value;
+}
+
+$template->assign('L10N_JS', $lang_frontend);
+
 
 include_once(PHPWG_ROOT_PATH.'admin/include/functions.php');
 
@@ -1111,13 +1177,16 @@ while ($row = pwg_db_fetch_assoc($result)) {
 $videojs_active = in_array('piwigo-videojs', $active_plugins, true);
 $smartalbums_active = in_array('SmartAlbums', $active_plugins, true);
 
+$plugin_id = basename(dirname(__FILE__)); // Dynamisch & sicher
+
 $template->assign([
-  'PLUGIN_ROOT_URL' => get_root_url() . 'plugins/AlbumPilot/',
-  'U_SITE_URL' => get_root_url(),
-  'ADMIN_TOKEN' => get_pwg_token(),
-  'SIMULATE' => $simulate ? 'true' : 'false',
-  'ALBUM_SELECT' => $album_select,
-  'VIDEOJS_ACTIVE' => $videojs_active,
+  'PLUGIN_ROOT_URL'    => get_root_url() . 'plugins/' . $plugin_id . '/',
+  'PLUGIN_ADMIN_URL'   => get_root_url() . 'admin.php?page=plugin-' . $plugin_id,
+  'U_SITE_URL'         => get_root_url(),
+  'ADMIN_TOKEN'        => get_pwg_token(),
+  'SIMULATE'           => $simulate ? 'true' : 'false',
+  'ALBUM_SELECT'       => $album_select,
+  'VIDEOJS_ACTIVE'     => $videojs_active,
   'SMARTALBUMS_ACTIVE' => $smartalbums_active
 ]);
 

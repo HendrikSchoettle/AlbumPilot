@@ -39,8 +39,15 @@ SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
     <button id="reset-settings" class="btn btn-secondary">🔁 {'Reset_settings'|@translate}</button>
   </div>
 
-  <ul id="sync-steps" class="sync-steps"></ul>
+<div class="album-settings-box mt-block">
+  <p><strong>{'External_trigger_url'|@translate}</strong></p>
+  <textarea id="external-url-chain" readonly></textarea>
+  <p style="font-size: 0.85em; color: #777; margin-top: 6px;">
+    {'External_trigger_description'|@translate}
+  </p>
+</div>
 
+  <ul id="sync-steps" class="sync-steps"></ul>
   <div id="sync-log" class="sync-log" style="display:none;">
     <h4 class="progress-heading">{'progress_heading'|@translate}</h4>
     <div id="progress-log" class="progress-log"></div>
@@ -50,17 +57,19 @@ SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
 <!-- Include CSS -->
 <link rel="stylesheet" href="{$PLUGIN_ROOT_URL}template/style.css">
 
-<!-- Pass config and language once -->
+{literal}
 <script>
-  window.AlbumPilotLang = {$LANG|@json_encode nofilter};
+  window.AlbumPilotLang = {/literal}{$L10N_JS|@json_encode nofilter}{literal};
   window.AlbumPilotConfig = {
-    savedSettings: {$SAVED_SYNC_SETTINGS|@json_encode nofilter},
-    rootUrl: '{$U_SITE_URL}',
-    token: '{$ADMIN_TOKEN}',
-    videojsActive: {$VIDEOJS_ACTIVE|@json_encode nofilter},
-    smartalbumsActive: {$SMARTALBUMS_ACTIVE|@json_encode nofilter}
+    savedSettings: {/literal}{$SAVED_SYNC_SETTINGS|@json_encode nofilter}{literal},
+    rootUrl: '{/literal}{$U_SITE_URL}{literal}',
+    token: '{/literal}{$ADMIN_TOKEN}{literal}',
+    videojsActive: {/literal}{$VIDEOJS_ACTIVE|@json_encode nofilter}{literal},
+    smartalbumsActive: {/literal}{$SMARTALBUMS_ACTIVE|@json_encode nofilter}{literal},
+    pluginPageUrl: '{/literal}{$PLUGIN_ADMIN_URL|escape:javascript}{literal}'
   };
 </script>
+{/literal}
 
 <!-- Include main JS -->
 <script src="{$PLUGIN_ROOT_URL}template/script.js"></script>

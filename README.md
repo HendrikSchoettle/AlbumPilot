@@ -38,6 +38,25 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 
 ---
 
+## What's New in v0.2.0
+
+### Changes & Improvements
+
+- **Plugin Directory Name Independence:**  
+  AlbumPilot is now fully independent of its installation folder name. The plugin no longer requires a specific directory name and will function correctly regardless of how the plugin folder is named.
+
+- **URL-Based Execution Control:**  
+  Synchronization can now be externally triggered using `external_run=1` and corresponding URL parameters. This enables automated or script-based integration without manual UI interaction.
+
+- **Step Order Adjustment:**  
+  Step 4 (Checksum Calculation) and Step 5 (Metadata Update) have been reordered to improve logical consistency and execution flow.
+
+- **Optimized Language Loading:**  
+  Only the active language is now loaded into the page, significantly reducing HTML payload. Furthermore, only translation strings relevant to the frontend interface are included in the JavaScript scope.
+
+- **Bullet Symbol Glitch Fixed:**  
+  Bullet symbols that previously appeared incorrectly in the step logs have been removed to improve visual clarity.
+
 ## What's New in v0.1.1
 
 ### Changes & Improvements
@@ -77,11 +96,12 @@ AlbumPilot generates missing thumbnails for images in all resolutions defined by
 ### Step 3: Generate Video Posters  
 For video files, this step generates preview images ("video posters") using the "filmstrip" effect, which captures a frame 4 seconds into the video. This requires the **piwigo-videojs** plugin to be installed and active, it is otherwise disabled. Video posters are generated only for videos that do not yet have a poster image.
 
-### Step 4: Update Metadata  
-This step updates photo metadata (EXIF, IPTC, etc.) for images in the selected album(s) and optionally their subalbums. The process is done in small batches (chunks) to avoid PHP timeout issues common with large libraries. While the metadata update in step 1 is restricted to new or changed images, this step processes all items in the selected Album. **Note:** This step can be very slow and resource-intensive, so it should only be run when necessary.
-
-### Step 5: Calculate Checksums  
+### Step 4: Calculate Checksums  
 This step computes and stores MD5 checksums for images that are missing them in the database. It processes only images without existing checksums, and it works in batches to maintain stability during long runs. It is limited to items contained in the chosen folder.
+
+### Step 5: Update Metadata  
+This step updates photo metadata (EXIF, IPTC, etc.) for images in the selected album(s) and optionally their subalbums. The process is done in small batches (chunks) to avoid PHP timeout issues common with large libraries. While the metadata update in step 1 is restricted to new or changed images, this step processes all items in the selected album.  
+**Note:** This step can be very slow and resource-intensive, so it should only be run when necessary.
 
 ### Step 6: Reassign Smart Albums  
 This step triggers the **SmartAlbums** plugin’s function to regenerate smart album assignments for images. It automates what normally requires manual activation in the SmartAlbums plugin interface. If the SmartAlbums plugin is not installed or activated, this step is disabled.
@@ -99,6 +119,24 @@ Corresponds to the **“Repair and optimize database”** function on the **Main
 Corresponds to clicking the **“Check database integrity”** button on the **Maintenance** page. It performs a consistency check across the database and file system to identify and report errors or missing data.
 
 ## Additional Features and Options
+
+- **Copyable External URL String**  
+  The plugin provides a ready-made synchronization URL based on your current selection. This can be used to execute the sync externally using `external_run=1` and additional step parameters.
+
+  For Windows users, this URL must be launched using a `.bat` file or command line with specific Chrome startup flags.  
+⚠️ **It is not enough to simply paste the URL into the browser or launch it via the file explorer.** While the URL will open, the synchronization will **not start automatically**, because modern Chromium-based browsers block scripted actions (like `.click()` or `.submit()`) unless they are triggered by a real user gesture.
+
+To reliably trigger synchronization without manual interaction, Chrome must be launched with flags that disable these restrictions.
+
+  **Example command to use in a `.bat` file:**
+
+``batch
+start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" ^
+  --new-window ^
+  --autoplay-policy=no-user-gesture-required ^
+  --disable-blink-features=AutomationControlled ^
+  --disable-popup-blocking ^
+  "https://..."
 
 - **State Preservation of Checkbox Settings**  
   AlbumPilot remembers your selections across sessions, so you do not need to reselect options each time. You can reset these stored settings manually if needed.
@@ -130,7 +168,7 @@ Originally, the synchronization progress was intended to be freshly initialized 
 
 ## Installation
 
-1. Upload the `AlbumPilot` plugin folder to your Piwigo plugins directory. Make sure it is named `AlbumPilot` only (remove any additional version number). 
+1. Upload the `AlbumPilot` plugin folder (name is now flexible) to your Piwigo plugins directory.  
 2. Activate the plugin via the Piwigo administration panel.  
 3. Ensure the web server has write permissions on the plugin directory to enable log writing.  
 4. For full functionality, install and activate the **piwigo-videojs** and **SmartAlbums** plugins as needed.
@@ -148,7 +186,7 @@ Originally, the synchronization progress was intended to be freshly initialized 
 
 This screenshot shows the progress interface while generating video posters (Step 3), including real-time percentage, image ID, and thumbnail type.
 
-<img src="screenshots/AlbumPilot_video_poster_generation.png" alt="Video poster generation screenshot" style="max-width: 100%; height: auto;">
+<img src="screenshots/AlbumPilot_thumbnail_generation.png" alt="Thumbnail generation screenshot" style="max-width: 100%; height: auto;">
 
 
 ## Personal Note
