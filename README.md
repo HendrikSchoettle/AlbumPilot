@@ -1,7 +1,7 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 0.1.1
-**Release Date:** 2025-05-28  
+**Version:** 0.2.0
+**Release Date:** 2025-06-01  
 **Tested with:** Piwigo 15.5.0
 
 ---
