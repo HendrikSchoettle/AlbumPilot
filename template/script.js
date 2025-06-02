@@ -29,8 +29,14 @@ function resetProgress() {
 
 // Helper function for saving synchronization settings
 function saveSyncSettings(settingsObj) {
-  fetch(pluginPageUrl, {
+  const params = new URLSearchParams(window.location.search);
+  const isExternalRun = params.get('external_run') === '1';
 
+  if (isExternalRun) {
+    return; // Skip if running in batch mode
+  }
+
+  fetch(pluginPageUrl, {
     method: 'POST',
     credentials: 'same-origin',
     headers: { 'Content-Type': 'application/json' },
@@ -250,7 +256,11 @@ document.getElementById('select-all-steps').addEventListener('change', function 
 });
 
 // Apply saved checkbox settings after load
-if (savedSettings) {
+const urlParams = new URLSearchParams(window.location.search);
+const isExternalRun = urlParams.get('external_run') === '1';
+
+if (savedSettings && !isExternalRun) {
+
   if ('simulate' in savedSettings) {
     document.getElementById('simulate-mode').checked = savedSettings['simulate'] === '1';
   }

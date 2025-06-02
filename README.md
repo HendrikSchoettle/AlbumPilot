@@ -1,7 +1,7 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 0.2.0
-**Release Date:** 2025-06-01  
+**Version:** 0.2.1
+**Release Date:** 2025-06-02  
 **Tested with:** Piwigo 15.5.0
 
 ---
@@ -9,6 +9,8 @@
 ## Table of Contents
 
 - [Overview](#overview)
+  - [Overview](#overview)
+  - [What's New in v0.2.1](#whats-new-in-v021)
   - [What's New in v0.2.0](#whats-new-in-v020)
   - [What's New in v0.1.1](#whats-new-in-v011)
 - [Synchronization Steps](#synchronization-steps)
@@ -37,6 +39,17 @@
 AlbumPilot automates several key synchronization steps within Piwigo, saving you time and effort during album management. It allows you to batch process file synchronization, thumbnail generation, video poster creation, metadata updates, checksum calculations, and other features with a simple, user-friendly interface.
 
 ---
+## What's New in v0.2.1
+
+### Bugfixes
+
+- **Saved Settings No Longer Override External Parameters:**  
+  A bug was fixed where user-defined settings from the database would override externally provided sync parameters (`external_run=1`). This caused external batch URLs to ignore the intended values for album, simulation mode, and selected steps.  
+  Now, when an external sync is triggered, the plugin correctly:
+  - uses only the parameters from the URL,
+  - **does not apply** stored database settings, and
+  - **does not save** external parameters back to the user’s settings.  
+  This ensures a clean separation between automatic/external sync and manual/in-session use.
 
 ## What's New in v0.2.0
 
