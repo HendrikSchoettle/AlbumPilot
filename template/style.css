@@ -14,7 +14,7 @@ SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
 
 .album-sync-wrapper {
   max-width: 1200px;
-  margin: 30px auto 0 auto;
+  margin: 30px auto 0 30px;
   padding-left: 20px;
   text-align: left;
 }
@@ -31,10 +31,6 @@ SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
   max-height: 320px;
   overflow-y: auto;
   padding: 10px 0;
-}
-
-.option-line {
-  margin-top: 10px;
 }
 
 .step-list-wrapper {
@@ -129,7 +125,7 @@ SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
 .step-checkbox:disabled + label,
 .step-checkbox:disabled + span,
 li:has(.step-checkbox:disabled) {
-  color: #d88 !important;
+  
   opacity: 0.6;
 }
 
@@ -151,10 +147,11 @@ li:has(.step-checkbox:disabled) {
 .album-settings-box textarea {
   display: block;
   width: 100%;
-  min-width: 800px; /* war 600px */
+  min-width: 0; 
   max-width: 100%;
   box-sizing: border-box;
-  font-family: monospace;
+  overflow-wrap: break-word;
+  word-break: break-word;
   font-size: 13px;
   height: 64px;
   resize: none;
@@ -172,4 +169,202 @@ li:has(.step-checkbox:disabled) {
 
 #sync-steps-list-pre li:nth-child(4) {
   margin-bottom: 16px;
+}
+
+.thumb-options-wrapper {
+  margin-top: 4px !important;
+  padding-left: 0 !important;
+}
+
+.thumb-options-wrapper > div:first-child {
+  margin-bottom: 4px;
+}
+
+.thumb-options-wrapper div[style*="grid"] label {
+  margin: 2px 0;
+}
+
+.step-list li .thumb-options-wrapper {
+  margin: 6px 0 0 24px;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.step-list li .thumb-options-wrapper label {
+  margin: 2px 0;
+}
+
+.step-list li .thumb-options-wrapper div {
+  margin: 0;
+}
+
+.step-list li .thumb-options-wrapper > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px 16px !important; 
+}
+
+.step-list li .thumb-options-wrapper label {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.2;
+}
+
+.videojs-output-format-line {
+  color: #777;
+  font-size: 15px;
+  line-height: 1.2;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.option-line {
+  margin-top: 4px;
+  margin-bottom: 2px;
+}
+
+
+.step-checkbox:disabled {
+  filter: grayscale(40%) brightness(90%) contrast(130%);
+  opacity: 1 !important; 
+  cursor: not-allowed;
+}
+
+
+.step-checkbox:disabled + label,
+.step-checkbox:disabled + span,
+li:has(.step-checkbox:disabled) {
+  opacity: 0.75 !important;
+}
+
+#sync-steps-list-pre > li {
+  margin-top: 12px;
+}
+
+#sync-steps-list-pre > li > label {
+  margin-bottom: 2px;
+  display: inline-block;
+}
+
+.videojs-output-format-line {
+  margin-bottom: 4px !important;
+}
+
+.videojs-options-wrapper label,
+.thumb-options-wrapper label {
+  margin: 2px 0 !important;
+}
+
+.videojs-options-wrapper,
+.thumb-options-wrapper {
+  margin-bottom: 6px !important;
+}
+
+#select-all-steps {
+  width: 0;
+  height: 0;
+  opacity: 0;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+}
+
+
+.album-typeahead-wrapper {
+  position: relative;
+}
+
+.album-typeahead-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 2px;
+  list-style: none;
+  padding: 0;
+  font-size: 0.9em;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.album-typeahead-results li {
+  padding: 4px 8px;
+  cursor: pointer;
+}
+.album-typeahead-results li:hover {
+  background: #f0f0f0;
+}
+
+.album-typeahead-results li {
+  font-family: monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.album-sync-wrapper,
+.album-sync-wrapper input,
+.album-sync-wrapper select,
+.album-sync-wrapper textarea,
+.album-sync-wrapper button {
+  color: #111 !important;
+}
+
+.album-sync-wrapper input:disabled,
+.album-sync-wrapper select:disabled,
+.album-sync-wrapper textarea:disabled,
+.album-sync-wrapper button:disabled {
+  color: #666 !important;
+}
+
+.album-sync-wrapper label,
+.album-sync-wrapper .step-list li,
+.album-sync-wrapper .album-typeahead-results li {
+  color: #111 !important;
+}
+
+
+/* --------------------------------------------------
+   Override default disabled-input coloring in Chrome
+-------------------------------------------------- */
+input:disabled,
+select:disabled,
+textarea:disabled,
+button:disabled {
+  color: #666 !important;               /* desired light-gray text */
+  -webkit-text-fill-color: #666 !important; /* override WebKit default */
+  background-color: #f7f7f7 !important; /* optional: slightly gray bg */
+}
+
+/* --------------------------------------------------
+   Labels next to disabled checkboxes
+-------------------------------------------------- */
+/* enabled labels stay dark */
+.step-list li:has(.step-checkbox:not(:disabled)) label {
+  color: #111 !important;
+}
+/* disabled labels become light gray */
+.step-checkbox:disabled + label,
+.step-checkbox:disabled + span,
+li:has(.step-checkbox:disabled) label {
+  color: #666 !important;
+}
+
+/* --------------------------------------------------
+   Grey out all settings (titles, labels, lists)
+   when in batch-mode 
+-------------------------------------------------- */
+/* Title above settings */
+.album-sync-wrapper.batch-mode h2 {
+  color: #666 !important;
+}
+
+/* Entire settings box and all its contents */
+.album-sync-wrapper.batch-mode .album-settings-box,
+.album-sync-wrapper.batch-mode .album-settings-box * {
+  color: #666 !important;
 }

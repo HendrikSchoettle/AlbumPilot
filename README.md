@@ -1,22 +1,22 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 0.2.1
-**Release Date:** 2025-06-02  
+**Version:** 0.3.0
+**Release Date:** 2025-06-11  
 **Tested with:** Piwigo 15.5.0
 
 ---
 
 ## Table of Contents
 
-- [Overview](#overview)
-  - [Overview](#overview)
+- [Overview](#overview)  
+  - [What's New in v0.3.0](#whats-new-in-v030)
   - [What's New in v0.2.1](#whats-new-in-v021)
   - [What's New in v0.2.0](#whats-new-in-v020)
   - [What's New in v0.1.1](#whats-new-in-v011)
 - [Synchronization Steps](#synchronization-steps)
   - [Step 1: Sync Files](#step-1-sync-files)
-  - [Step 2: Generate Thumbnails](#step-2-generate-thumbnails)
-  - [Step 3: Generate Video Posters](#step-3-generate-video-posters)
+  - [Step 2: Generate Video Posters](#step-3-generate-video-posters)
+  - [Step 3: Generate Thumbnails](#step-2-generate-thumbnails)
   - [Step 4: Calculate Checksums](#step-4-calculate-checksums)
   - [Step 5: Update Metadata](#step-5-update-metadata)
   - [Step 6: Reassign Smart Albums](#step-6-reassign-smart-albums)
@@ -39,6 +39,25 @@
 AlbumPilot automates several key synchronization steps within Piwigo, saving you time and effort during album management. It allows you to batch process file synchronization, thumbnail generation, video poster creation, metadata updates, checksum calculations, and other features with a simple, user-friendly interface.
 
 ---
+
+## What's New in v0.3.0
+
+### Added
+- **Album selector dropdown** with live text search: search albums by name directly in the UI.  
+- **Individual thumbnail options**: granular settings for thumbnail generation, including one-click overwrite of existing thumbnails (no manual deletion required).  
+- **Individual VideoJS options**: granular settings for video posters and generated thumbnails.
+- **"All Albums" parent option**: new top-level selector entry allows applying actions to all albums at once.  
+- **Optional database reset during uninstall**: a maintain script is included (disabled by default) to drop the plugin’s database tables on uninstall. Ensure the plugin folder is named `AlbumPilot` if enabling it. See CHANGELOG.md for details
+
+### Changed
+- **Step order swapped**: Step 2 is now **Generate Video Posters** and Step 3 **Generate Thumbnails**, so thumbnails are generated from the updated posters.  
+- **Thumbnail cleanup for VideoJS**: old thumbnails are now automatically removed when regenerating video posters (prevents showing stale images).  
+- **Backend refactoring**: code reorganized for clarity and maintainability.  
+- **Batch-mode enhancements**: optimized processing and reliability for external runs.  
+
+### Fixed
+- Several bug fixes across synchronization steps, UI interactions, and API handling.
+
 ## What's New in v0.2.1
 
 ### Bugfixes
@@ -103,11 +122,11 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 ### Step 1: Sync Files  
 This step calls Piwigo’s core synchronization mechanism to detect new, changed, or removed files and update the database accordingly. It updates the file structure and database entries to reflect the current content of the storage directories. Options allow including subalbums. It is currently restricted to processing only new or changed files. This step ensures the gallery is in sync with the underlying file system.
 
-### Step 2: Generate Thumbnails  
-AlbumPilot generates missing thumbnails for images in all resolutions defined by Piwigo’s configuration. Currently, there is no option to customize which thumbnail sizes are generated through the plugin, the thumbnail size information is derived from the Piwigo setup. Only images without existing thumbnails are processed, avoiding redundant work. 
+### Step 2: Generate Video Posters  
+For video files, this step generates preview images ("video posters"), optionally using the "filmstrip" effect, which captures a frame 4 seconds into the video. You can customize all VideoJS parameters (poster time, overlay, thumbnail interval, output format, etc.) via the plugin UI. When a poster is regenerated, any previously generated thumbnails are automatically deleted, preventing stale images from appearing (unlike the official VideoJS behavior). This step requires the **piwigo-videojs** plugin to be installed and active; it is otherwise disabled. Video posters are generated only for videos that do not yet have a poster image, or when you explicitly choose to overwrite them.
 
-### Step 3: Generate Video Posters  
-For video files, this step generates preview images ("video posters") using the "filmstrip" effect, which captures a frame 4 seconds into the video. This requires the **piwigo-videojs** plugin to be installed and active, it is otherwise disabled. Video posters are generated only for videos that do not yet have a poster image.
+### Step 3: Generate Thumbnails  
+AlbumPilot generates missing thumbnails for images in all resolutions defined in the configuration. You can specify which thumbnail types to create or overwrite. An overwrite option is also available. so you can force-regenerate existing thumbnails (for example, if they have been modified externally). Otherwise, only images without existing thumbnails are processed, avoiding redundant work.
 
 ### Step 4: Calculate Checksums  
 This step computes and stores MD5 checksums for images that are missing them in the database. It processes only images without existing checksums, and it works in batches to maintain stability during long runs. It is limited to items contained in the chosen folder.
@@ -137,7 +156,7 @@ Corresponds to clicking the **“Check database integrity”** button on the **M
   The plugin provides a ready-made synchronization URL based on your current selection. This can be used to execute the sync externally using `external_run=1` and additional step parameters.
 
   For Windows users, this URL must be launched using a `.bat` file or command line with specific Chrome startup flags.  
-⚠️ **It is not enough to simply paste the URL into the browser or launch it via the file explorer.** While the URL will open, the synchronization will **not start automatically**, because modern Chromium-based browsers block scripted actions (like `.click()` or `.submit()`) unless they are triggered by a real user gesture.
+  **It is not enough to simply paste the URL into the browser or launch it via the file explorer.** While the URL will open, the synchronization will **not start automatically**, because modern Chromium-based browsers block scripted actions (like `.click()` or `.submit()`) unless they are triggered by a real user gesture.
 
 To reliably trigger synchronization without manual interaction, Chrome must be launched with flags that disable these restrictions.
 
@@ -181,8 +200,8 @@ Originally, the synchronization progress was intended to be freshly initialized 
 
 ## Installation
 
-1. Upload the `AlbumPilot` plugin folder (name is now flexible) to your Piwigo plugins directory.  
-2. Activate the plugin via the Piwigo administration panel.  
+1. Upload the `AlbumPilot` plugin folder to your Piwigo plugins directory. The folder name is generally flexible — the plugin works regardless of its directory name.
+2. (Optional) If you want the plugin to automatically drop its database tables on uninstall, rename the included file `maintain.class.php.disabled` to `maintain.class.php` **before activation**. This reset logic **only works** if the plugin is installed in a folder named exactly `AlbumPilot` (case-sensitive, no version suffixes). The feature is disabled by default to avoid accidental data loss, especially when installing from GitHub ZIPs which often include versioned folder names.
 3. Ensure the web server has write permissions on the plugin directory to enable log writing.  
 4. For full functionality, install and activate the **piwigo-videojs** and **SmartAlbums** plugins as needed.
 
@@ -199,7 +218,7 @@ Originally, the synchronization progress was intended to be freshly initialized 
 
 This screenshot shows the progress interface while generating video posters (Step 3), including real-time percentage, image ID, and thumbnail type.
 
-<img src="screenshots/AlbumPilot_thumbnail_generation.png" alt="Thumbnail generation screenshot" style="max-width: 100%; height: auto;">
+<img src="screenshots/albumpilot_video_poster_generation.png" alt="Video poster generation screenshot" style="max-width: 100%; height: auto;">
 
 
 ## Personal Note

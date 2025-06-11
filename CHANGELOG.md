@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] – 2025-06-11
+
+### Added
+- **Album selector dropdown** with text search: Allows searching albums by name directly in the UI.
+- **Individual thumbnail options**: Specify granular settings for thumbnail generation, including one-click overwrite of existing thumbnails (eliminates manual deletion step).
+- **Individual VideoJS options**: Specify granular settings for video posters and generated thumbnails.
+- **"All Albums" root option** added to album selector: A new top-level entry allows applying sync steps to all albums at once. Previously, albums could only be selected individually.
+- **Optional database reset logic during plugin (de)installation**: A `maintain.class.php` file is included (but disabled by default by renaming it to `maintain.class.php.disabled`) to drop the plugin's database tables during uninstall. To enable this, rename the file back to `maintain.class.php`.  
+  **Important:** This only works if the plugin is installed under the exact folder name `AlbumPilot`. If the plugin folder includes version numbers (e.g., from GitHub zip archives), the installation will fail. This logic is currently disabled to prevent unintended data loss and will be activated once the plugin is available via the official Piwigo plugin store.
+
+### Changed
+- **Thumbnail cleanup for VideoJS**: Automatically deletes previously generated thumbnails when updating a video poster, preventing display of outdated thumbnails (improvement over official VideoJS behavior).
+- **Step order swapped**: Step 2 is now **Generate Video Posters** and Step 3 **Generate Thumbnails**, so thumbnails are generated from the updated posters.
+- **Backend refactoring**: Restructured and cleaned up code for improved readability and maintainability.
+- **Batch-mode enhancements**: Optimized processing and handling of batch synchronizations.
+
+### Fixed
+- Several bug fixes across synchronization steps, UI interactions, and API handling.
+
 ## [0.2.1] – 2025-06-02
 
 ### Fixed
