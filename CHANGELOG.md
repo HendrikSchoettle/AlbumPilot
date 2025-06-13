@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.1] – 2025-06-13
+
+### Fixed
+- Resetting the Step 2 settings now correctly re-enables the “Import poster” and “Generate poster from frame” checkboxes instead of leaving them greyed-out.
+- Added an extra safeguard so that video thumbnails themselves are never treated as poster-source files — no more thumbnails of thumbnails.
+- If video thumbnail generation was disabled in the UI, it is no longer erroneously re-enabled when starting a batch run (`external_run=1`).
+
 ## [0.3.0] – 2025-06-11
 
 ### Added

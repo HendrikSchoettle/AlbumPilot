@@ -26,6 +26,10 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        // Ensure all video option inputs are enabled before applying specific state
+        // (this re-enables the main checkboxes like "import poster" and "create poster")
+        videoWrapper.querySelectorAll('input, select').forEach(el => el.disabled = false);
+
         // Activate only certain fields
         const createPoster = videoWrapper.querySelector('[data-key="videojs_create_poster"]')?.checked;
         const addThumbs = videoWrapper.querySelector('[data-key="videojs_add_thumbs"]')?.checked;
@@ -213,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const base = new URL(window.location.href);
         const fullPath = new URL(config.pluginPageUrl, base);
 
-        fullPath.searchParams.set('external_batch', '1');
+        fullPath.searchParams.set('external_run', '1');
         fullPath.searchParams.set('album', albumId);
         fullPath.searchParams.set('simulate', simulate ? '1' : '0');
         fullPath.searchParams.set('onlynew', onlyNew ? '1' : '0');

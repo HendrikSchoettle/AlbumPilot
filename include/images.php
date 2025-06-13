@@ -47,25 +47,8 @@ if (
         $allowedTypes = explode(',', $_GET['thumb_types']);
     }
 
-
-
     $includeSubalbums = isset($_GET['subalbums']) && $_GET['subalbums'] === '1';
     $albumId         = (int) $_GET['album_id'];
-
-
-
-																	 
-					  
-																											 
-							
-								   
-									
-								  
-			  
-	
-						 
-					  
-
 
     include_once(PHPWG_ROOT_PATH . 'include/derivative.inc.php');
     include_once(PHPWG_ROOT_PATH . 'include/derivative_params.inc.php');
@@ -106,15 +89,14 @@ if (
         foreach ($images as $img) {
             $ext = strtolower(pathinfo($img['path'], PATHINFO_EXTENSION));
 
-  
-						 
+            // Skip extra video thumbnails to avoid recursive thumbnail generation
+            if (strpos($img['path'], '-th_') == true) {
+                continue;				
+            }
 
             global $conf;
   
             $video_extensions = $conf['video_ext'] ?? ['mp4', 'mov', 'avi', 'mkv'];
-
-												   
-
 
             // Handle video posters
             if (in_array($ext, $video_extensions, true)) {
