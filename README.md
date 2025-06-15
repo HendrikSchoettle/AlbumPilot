@@ -49,7 +49,7 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 - **Uninstall cleanup**: the settings table now persists after uninstall (minimal footprint) and has to be dropped manually.  
 - **Temporary backend hotfix**: restores installability broken in v0.3.1 and v0.3.0; a full fix is in progress.
 
-### What’s New in v3.1.1
+### What’s New in v0.3.1
 
 #### Fixed
 - The two checkboxes under Step 2 (“Import poster” and “Generate poster from frame”) are now always re-activated when you reset the Step 2 settings.
