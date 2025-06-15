@@ -2,7 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-## [3.1.1] – 2025-06-13
+## [0.3.2] – 2025-06-15
+
+### Changed
+- **Removed** `maintain.class.php`: all table‐creation now occurs in `admin.php`.  
+- **Uninstall cleanup**: the settings table now persists after uninstall (minimal footprint) and has to be dropped manually.  
+- **Temporary hotfix**: fixes the installation blocker affecting v0.3.1 and v0.3.0; comprehensive solution to follow.
+
+## [0.3.1] – 2025-06-13
 
 ### Fixed
 - Resetting the Step 2 settings now correctly re-enables the “Import poster” and “Generate poster from frame” checkboxes instead of leaving them greyed-out.

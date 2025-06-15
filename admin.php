@@ -41,6 +41,29 @@ include_once(PHPWG_PLUGINS_PATH . 'piwigo-videojs/include/function_frame.php');
 include_once(PHPWG_ROOT_PATH . 'include/derivative.inc.php');
 include_once(PHPWG_ROOT_PATH . 'include/derivative_params.inc.php');
 
+global $prefixeTable;
+// Build the proper table name once Piwigo has set up the prefix
+$table = $prefixeTable . 'album_pilot_settings';
+
+// SQL to create the table if it does not already exist
+$sql = <<<SQL
+CREATE TABLE IF NOT EXISTS `{$table}` (
+    user_id       SMALLINT UNSIGNED NOT NULL,
+    setting_key   VARCHAR(50)      NOT NULL,
+    setting_value VARCHAR(255)     NOT NULL,
+    PRIMARY KEY (user_id, setting_key)
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+SQL;
+
+// Execute and check for errors
+$result = pwg_query($sql);
+if (false === $result) {
+    $dbError = pwg_db_error();
+    // Log an error in Piwigo’s log and trigger a PHP warning
+    pwg_log('ERROR', 'AlbumPilot', "admin.php: Could not create table {$table}: {$dbError}");
+    trigger_error("AlbumPilot: Failed to create settings table ({$dbError})", E_USER_WARNING);
+}
+
 $translated_thumb_types = [];
 
 foreach (ImageStdParams::get_defined_type_map() as $type => $params) {
