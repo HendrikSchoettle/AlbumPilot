@@ -42,16 +42,16 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 
 ---
 
-### What’s New in v0.3.2
+## What’s New in v0.3.2
 
-#### Changed
+### Changed
 - **Removed** `maintain.class.php`: table‐creation logic has been moved into `admin.php`.  
 - **Uninstall cleanup**: the settings table now persists after uninstall (minimal footprint) and has to be dropped manually.  
 - **Temporary backend hotfix**: restores installability broken in v0.3.1 and v0.3.0; a full fix is in progress.
 
-### What’s New in v0.3.1
+## What’s New in v0.3.1
 
-#### Fixed
+### Fixed
 - The two checkboxes under Step 2 (“Import poster” and “Generate poster from frame”) are now always re-activated when you reset the Step 2 settings.
 - An extra safety check has been added to prevent the plugin from ever creating thumbnails of existing video-thumbnail files.
 - Disabling video thumbnail generation in the UI is now correctly honoured in batch mode (`external_run=1`), so video thumbnails stay off when you run externally.
