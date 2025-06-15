@@ -1,6 +1,6 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 0.3.2
+**Version:** 0.3.3
 **Release Date:** 2025-06-15  
 **Tested with:** Piwigo 15.5.0
 
@@ -9,6 +9,7 @@
 ## Table of Contents
 
 - [Overview](#overview)  
+  - [What's New in v0.3.3](#whats-new-in-v033)
   - [What's New in v0.3.2](#whats-new-in-v032)
   - [What's New in v0.3.1](#whats-new-in-v031)
   - [What's New in v0.3.0](#whats-new-in-v030)
@@ -41,6 +42,10 @@
 AlbumPilot automates several key synchronization steps within Piwigo, saving you time and effort during album management. It allows you to batch process file synchronization, thumbnail generation, video poster creation, metadata updates, checksum calculations, and other features with a simple, user-friendly interface.
 
 ---
+## What’s New in v0.3.3
+
+### Fixed
+- All PHP short tags (`<?`) in the include files have been replaced with full opening tags (`<?php`) to ensure correct parsing when the `short_open_tag` setting is turned off.
 
 ## What’s New in v0.3.2
 

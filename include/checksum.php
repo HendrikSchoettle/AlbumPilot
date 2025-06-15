@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 File: include/checksum.php – AlbumPilot Plugin for Piwigo - Checksum handler
 Author: Hendrik Schöttle

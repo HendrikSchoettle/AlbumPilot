@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 File: include/images.php – AlbumPilot Plugin for Piwigo - Images handler
 Author: Hendrik Schöttle

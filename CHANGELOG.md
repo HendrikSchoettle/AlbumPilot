@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.3] – 2025-06-15
+
+### Fixed
+- Replaced all PHP short-opening tags (`<?`) with full tags (`<?php`) in include scripts (`include/images.php`, `include/checksum.php`, `include/metadata.php`, `include/videos.php`) to prevent raw code appearing when `short_open_tag` is disabled.
+
 ## [0.3.2] – 2025-06-15
 
 ### Changed

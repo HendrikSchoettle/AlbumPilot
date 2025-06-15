@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 File: include/metadata.php – AlbumPilot Plugin for Piwigo - Metadata handler
 Author: Hendrik Schöttle
