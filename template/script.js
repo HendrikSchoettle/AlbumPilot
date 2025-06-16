@@ -180,7 +180,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const token = config.token;
 
     // Function for generating external URL
-    function generateExternalUrlFromSelection() {
+    window.generateExternalUrlFromSelection = function generateExternalUrlFromSelection() {
+
         const albumId = document.querySelector('#album-list')?.value;
         const simulate = document.querySelector('#simulate')?.checked;
         const onlyNew = document.querySelector('#onlyNew')?.checked;
@@ -1130,13 +1131,28 @@ document.addEventListener('DOMContentLoaded', function () {
             li.dataset.id = album.id;
             li.style.cursor = 'pointer';
             li.style.padding = '4px 8px';
-            li.addEventListener('click', () => {
+
+            const selectAlbum = () => {
                 select.value = album.id;
                 hidden.value = album.id;
                 input.value = album.fullPath;
                 resultsBox.style.display = 'none';
-                select.dispatchEvent(new Event('change'));
-            });
+
+                generateExternalUrlFromSelection();
+
+                const selectedOption = select.querySelector(`option[value="${album.id}"]`);
+                if (selectedOption) {
+                    selectedOption.selected = true;
+                    select.scrollTop = selectedOption.offsetTop - select.clientHeight / 2;
+                }
+            };
+
+            // Mouse click
+            li.addEventListener('mousedown', selectAlbum);
+
+            // Keyboard: Enter (via click())
+            li.addEventListener('click', selectAlbum);
+
             resultsBox.appendChild(li);
         });
 
