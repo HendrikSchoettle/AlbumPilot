@@ -47,7 +47,7 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 ## What’s New in v0.3.4
 
 - Improved reset behavior after aborted syncs: interrupted runs no longer resume incorrectly.
-- Settings table is now deleted on uninstall, even when plugin is renamed (GitHub folders work out of the box).
+- Settings table is now deleted on uninstall, even when plugin is renamed.
 - VideoJS and SmartAlbums checkboxes now reflect status correctly on deactivation. In legacy installations, you need to manually drop the settings table once, or alternatively update to v0.3.4, then uninstall and reinstall this version again.
 - All buttons are greyed out during active sync for better UX.
 - Poster/thumbnail fixes, subfolder metadata bugs resolved, and root-folder error messages added.
