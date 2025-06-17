@@ -231,11 +231,9 @@ Originally, the synchronization progress was intended to be freshly initialized 
 ## Installation
 
 1. Upload the `AlbumPilot` plugin folder to your Piwigo plugins directory. The plugin folder name is flexible, but must not contain hyphens (`-`), as this causes activation issues and interfere with internal plugin ID resolution (use only letters, numbers and underscores). Renaming the folder is mainly intended for testing so you don’t end up with stale JavaScript or other assets in your browser cache; for a stable production setup, however, stick with the plain `AlbumPilot` name.
-3. Ensure the web server has write permissions on the plugin directory to enable log writing.  
-4. For full functionality, install and activate the **piwigo-videojs** and **SmartAlbums** plugins as needed.
-
 > Note: GitHub ZIP archives often extract into folders like `AlbumPilot-main` or `AlbumPilot-0.3.4`. Please rename the folder to remove hyphens before installing the plugin.
-
+2. Ensure the web server has write permissions on the plugin directory to enable log writing.  
+3. For full functionality, install and activate the **piwigo-videojs** and **SmartAlbums** plugins as needed.
 > Legacy installations: If you previously experienced disabled but checked checkboxes for VideoJS or SmartAlbums, you must first update to version 0.3.4, then uninstall and reinstall this version once to allow the outdated settings table to be removed properly.
 
 ## Usage
