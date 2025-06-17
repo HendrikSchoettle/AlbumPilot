@@ -47,8 +47,17 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 
 ## What’s New in v0.3.5
 
+### Changed
+
 - Log output for thumbnail generation is now localized: Thumbnail types like “medium”, “thumb”, “square” etc. are now shown in the current UI language in the log file.
 - Improved CSS styling for disabled VideoJS options: All label and title texts inside disabled poster settings are now automatically rendered in light gray to visually indicate their inactive state.
+
+### Known Issues
+
+- **Known Issues section in README.md**: The section has been updated outlining currently known limitations and issues:
+  - Persistent re-generation of large thumbnails (e.g., `XXLarge`) for certain video files.
+  - Potential metadata sync problems with **HEIC** images (pending further investigation; likely a Piwigo core issue).
+  - The new time-interval-based video thumbnail generation has only undergone basic testing and may be unstable; feedback is welcome.
 
 ## What’s New in v0.3.4
 
