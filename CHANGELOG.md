@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.5] – 2025-06-17
+
+### Changed
+- Log output for generated thumbnails now uses localized labels: instead of `Type: medium`, the log will show the localized term in the user's selected language.
+- Improved visual styling for disabled UI elements: when video poster generation is turned off, the “Output format for poster” label and its JPG/PNG radio buttons now turn light gray.
+- Fixed a bug where the “Output format for poster” text appeared light gray even when active.
+
+### Known Issues
+- Certain video files repeatedly trigger re-generation of `XXLarge` thumbnails in AlbumPilot, even if thumbnails already exist. This does **not** happen when thumbnails are created using Piwigo's native tool. This is likely due to metadata inconsistencies or unreadable video properties causing AlbumPilot's check logic to fail. Piwigo’s generator handles these more gracefully. A fix is being investigated.
+
 ## [0.3.4] – 2025-06-17
 
 ### Fixed

@@ -217,6 +217,7 @@ li:has(.step-checkbox:disabled) {
   line-height: 1.2;
   margin-top: 0px;
   margin-bottom: 0px;
+  margin-bottom: 4px !important;
 }
 
 .option-line {
@@ -245,10 +246,6 @@ li:has(.step-checkbox:disabled) {
 #sync-steps-list-pre > li > label {
   margin-bottom: 2px;
   display: inline-block;
-}
-
-.videojs-output-format-line {
-  margin-bottom: 4px !important;
 }
 
 .videojs-options-wrapper label,
@@ -310,7 +307,8 @@ li:has(.step-checkbox:disabled) {
 .album-sync-wrapper input,
 .album-sync-wrapper select,
 .album-sync-wrapper textarea,
-.album-sync-wrapper button {
+.album-sync-wrapper button,
+.album-sync-wrapper label {
   color: #111 !important;
 }
 
@@ -321,12 +319,18 @@ li:has(.step-checkbox:disabled) {
   color: #666 !important;
 }
 
-.album-sync-wrapper label,
 .album-sync-wrapper .step-list li,
 .album-sync-wrapper .album-typeahead-results li {
   color: #111 !important;
 }
 
+.videojs-output-format-line label {
+  color: inherit !important;
+}
+
+.videojs-output-format-line input:disabled + * {
+  color: #666 !important;
+}
 
 /* --------------------------------------------------
    Override default disabled-input coloring in Chrome
@@ -368,3 +372,4 @@ li:has(.step-checkbox:disabled) label {
 .album-sync-wrapper.batch-mode .album-settings-box * {
   color: #666 !important;
 }
+

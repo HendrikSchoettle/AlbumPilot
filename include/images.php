@@ -396,7 +396,7 @@ if (
                 $percent,
                 $img['id'],
                 ($simulate ? l10n('simulation_suffix') : ''),
-                $type,
+                l10n($type),
                 $img['path']
             );
    

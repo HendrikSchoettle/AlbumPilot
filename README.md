@@ -1,7 +1,7 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 0.3.4
-**Release Date:** 2025-06-17  
+**Version:** 0.3.5
+**Release Date:** 2025-06-17
 **Tested with:** Piwigo 15.5.0
 
 ---
@@ -9,6 +9,7 @@
 ## Table of Contents
 
 - [Overview](#overview)  
+  - [What's New in v0.3.5](#whats-new-in-v035)
   - [What's New in v0.3.4](#whats-new-in-v034)
   - [What's New in v0.3.3](#whats-new-in-v033)
   - [What's New in v0.3.2](#whats-new-in-v032)
@@ -43,6 +44,11 @@
 AlbumPilot automates several key synchronization steps within Piwigo, saving you time and effort during album management. It allows you to batch process file synchronization, thumbnail generation, video poster creation, metadata updates, checksum calculations, and other features with a simple, user-friendly interface.
 
 ---
+
+## What’s New in v0.3.5
+
+- Log output for thumbnail generation is now localized: Thumbnail types like “medium”, “thumb”, “square” etc. are now shown in the current UI language in the log file.
+- Improved CSS styling for disabled VideoJS options: All label and title texts inside disabled poster settings are now automatically rendered in light gray to visually indicate their inactive state.
 
 ## What’s New in v0.3.4
 
@@ -226,7 +232,22 @@ start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" ^
 
 ## Known Limitations / Issues
 
-Originally, the synchronization progress was intended to be freshly initialized at each start, resetting all counters and states. However, at present, progress is currently stored between runs to attempt resuming where it left off. This approach is however not reliable and sometimes resets the states as intended. To fully reset, users can toggle simulation mode on and off and run the process twice, which clears the progress state. Contributions or suggestions for a fix are welcome.
+### Thumbnail Regeneration Bug with Faulty Videos
+
+A known issue affects certain video files: AlbumPilot attempts to regenerate certain thumbnails, mainly `XXLarge` (and sometimes `XLarge`), on every run, even when they already exist.
+
+Notably, **Piwigo’s built-in thumbnail generator** seems to handle these edge cases gracefully and avoids reprocessing them. However, AlbumPilot retries them indefinitely unless fixed manually.
+
+**Workaround:**  
+Until a proper detection/fallback mechanism is added, affected files must either be repaired (e.g., re-encoded) or skipped by pre-running Piwigo’s thumbnail generation manually before using AlbumPilot.
+
+### HEIC Metadata Sync (Open Issue)
+
+Some users have reported missing or outdated metadata when importing HEIC images. AlbumPilot uses Piwigo’s core metadata sync logic and does not modify metadata handling. The issue may lie within Piwigo itself, but has not been fully investigated yet. Feedback and test cases are welcome.
+
+### Thumbnail Generation for Videos (Timed Intervals)
+
+The feature for generating thumbnails at fixed time intervals (e.g. every 5 seconds) has only been tested briefly. It may not work reliably across all formats or conditions. Feedback is appreciated.
 
 ## Installation
 

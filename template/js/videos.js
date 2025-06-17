@@ -40,11 +40,20 @@ window.renderVideoOptions = function ({
 
     const formatWrapper = document.createElement('div');
     formatWrapper.className = 'videojs-output-format-line option-line';
-    formatWrapper.innerHTML =
+    /*
+	formatWrapper.innerHTML =
         `${t('VideoJS_OutputFormat')}: 
     <label><input type="radio" name="videojs_output_format" value="jpg" checked> ${t('VideoJS_jpg')}</label>
     <label><input type="radio" name="videojs_output_format" value="png"> ${t('VideoJS_png')}</label>`;
-    optionsWrapper.appendChild(formatWrapper);
+    */
+	
+	formatWrapper.innerHTML = 
+  t('VideoJS_OutputFormat') + ': ' +
+  '<label><input type="radio" name="videojs_output_format" value="jpg" checked><span> ' + t('VideoJS_jpg') + ' </span></label>' +
+  '<label><input type="radio" name="videojs_output_format" value="png"><span> ' + t('VideoJS_png') + ' </span></label>';
+
+	
+	optionsWrapper.appendChild(formatWrapper);
 
     const cb4 = document.createElement('label');
     cb4.innerHTML = `<input type="checkbox" class="videojs-option" data-key="videojs_add_overlay" checked> ${t('VideoJS_OverlayAdd')}`;
