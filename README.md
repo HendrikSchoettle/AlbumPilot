@@ -232,9 +232,9 @@ start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" ^
 
 ## Known Limitations / Issues
 
-### Thumbnail Regeneration Bug with Faulty Videos
+### Thumbnail Regeneration Bug for Video Posters with Faulty Videos
 
-A known issue affects certain video files: AlbumPilot attempts to regenerate certain thumbnails, mainly `XXLarge` (and sometimes `XLarge`), on every run, even when they already exist.
+A known issue affects certain video files: AlbumPilot attempts to regenerate certain thumbnails for video posters, mainly `XXLarge` (and sometimes `XLarge`), on every run, even when they already exist.
 
 Notably, **Piwigo’s built-in thumbnail generator** seems to handle these edge cases gracefully and avoids reprocessing them. However, AlbumPilot retries them indefinitely unless fixed manually.
 
@@ -247,7 +247,7 @@ Some users have reported missing or outdated metadata when importing HEIC images
 
 ### Thumbnail Generation for Videos (Timed Intervals)
 
-The feature for generating thumbnails at fixed time intervals (e.g. every 5 seconds) has only been tested briefly. It may not work reliably across all formats or conditions. Feedback is appreciated.
+The feature for generating thumbnails at fixed time intervals (e.g. every 5 seconds, NOT the thumbnails for the video posters, see the above issue with that regard) has only been tested briefly. It may not work reliably across all formats or conditions. Feedback is appreciated.
 
 ## Installation
 

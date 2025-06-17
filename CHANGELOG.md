@@ -10,7 +10,10 @@ All notable changes to this project will be documented in this file.
 - Fixed a bug where the “Output format for poster” text appeared light gray even when active.
 
 ### Known Issues
-- Certain video files repeatedly trigger re-generation of `XXLarge` thumbnails in AlbumPilot, even if thumbnails already exist. This does **not** happen when thumbnails are created using Piwigo's native tool. This is likely due to metadata inconsistencies or unreadable video properties causing AlbumPilot's check logic to fail. Piwigo’s generator handles these more gracefully. A fix is being investigated.
+- **Known Issues section in README.md**: The section has been updated outlining currently known limitations and issues:
+  - Persistent re-generation of large thumbnails (e.g., `XXLarge`) for certain video files.
+  - Potential metadata sync problems with **HEIC** images (pending further investigation; likely a Piwigo core issue).
+  - The new time-interval-based video thumbnail generation has only undergone basic testing and may be unstable; feedback is welcome.
 
 ## [0.3.4] – 2025-06-17
 
