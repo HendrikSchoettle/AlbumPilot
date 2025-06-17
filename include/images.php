@@ -33,7 +33,6 @@ if (
     && $_GET['pwg_token'] === get_pwg_token()
 ) {
     if (session_status() === PHP_SESSION_NONE) {
-        session_start();
     }
 
     header('Content-Type: application/json');
@@ -49,12 +48,18 @@ if (
 
     $includeSubalbums = isset($_GET['subalbums']) && $_GET['subalbums'] === '1';
     $albumId         = (int) $_GET['album_id'];
+    $log = [];
+	
+    // If root album selected but “search in subalbums” is OFF, abort without scanning
+	abortOnRootNoSubs($albumId, $includeSubalbums, $log);
+
 
     include_once(PHPWG_ROOT_PATH . 'include/derivative.inc.php');
     include_once(PHPWG_ROOT_PATH . 'include/derivative_params.inc.php');
 
-    $log = [];
-
+    // If root album selected but “search in subalbums” is OFF, abort without scanning
+	abortOnRootNoSubs($albumId, $includeSubalbums, $log);
+		
     // Step 1: Initial request – build processing queue and store in session
     if (!isset($_SESSION['thumb_progress'])) {
         // Log scan start
@@ -62,17 +67,30 @@ if (
         $log[]      = '🔍 ' . $msg;
         log_message('🔍 ' . $msg);
 
-        // Gather albums
-        $albums = [$albumId];
-        if ($includeSubalbums) {
+        
+        // Gather albums (special case: root album + subalbums = all albums)
+        if ($albumId === 0 && $includeSubalbums) {
+            $albums = [];
             $res = pwg_query(
-                'SELECT id FROM ' . CATEGORIES_TABLE .
-                ' WHERE uppercats REGEXP "(^|,)' . $albumId . '(,|$)" AND dir IS NOT NULL'
+                'SELECT id FROM ' . CATEGORIES_TABLE . ' WHERE dir IS NOT NULL'
             );
             while ($row = pwg_db_fetch_assoc($res)) {
                 $albums[] = (int) $row['id'];
             }
         }
+        else {
+            $albums = [$albumId];
+            if ($includeSubalbums) {
+                $res = pwg_query(
+                    'SELECT id FROM ' . CATEGORIES_TABLE .
+                    ' WHERE uppercats REGEXP "(^|,)' . $albumId . '(,|$)" AND dir IS NOT NULL'
+                );
+                while ($row = pwg_db_fetch_assoc($res)) {
+                    $albums[] = (int) $row['id'];
+                }
+            }
+        }
+
 
         $albumsList = implode(',', $albums);
 
@@ -206,23 +224,12 @@ if (
             // Determine which derivatives to generate
             try {
                 $derivsToGenerate = [];
-
-
 	 
                 foreach (DerivativeImage::get_all($src) as $type => $deriv) {
 										   
                     if (!empty($allowedTypes) && !in_array($type, $allowedTypes, true)) {
                         continue;
                     }
-
-														 
-							   
-																													
-
-													 
-													   
-																				   
-
 
                     if (!$deriv->is_cached()) {
                         $derivsToGenerate[$type] = $deriv;
@@ -234,7 +241,6 @@ if (
                 $log[] = '❌ ' . $msg;
                 continue;
             }
-
 
             if (empty($derivsToGenerate)) {
                 continue;
@@ -318,7 +324,6 @@ if (
                     $log[] = '⛔ ' . $msg;
                 }
             }
-
 
         }
 

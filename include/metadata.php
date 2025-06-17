@@ -41,16 +41,31 @@ if (
 
     $log = [];
 
+    // If root album selected but “search in subalbums” is OFF, abort without scanning
+	abortOnRootNoSubs($albumId, $includeSubalbums, $log);
+
     // Step 1: Initial request: collect items and store in session
     if (!isset($_SESSION['meta_progress'])) {
-        $albums = [$albumId];
-        if ($includeSubalbums) {
+                // Gather albums (special-case: root album + subalbums = all albums)
+        if ($albumId === 0 && $includeSubalbums) {
+            $albums = [];
             $res = pwg_query(
-                'SELECT id FROM ' . CATEGORIES_TABLE .
-                ' WHERE uppercats REGEXP "(^|,)' . $albumId . '(,|$)" AND dir IS NOT NULL'
+                'SELECT id FROM ' . CATEGORIES_TABLE . ' WHERE dir IS NOT NULL'
             );
             while ($row = pwg_db_fetch_assoc($res)) {
                 $albums[] = (int) $row['id'];
+            }
+        }
+        else {
+            $albums = [$albumId];
+            if ($includeSubalbums) {
+                $res = pwg_query(
+                    'SELECT id FROM ' . CATEGORIES_TABLE .
+                    ' WHERE uppercats REGEXP "(^|,)' . $albumId . '(,|$)" AND dir IS NOT NULL'
+                );
+                while ($row = pwg_db_fetch_assoc($res)) {
+                    $albums[] = (int) $row['id'];
+                }
             }
         }
 

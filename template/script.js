@@ -57,7 +57,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function disableAllInputsForBatchMode() {
-        if (window.location.search.includes('external_run=1')) {
+        if (window.location.search.includes('external_run=1') || window.syncInProgress) {
+
             const elements = document.querySelectorAll(
                     'input, select, textarea, button');
 
@@ -318,17 +319,20 @@ document.addEventListener('DOMContentLoaded', function () {
         checkbox.className = 'step-checkbox';
         checkbox.id = step[0];
 
-        // By default, step 4 is disabled, all others enabled
+        // By default, step 5 (metadata) is unchecked; others remain checked initially
         checkbox.checked = step[0] !== 'step5';
 
-        // Disable step 3 if VideoJS is not active
-        if (step[0] === 'step2' && !isVideoJSActive) {
-            checkbox.disabled = true;
+        // For VideoJS step (step2), only enable if plugin is active
+        if (step[0] === 'step2') {
+            // plugin inactive → leave unchecked and disabled
+            checkbox.checked = isVideoJSActive;
+            checkbox.disabled = !isVideoJSActive;
         }
 
-        // Disable step 6 if SmartAlbums is not active
-        if (step[0] === 'step6' && !isSmartAlbumsActive) {
-            checkbox.disabled = true;
+        // For SmartAlbums step (step6), only enable if plugin is active
+        if (step[0] === 'step6') {
+            checkbox.checked = isSmartAlbumsActive;
+            checkbox.disabled = !isSmartAlbumsActive;
         }
 
         label.appendChild(checkbox);
@@ -746,8 +750,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     url += '&album=' + albumId;
                 }
 
-                if (includeSubalbums && ['step1', 'step3', 'step2', 'step4', 'step5'].includes(id)) {
-                    url += '&subalbums=1';
+                if (['step1', 'step2', 'step3', 'step4', 'step5'].includes(id)) {
+                    url += '&subalbums=' + (includeSubalbums ? '1' : '0');
                 }
 
                 return {
@@ -766,6 +770,7 @@ document.addEventListener('DOMContentLoaded', function () {
         offset = 0;
 
         window.syncInProgress = true;
+        disableAllInputsForBatchMode();
 
         const startBtn = document.getElementById('start-sync');
 
@@ -1145,6 +1150,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     selectedOption.selected = true;
                     select.scrollTop = selectedOption.offsetTop - select.clientHeight / 2;
                 }
+                select.dispatchEvent(new Event('change'));
             };
 
             // Mouse click

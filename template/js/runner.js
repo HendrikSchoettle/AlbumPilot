@@ -22,7 +22,31 @@ window.next = function () {
 
     if (index >= selectedSteps.length) {
         steps.innerHTML += '<li><strong>✅ ' + (window.AlbumPilotLang.all_steps_completed) + '</strong></li>';
+
         window.syncInProgress = false;
+
+        // Remove batch-mode styling
+        const wrapper = document.querySelector('.album-sync-wrapper.batch-mode');
+        if (wrapper)
+            wrapper.classList.remove('batch-mode');
+
+        // Only re-enable controls that were not disabled in the original markup
+        document.querySelectorAll('input, select, textarea, button').forEach(el => {
+            if (el.defaultDisabled)
+                return;
+            el.disabled = false;
+            el.style.opacity = '';
+            el.style.cursor = '';
+            el.title = '';
+        });
+
+        // Fire a change on each step-checkbox to reapply nested enable/disable logic
+        document.querySelectorAll('.step-checkbox').forEach(cb => {
+            cb.dispatchEvent(new Event('change'));
+        });
+
+        // Regenerate external-URL preview
+        generateExternalUrlFromSelection();
 
         const isBatchMode = new URLSearchParams(window.location.search).get('external_run') === '1';
 
@@ -194,7 +218,19 @@ window.next = function () {
         .then(html => {
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
+
             const infoListItems = doc.querySelectorAll('.eiw .infos li');
+
+            // If a fatal PHP error occurred, display its HTML and stop this step
+            if (html.includes('<b>Fatal error')) {
+                const errorBlock = document.createElement('div');
+                errorBlock.innerHTML = html;
+                log.appendChild(errorBlock);
+                li.innerHTML = '❌ ' + step.name;
+                window._runnerIndex = index + 1;
+                setTimeout(window.next, 1000);
+                return;
+            }
 
             const heading = document.createElement('h5');
             heading.textContent = step.name;
@@ -241,6 +277,18 @@ window.next = function () {
             log.appendChild(heading);
 
             const infoList = doc.querySelectorAll('.eiw .infos li');
+
+            // If a fatal PHP error occurred, display its HTML and stop this step
+            if (html.includes('<b>Fatal error')) {
+                const errorBlock = document.createElement('div');
+                errorBlock.innerHTML = html;
+                log.appendChild(errorBlock);
+                li.innerHTML = '❌ ' + step.name;
+                window._runnerIndex = index + 1;
+                setTimeout(window.next, 1000);
+                return;
+            }
+
             if (infoList.length > 0) {
                 infoList.forEach(el => {
                     const div = document.createElement('div');

@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.4] – 2025-06-17
+
+### Fixed
+- Prevents sync from starting when the root album is selected but subalbums are explicitly disabled; appropriate error message shown.
+- Synchronization no longer resumes after an aborted run; all states are cleanly reset. This also resolved  faulty resume behavior which could cause e.g. live-mode sync to start despite simulation being selected.
+- Fixed a bug where SmartAlbums and VideoJS-related checkboxes remained active but greyed-out after their respective plugins were disabled.  
+  In legacy installations, you need to manually drop the settings table once, or alternatively update to v0.3.4, then uninstall and reinstall this version again.
+- A bug where the selected folder at sync start was not stored has been fixed.
+- Metadata, poster, and thumbnail scans now correctly find files inside subfolders when the root album is selected.
+
+### Changed
+- During an active sync, all controls are now disabled and greyed-out to prevent further user interaction.
+- Piwigo's uninstall logic now drops the database table `album_pilot_settings` even when the plugin is installed from GitHub (e.g., in folders like `AlbumPilot-main` or `AlbumPilot-0.3.4`).
+
 ## [0.3.3] – 2025-06-15
 
 ### Fixed
@@ -50,7 +64,7 @@ All notable changes to this project will be documented in this file.
 ## [0.2.0] – 2025-06-01
 
 ### Changed
-- **Plugin directory name is now dynamic**: The plugin no longer depends on a fixed folder name and works regardless of installation path.
+- **Plugin directory name is now dynamic**: AlbumPilot is now independent of its installation folder name. The plugin no longer requires a specific directory name and will function correctly regardless of how the plugin folder is named. However, folder names must not contain hyphens (`-`), as this breaks plugin activation and internal references.
 - **URL-based sync triggering added**: Synchronization steps can now be run externally by appending `external_run=1` with additional parameters to the plugin URL.
 - **Reordered sync steps**: Step 4 (Checksum Calculation) and Step 5 (Metadata Update) swapped positions to improve logical processing order.
 - **Optimized language loading**: Frontend now loads only the currently active language and only strings relevant for JavaScript.

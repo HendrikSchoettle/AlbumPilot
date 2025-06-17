@@ -1,7 +1,7 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 0.3.3
-**Release Date:** 2025-06-15  
+**Version:** 0.3.4
+**Release Date:** 2025-06-17  
 **Tested with:** Piwigo 15.5.0
 
 ---
@@ -9,6 +9,7 @@
 ## Table of Contents
 
 - [Overview](#overview)  
+  - [What's New in v0.3.4](#whats-new-in-v034)
   - [What's New in v0.3.3](#whats-new-in-v033)
   - [What's New in v0.3.2](#whats-new-in-v032)
   - [What's New in v0.3.1](#whats-new-in-v031)
@@ -42,9 +43,17 @@
 AlbumPilot automates several key synchronization steps within Piwigo, saving you time and effort during album management. It allows you to batch process file synchronization, thumbnail generation, video poster creation, metadata updates, checksum calculations, and other features with a simple, user-friendly interface.
 
 ---
+
+## What’s New in v0.3.4
+
+- Improved reset behavior after aborted syncs: interrupted runs no longer resume incorrectly.
+- Settings table is now deleted on uninstall, even when plugin is renamed (GitHub folders work out of the box).
+- VideoJS and SmartAlbums checkboxes now reflect status correctly on deactivation. In legacy installations, you need to manually drop the settings table once, or alternatively update to v0.3.4, then uninstall and reinstall this version again.
+- All buttons are greyed out during active sync for better UX.
+- Poster/thumbnail fixes, subfolder metadata bugs resolved, and root-folder error messages added.
+
 ## What’s New in v0.3.3
 
-### Fixed
 - All PHP short tags (`<?`) in the include files have been replaced with full opening tags (`<?php`) to ensure correct parsing when the `short_open_tag` setting is turned off.
 
 ## What’s New in v0.3.2
@@ -96,7 +105,7 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 ### Changes & Improvements
 
 - **Plugin Directory Name Independence:**  
-  AlbumPilot is now fully independent of its installation folder name. The plugin no longer requires a specific directory name and will function correctly regardless of how the plugin folder is named.
+  AlbumPilot is now independent of its installation folder name. The plugin no longer requires a specific directory name and will function correctly regardless of how the plugin folder is named. However, folder names must not contain hyphens (`-`), as this breaks plugin activation and internal references.
 
 - **URL-Based Execution Control:**  
   Synchronization can now be externally triggered using `external_run=1` and corresponding URL parameters. This enables automated or script-based integration without manual UI interaction.
@@ -221,10 +230,13 @@ Originally, the synchronization progress was intended to be freshly initialized 
 
 ## Installation
 
-1. Upload the `AlbumPilot` plugin folder to your Piwigo plugins directory. The folder name is generally flexible. The plugin works regardless of its directory name, but avoid hyphens (`-`) (use only letters, numbers and underscores) to prevent any activation or caching issues. Renaming the folder is mainly intended for testing so you don’t end up with stale JavaScript or other assets in your browser cache; for a stable production setup, however, stick with the plain `AlbumPilot` name.
-2. (Optional) If you want the plugin to automatically drop its database tables on uninstall, rename the included file `maintain.class.php.disabled` to `maintain.class.php` **before activation**. This reset logic **only works** if the plugin is installed in a folder named exactly `AlbumPilot` (case-sensitive, no version suffixes). The feature is disabled by default to avoid accidental data loss, especially when installing from GitHub ZIPs which often include versioned folder names.
+1. Upload the `AlbumPilot` plugin folder to your Piwigo plugins directory. The plugin folder name is flexible, but must not contain hyphens (`-`), as this causes activation issues and interfere with internal plugin ID resolution (use only letters, numbers and underscores). Renaming the folder is mainly intended for testing so you don’t end up with stale JavaScript or other assets in your browser cache; for a stable production setup, however, stick with the plain `AlbumPilot` name.
 3. Ensure the web server has write permissions on the plugin directory to enable log writing.  
 4. For full functionality, install and activate the **piwigo-videojs** and **SmartAlbums** plugins as needed.
+
+> Note: GitHub ZIP archives often extract into folders like `AlbumPilot-main` or `AlbumPilot-0.3.4`. Please rename the folder to remove hyphens before installing the plugin.
+
+> Legacy installations: If you previously experienced disabled but checked checkboxes for VideoJS or SmartAlbums, you must first update to version 0.3.4, then uninstall and reinstall this version once to allow the outdated settings table to be removed properly.
 
 ## Usage
 

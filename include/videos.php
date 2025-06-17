@@ -91,6 +91,9 @@ if (
     $includeSubalbums = isset($_GET['subalbums']) && $_GET['subalbums'] === '1';
     $log              = [];
 
+    // If root album selected but “search in subalbums” is OFF, abort without scanning
+    abortOnRootNoSubs($cat_id, $includeSubalbums, $log);
+
     // Extract parameters
     $posterSecond  = isset($_GET['poster_second'])  ? (int) $_GET['poster_second'] : 4;
     $thumbInterval = isset($_GET['thumb_interval']) ? (int) $_GET['thumb_interval'] : 5;
@@ -106,20 +109,37 @@ if (
     // Initial scan: prepare queue if not set
     if (!isset($_SESSION['video_progress'])) {
         // Build album list (including subalbums if requested)
-        $newAlbumList = [$cat_id];
-        if ($includeSubalbums) {
+        
+	    if ($cat_id === 0 && $includeSubalbums) {
+            // root + Subalbums: tatsächlich alle realen Alben scannen
+            $newAlbumList = [];
             $res = pwg_query(
-                'SELECT id FROM ' . CATEGORIES_TABLE .
-                ' WHERE uppercats REGEXP "(^|,)' . $cat_id . '(,|$)" AND dir IS NOT NULL'
+                'SELECT id FROM ' . CATEGORIES_TABLE . ' WHERE dir IS NOT NULL'
             );
             while ($row = pwg_db_fetch_assoc($res)) {
-                $id = (int) $row['id'];
-                if (!in_array($id, $newAlbumList, true)) {
-                    $newAlbumList[] = $id;
+                $newAlbumList[] = (int) $row['id'];
+            }
+            sort($newAlbumList);
+        }
+        else {
+            // gewohntes Verhalten für alle anderen Fälle
+            $newAlbumList = [$cat_id];
+            if ($includeSubalbums) {
+                $res = pwg_query(
+                    'SELECT id FROM ' . CATEGORIES_TABLE .
+                    ' WHERE uppercats REGEXP "(^|,)' . $cat_id . '(,|$)" AND dir IS NOT NULL'
+                );
+                while ($row = pwg_db_fetch_assoc($res)) {
+                    $id = (int) $row['id'];
+                    if (!in_array($id, $newAlbumList, true)) {
+                        $newAlbumList[] = $id;
+                    }
                 }
             }
+            sort($newAlbumList);
         }
-        sort($newAlbumList);
+
+
 
         $upload_dir       = $conf['upload_dir'] ?? 'upload';
         $video_extensions = $conf['video_ext']   ?? ['mp4', 'mov', 'avi', 'mkv'];

@@ -19,21 +19,28 @@ if (isset($_GET['calculate_md5'], $_GET['pwg_token']) && $_GET['pwg_token'] === 
     $albumId          = isset($_GET['album_id']) ? (int)$_GET['album_id'] : 0;
     $includeSubalbums = isset($_GET['subalbums']) && $_GET['subalbums'] === '1';
 
-    if ($albumId === 0) {
-        $msg = l10n('log_md5_no_album');
-        echo json_encode([
-            'done'    => true,
-            'log'     => "❌ {$msg}",
-            'summary' => "❌ {$msg}",
-        ]);
-        exit;
-    }
+    $log           = [];
+	
+    // If root album selected but “search in subalbums” is OFF, abort without scanning
+	abortOnRootNoSubs($albumId, $includeSubalbums, $log);
 
     // Initial call: build list of images needing MD5 checksums
     if (!isset($_SESSION['md5_progress'])) {
         include_once(PHPWG_ROOT_PATH . 'admin/site_reader_local.php');
         $siteReader = new LocalSiteReader('./');
 
+        if ($albumId === 0 && $includeSubalbums) {
+        // Root album + sub albums = scan all albums
+        $albums = [];
+        $res = pwg_query(
+            'SELECT id FROM ' . CATEGORIES_TABLE .
+            ' WHERE dir IS NOT NULL'
+        );
+        while ($row = pwg_db_fetch_assoc($res)) {
+            $albums[] = (int) $row['id'];
+        }
+    }
+    else {
         $albums = [$albumId];
         if ($includeSubalbums) {
             $res = pwg_query(
@@ -44,6 +51,8 @@ if (isset($_GET['calculate_md5'], $_GET['pwg_token']) && $_GET['pwg_token'] === 
                 $albums[] = (int) $row['id'];
             }
         }
+    }
+
 
         $albumsList = implode(',', $albums);
         $files = array_from_query(
@@ -72,8 +81,7 @@ if (isset($_GET['calculate_md5'], $_GET['pwg_token']) && $_GET['pwg_token'] === 
             'total'     => $total,
             'simulate'  => $simulate,
         ];
-
-        $log           = [];
+        
         $scanStartMsg  = "🔍 " . l10n('log_md5_scan_start');
         $log[]         = $scanStartMsg;
         log_message($scanStartMsg);

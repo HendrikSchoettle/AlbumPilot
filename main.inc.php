@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: AlbumPilot
-Version: 0.3.3
+Version: 0.3.4
 Description: Batch processing: Media sync, thumbs, video posters, maintenance
 Author: Hendrik Schöttle
 Has Settings: true
@@ -14,6 +14,7 @@ if (!defined('PHPWG_ROOT_PATH')) {
 
 // Define plugin folder and path dynamically
 define('ALBUMPILOT_DIR', basename(__DIR__));
+
 
 define('ALBUMPILOT_PATH', PHPWG_PLUGINS_PATH . ALBUMPILOT_DIR . '/');
 define('ALBUM_PILOT_PATH', ALBUMPILOT_PATH);
@@ -41,3 +42,4 @@ add_event_handler(
     EVENT_HANDLER_PRIORITY_NEUTRAL,
     2
 );
+

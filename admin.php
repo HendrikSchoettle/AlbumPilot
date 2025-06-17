@@ -152,13 +152,29 @@ if (
         session_start();
     }
 
-    // Clear session progress keys
-    unset($_SESSION['thumb_progress'], $_SESSION['meta_progress'], $_SESSION['md5_progress'], $_SESSION['video_progress']);
+    // Immediately clear all in-memory session arrays
+    unset(
+        $_SESSION['thumb_progress'],
+        $_SESSION['meta_progress'],
+        $_SESSION['md5_progress'],
+        $_SESSION['video_progress']
+    );
+
+    // Write a single reset-all flag into the DB
+    global $prefixeTable, $user;
+    $table  = $prefixeTable . 'album_pilot_settings';
+    $userId = (int)$user['id'];
+    pwg_query(
+        "REPLACE INTO `$table` (user_id, setting_key, setting_value)
+         VALUES ($userId, 'reset_all', '1')"
+    );
 
     header('Content-Type: application/json');
     echo json_encode(['success' => true]);
     exit;
 }
+
+
 
 // Start sync via GET
 if (
@@ -282,6 +298,46 @@ $onlyNew           = !isset($_GET['onlynew'])    || $_GET['onlynew']    === '1';
 $includeSubalbums  = !isset($_GET['subalbums'])  || $_GET['subalbums']  === '1';
 
 // Helper functions
+
+/**
+ * If the global reset-all flag is set for this user, clear it and all progress sessions.
+ */
+function check_and_clear_reset(): void {
+    global $prefixeTable, $user;
+    $table  = $prefixeTable . 'album_pilot_settings';
+    $userId = (int)$user['id'];
+
+    // Fetch the flag
+    $row = pwg_db_fetch_assoc(
+        pwg_query(
+            "SELECT setting_value
+               FROM `$table`
+              WHERE user_id = $userId
+                AND setting_key = 'reset_all'"
+        )
+    );
+
+    if ($row && $row['setting_value'] === '1') {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Clear all step-progress
+        unset(
+            $_SESSION['thumb_progress'],
+            $_SESSION['meta_progress'],
+            $_SESSION['md5_progress'],
+            $_SESSION['video_progress']
+        );
+
+        // Remove the flag
+        pwg_query(
+            "DELETE FROM `$table`
+                   WHERE user_id = $userId
+                     AND setting_key = 'reset_all'"
+        );
+    }
+}
 
 /**
  * Log a message to the plugin log file, rotating if large.
@@ -423,6 +479,29 @@ function count_total_images(): int {
     return (int)$result['cnt'];
 }
 
+
+
+/**
+ * Abort if root album without subalbums selected
+ *
+ */
+function abortOnRootNoSubs(int $cat_id, bool $includeSubalbums, array &$log): void {
+    if ($cat_id === 0 && !$includeSubalbums) {
+        $warning = '⚠️ ' . l10n('select_album_alert');
+        log_message($warning);
+        echo json_encode([
+            'processed' => 0,
+            'generated' => 0,
+            'offset'    => 0,
+            'done'      => true,
+            'total'     => 0,
+            'log'       => $log,
+            'summary'   => $warning,
+        ]);
+        exit;
+    }
+}
+
 // --- Step 1: File synchronization ---
 if (
     isset($_GET['wrapped_sync'], $_GET['pwg_token']) &&
@@ -437,6 +516,10 @@ if (
     $simulate         = isset($_GET['simulate'])   && $_GET['simulate']   === '1';
     $onlyNew          = isset($_GET['onlynew'])    && $_GET['onlynew']    === '1';
     $includeSubalbums = isset($_GET['subalbums'])  && $_GET['subalbums']  === '1';
+
+    // 🔧 DEBUG: Log wrapped_sync parameters
+    log_message('[AlbumPilot ### DEBUG] wrapped_sync GET → ' . json_encode($_GET));
+    log_message('[AlbumPilot ### DEBUG] wrapped_sync POST before include → ' . json_encode($_POST));
 
     log_message("📂 " . l10n('log_sync_step1_start'));
     log_message(
@@ -467,12 +550,32 @@ if (
     $_POST['simulate']         = $simulate ? '1' : '0';
     $_POST['subcats-included'] = $includeSubalbums ? '1' : '0';
     $_POST['only_new']         = $onlyNew ? '1' : '0';
-
+    
     $_GET['site'] = 1;
+
+    $albumId = isset($_GET['album']) && is_numeric($_GET['album'])
+           ? (int)$_GET['album']
+           : null;
+
+    // If root album selected but “search in subalbums” is OFF, abort without scanning
+    if ($albumId === 0 && !$includeSubalbums) {
+        echo json_encode([
+            'success'    => true,
+            'message'    => '⚠️ ' . l10n('select_album_alert'),
+            'raw_output' => ''
+        ]);
+       exit ;
+    } 
+
+    if ($albumId > 0) {
+        $_POST['cat'] = $albumId; // Core uses 'cat_id' to restrict the scan
+        $_POST['cat_id'] = $albumId; // Core uses 'cat_id' to restrict the scan
+    }
 
     ob_start();
     include(PHPWG_ROOT_PATH . 'admin/site_update.php');
     $output = ob_get_clean();
+
 
     if ($simulate) {
         $message = l10n('log_sync_step1_simulation_done');
@@ -491,6 +594,11 @@ if (
 
     exit;
 }
+
+
+// #### debug
+// If a global reset was requested, clear all progress at once
+check_and_clear_reset();
 
 // --- Step 2: Video processing ---
 include __DIR__ . '/include/videos.php';
