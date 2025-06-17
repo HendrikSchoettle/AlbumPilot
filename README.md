@@ -1,6 +1,6 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 0.3.5
+**Version:** 0.3.6
 **Release Date:** 2025-06-17
 **Tested with:** Piwigo 15.5.0
 
@@ -9,6 +9,7 @@
 ## Table of Contents
 
 - [Overview](#overview)  
+  - [What's New in v0.3.6](#whats-new-in-v036)
   - [What's New in v0.3.5](#whats-new-in-v035)
   - [What's New in v0.3.4](#whats-new-in-v034)
   - [What's New in v0.3.3](#whats-new-in-v033)
@@ -44,6 +45,11 @@
 AlbumPilot automates several key synchronization steps within Piwigo, saving you time and effort during album management. It allows you to batch process file synchronization, thumbnail generation, video poster creation, metadata updates, checksum calculations, and other features with a simple, user-friendly interface.
 
 ---
+## What’s New in v0.3.6
+
+### Fixed
+- Improved CSS styling for disabled VideoJS options now correctly applies light-gray to all labels and inputs when video poster generation is turned off.
+- Thumbnail generation for `XXLarge` (and similarly sized) video posters no longer loops indefinitely: a size-equality guard has been added so that source dimensions equal to target dimensions are skipped.
 
 ## What’s New in v0.3.5
 
@@ -165,10 +171,14 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 ## Synchronization Steps
 
 ### Step 1: Sync Files  
-This step calls Piwigo’s core synchronization mechanism to detect new, changed, or removed files and update the database accordingly. It updates the file structure and database entries to reflect the current content of the storage directories. Options allow including subalbums. It is currently restricted to processing only new or changed files. This step ensures the gallery is in sync with the underlying file system.
+This step calls Piwigo’s core synchronization mechanism to detect new, changed, or removed files and update the database accordingly. It updates the file structure and database entries to reflect the current content of the storage directories. Options allow including subalbums. It is restricted to processing only new or changed files. This step ensures the gallery is in sync with the underlying file system. Use Step 5 to update metadata of existing files.
 
 ### Step 2: Generate Video Posters  
-For video files, this step generates preview images ("video posters"), optionally using the "filmstrip" effect, which captures a frame 4 seconds into the video. You can customize all VideoJS parameters (poster time, overlay, thumbnail interval, output format, etc.) via the plugin UI. When a poster is regenerated, any previously generated thumbnails are automatically deleted, preventing stale images from appearing (unlike the official VideoJS behavior). This step requires the **piwigo-videojs** plugin to be installed and active; it is otherwise disabled. Video posters are generated only for videos that do not yet have a poster image, or when you explicitly choose to overwrite them.
+For video files, this step generates preview images ("video posters"), optionally using the "filmstrip" effect, which captures a frame 4 seconds into the video. You can customize all VideoJS parameters (poster time, overlay, thumbnail interval, output format, etc.) via the plugin UI. When a poster is regenerated, any previously generated thumbnails are automatically deleted, preventing stale images from appearing (unlike the official VideoJS behavior).
+
+In addition to a single poster, the plugin can now also automatically produce **video thumbnails** at a defined interval (e.g. every 5 seconds), creating a series of preview frames throughout the duration of the video. These video thumbnails differ from the standard image thumbnails generated in **Step 3**—which are simply resized copies of original photos—in that they are actual frames extracted from the video itself, offering a storyboard-like sequence.
+
+This step requires the **piwigo-videojs** plugin to be installed and active; it is otherwise disabled. Video posters (and video thumbnails) are generated only for videos that do not yet have a poster image, or when you explicitly choose to overwrite them.
 
 ### Step 3: Generate Thumbnails  
 AlbumPilot generates missing thumbnails for images in all resolutions defined in the configuration. You can specify which thumbnail types to create or overwrite. An overwrite option is also available. so you can force-regenerate existing thumbnails (for example, if they have been modified externally). Otherwise, only images without existing thumbnails are processed, avoiding redundant work.
@@ -241,22 +251,9 @@ start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" ^
 
 ## Known Limitations / Issues
 
-### Thumbnail Regeneration Bug for Video Posters with Faulty Videos
-
-A known issue affects certain video files: AlbumPilot attempts to regenerate certain thumbnails for video posters, mainly `XXLarge` (and sometimes `XLarge`), on every run, even when they already exist.
-
-Notably, **Piwigo’s built-in thumbnail generator** seems to handle these edge cases gracefully and avoids reprocessing them. However, AlbumPilot retries them indefinitely unless fixed manually.
-
-**Workaround:**  
-Until a proper detection/fallback mechanism is added, affected files must either be repaired (e.g., re-encoded) or skipped by pre-running Piwigo’s thumbnail generation manually before using AlbumPilot.
-
-### HEIC Metadata Sync (Open Issue)
-
-Some users have reported missing or outdated metadata when importing HEIC images. AlbumPilot uses Piwigo’s core metadata sync logic and does not modify metadata handling. The issue may lie within Piwigo itself, but has not been fully investigated yet. Feedback and test cases are welcome.
-
 ### Thumbnail Generation for Videos (Timed Intervals)
 
-The feature for generating thumbnails at fixed time intervals (e.g. every 5 seconds, NOT the thumbnails for the video posters, see the above issue with that regard) has only been tested briefly. It may not work reliably across all formats or conditions. Feedback is appreciated.
+The feature for generating thumbnails at fixed time intervals (e.g. every 5 seconds) has only undergone basic testing and may be unstable; feedback is welcome.
 
 ## Installation
 

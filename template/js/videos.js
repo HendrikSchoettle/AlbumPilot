@@ -35,28 +35,24 @@ window.renderVideoOptions = function ({
     optionsWrapper.appendChild(cb2);
 
     const cb3 = document.createElement('label');
-    cb3.innerHTML = `<br><input type="checkbox" class="videojs-option" data-key="videojs_poster_overwrite"> ${t('VideoJS_PosterOverwrite')}`;
+    cb3.innerHTML = `<br><input type="checkbox" class="videojs-option" data-key="videojs_poster_overwrite"> <span>${t('VideoJS_PosterOverwrite')}</span>`;
+
     optionsWrapper.appendChild(cb3);
 
     const formatWrapper = document.createElement('div');
     formatWrapper.className = 'videojs-output-format-line option-line';
-    /*
-	formatWrapper.innerHTML =
-        `${t('VideoJS_OutputFormat')}: 
-    <label><input type="radio" name="videojs_output_format" value="jpg" checked> ${t('VideoJS_jpg')}</label>
-    <label><input type="radio" name="videojs_output_format" value="png"> ${t('VideoJS_png')}</label>`;
-    */
-	
-	formatWrapper.innerHTML = 
-  t('VideoJS_OutputFormat') + ': ' +
-  '<label><input type="radio" name="videojs_output_format" value="jpg" checked><span> ' + t('VideoJS_jpg') + ' </span></label>' +
-  '<label><input type="radio" name="videojs_output_format" value="png"><span> ' + t('VideoJS_png') + ' </span></label>';
 
-	
-	optionsWrapper.appendChild(formatWrapper);
+    formatWrapper.innerHTML =
+        t('VideoJS_OutputFormat') + ': ' +
+        '<label><input type="radio" name="videojs_output_format" value="jpg" checked class="readonly-radio"><span> ' + t('VideoJS_jpg') + ' </span></label>' +
+        '<label><input type="radio" name="videojs_output_format" value="png" class="readonly-radio"><span> ' + t('VideoJS_png') + ' </span></label>';
+
+    optionsWrapper.appendChild(formatWrapper);
 
     const cb4 = document.createElement('label');
-    cb4.innerHTML = `<input type="checkbox" class="videojs-option" data-key="videojs_add_overlay" checked> ${t('VideoJS_OverlayAdd')}`;
+
+    cb4.innerHTML = `<input type="checkbox" class="videojs-option" data-key="videojs_add_overlay" checked> <span>${t('VideoJS_OverlayAdd')}</span>`;
+
     optionsWrapper.appendChild(cb4);
 
     const cb5 = document.createElement('label');
@@ -90,6 +86,14 @@ window.renderVideoOptions = function ({
     function updateVideoOptionStates() {
         const isMainChecked = stepCheckbox.checked;
         const isCreatePosterChecked = optionsWrapper.querySelector('[data-key="videojs_create_poster"]')?.checked;
+
+        // grey-out poster-related controls when “create poster” is off
+        const posterDisabled = !isMainChecked || !isCreatePosterChecked;
+        cb2.classList.toggle('disabled-block', !isMainChecked);
+        cb3.classList.toggle('disabled-block', posterDisabled);
+        formatWrapper.classList.toggle('disabled-block', posterDisabled);
+        cb4.classList.toggle('disabled-block', posterDisabled);
+
         const isCreateThumbsChecked = optionsWrapper.querySelector('[data-key="videojs_add_thumbs"]')?.checked;
 
         optionsWrapper.querySelectorAll('input').forEach(el => {
@@ -99,14 +103,23 @@ window.renderVideoOptions = function ({
         // Poster generation fields
         inputSec.disabled = !isMainChecked || !isCreatePosterChecked;
         optionsWrapper.querySelector('[data-key="videojs_poster_overwrite"]').disabled = !isMainChecked || !isCreatePosterChecked;
+        cb3.querySelector('input').disabled = posterDisabled;
+        cb4.querySelector('input').disabled = posterDisabled;
+
         formatWrapper.querySelectorAll('input[type="radio"]').forEach(radio => {
             radio.disabled = !isMainChecked || !isCreatePosterChecked;
         });
+
         optionsWrapper.querySelector('[data-key="videojs_add_overlay"]').disabled = !isMainChecked || !isCreatePosterChecked;
 
         // Thumbnail generation fields
+
         thumbSecInput.disabled = !isMainChecked || !isCreateThumbsChecked;
         thumbSizeInput.disabled = !isMainChecked || !isCreateThumbsChecked;
+
+        // toggle grey-out class on entire block
+        optionsWrapper.classList.toggle('disabled-block', !stepCheckbox.checked);
+
     }
 
     // Update on any change

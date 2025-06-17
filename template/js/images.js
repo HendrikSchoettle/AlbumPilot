@@ -60,11 +60,17 @@ window.renderImageOptions = function ({
         const disabled = !stepCheckbox.checked;
         grid.querySelectorAll('input').forEach(cb => cb.disabled = disabled);
         overwriteCb.disabled = disabled;
+        // toggle grey-out class on entire block
+        optionsWrapper.classList.toggle('disabled-block', !stepCheckbox.checked);
+
     });
 
     // Apply initial state
     if (!stepCheckbox.checked) {
         grid.querySelectorAll('input').forEach(cb => cb.disabled = true);
         overwriteCb.disabled = true;
+        // ensure grey-out class in initial state
+        optionsWrapper.classList.add('disabled-block');
+
     }
 };

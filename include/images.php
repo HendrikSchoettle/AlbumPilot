@@ -6,11 +6,13 @@ SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
 */
 
 // Utility: Detect base URL automatically
-function get_base_url() {
+function get_base_url()
+{
     $protocol   = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
     $host       = $_SERVER['HTTP_HOST'] ?? 'localhost';
     $script_dir = dirname($_SERVER['SCRIPT_NAME']); // e.g., /piwigo/plugins/AlbumPilot
     $base       = preg_replace('#/plugins/.*#', '', $script_dir); // remove /plugins/...
+
     return rtrim($protocol . '://' . $host . $base, '/');
 }
 
@@ -33,12 +35,13 @@ if (
     && $_GET['pwg_token'] === get_pwg_token()
 ) {
     if (session_status() === PHP_SESSION_NONE) {
+        session_start();
     }
 
     header('Content-Type: application/json');
 
-    $simulate         = isset($_GET['simulate']) && $_GET['simulate'] === '1';
-    $overwriteThumbs  = (!empty($_GET['thumb_overwrite']) && $_GET['thumb_overwrite'] === '1');
+    $simulate        = isset($_GET['simulate']) && $_GET['simulate'] === '1';
+    $overwriteThumbs = (!empty($_GET['thumb_overwrite']) && $_GET['thumb_overwrite'] === '1');
 
     // Parse selected thumbnail types from request
     $allowedTypes = [];
@@ -47,38 +50,35 @@ if (
     }
 
     $includeSubalbums = isset($_GET['subalbums']) && $_GET['subalbums'] === '1';
-    $albumId         = (int) $_GET['album_id'];
-    $log = [];
-	
-    // If root album selected but “search in subalbums” is OFF, abort without scanning
-	abortOnRootNoSubs($albumId, $includeSubalbums, $log);
+    $albumId          = (int) $_GET['album_id'];
+    $log              = [];
 
+    // If root album selected but "search in subalbums" is OFF, abort without scanning
+    abortOnRootNoSubs($albumId, $includeSubalbums, $log);
 
     include_once(PHPWG_ROOT_PATH . 'include/derivative.inc.php');
     include_once(PHPWG_ROOT_PATH . 'include/derivative_params.inc.php');
 
-    // If root album selected but “search in subalbums” is OFF, abort without scanning
-	abortOnRootNoSubs($albumId, $includeSubalbums, $log);
-		
+    // If root album selected but "search in subalbums" is OFF, abort without scanning
+    abortOnRootNoSubs($albumId, $includeSubalbums, $log);
+
     // Step 1: Initial request – build processing queue and store in session
     if (!isset($_SESSION['thumb_progress'])) {
         // Log scan start
-        $msg = l10n('log_scan_missing_thumbs');
-        $log[]      = '🔍 ' . $msg;
+        $msg    = l10n('log_scan_missing_thumbs');
+        $log[]  = '🔍 ' . $msg;
         log_message('🔍 ' . $msg);
 
-        
         // Gather albums (special case: root album + subalbums = all albums)
         if ($albumId === 0 && $includeSubalbums) {
             $albums = [];
-            $res = pwg_query(
+            $res    = pwg_query(
                 'SELECT id FROM ' . CATEGORIES_TABLE . ' WHERE dir IS NOT NULL'
             );
             while ($row = pwg_db_fetch_assoc($res)) {
                 $albums[] = (int) $row['id'];
             }
-        }
-        else {
+        } else {
             $albums = [$albumId];
             if ($includeSubalbums) {
                 $res = pwg_query(
@@ -90,7 +90,6 @@ if (
                 }
             }
         }
-
 
         $albumsList = implode(',', $albums);
 
@@ -108,12 +107,11 @@ if (
             $ext = strtolower(pathinfo($img['path'], PATHINFO_EXTENSION));
 
             // Skip extra video thumbnails to avoid recursive thumbnail generation
-            if (strpos($img['path'], '-th_') == true) {
-                continue;				
+            if (strpos($img['path'], '-th_') !== false) {
+                continue;
             }
 
             global $conf;
-  
             $video_extensions = $conf['video_ext'] ?? ['mp4', 'mov', 'avi', 'mkv'];
 
             // Handle video posters
@@ -144,7 +142,7 @@ if (
                 try {
                     $srcPoster = new SrcImage($posterImg);
                 } catch (Throwable $e) {
-                    $msg = sprintf(
+                    $msg    = sprintf(
                         l10n('log_srcimage_error'),
                         $img['id'],
                         $posterRelPath,
@@ -156,22 +154,34 @@ if (
                 }
 
                 try {
+                    $sizeData = @getimagesize($posterPath);
+                    $posterW  = $sizeData[0] ?? 0;
+                    $posterH  = $sizeData[1] ?? 0;
+
                     foreach (DerivativeImage::get_all($srcPoster) as $type => $deriv) {
                         if (!empty($allowedTypes) && !in_array($type, $allowedTypes, true)) {
                             continue;
                         }
 
-																					  
+                        //skip derivats that are biger than the poster
+                        list($targetW, $targetH) = $deriv->get_size();
+                        if ($posterW <= $targetW || $posterH <= $targetH) {
+                            /*
+                            log_message(sprintf(
+                                "⛔ skip %s for image %d: target %dx%d > poster %dx%d",
+                                $type, $posterImg['id'], $targetW, $targetH, $posterW, $posterH
+                            ));
+                            */
+                            continue;
+                        }
+
                         if ($overwriteThumbs && $deriv->is_cached()) {
                             $thumbPath = $deriv->get_path();
-
                             if (file_exists($thumbPath)) {
                                 @unlink($thumbPath);
-																										  
                             }
                         }
 
-											
                         if (!$deriv->is_cached()) {
                             $queue[] = [
                                 'img'   => $posterImg,
@@ -181,7 +191,7 @@ if (
                         }
                     }
                 } catch (Throwable $e) {
-                    $msg = sprintf(
+                    $msg    = sprintf(
                         l10n('log_derivative_error'),
                         $img['id'],
                         $posterRelPath,
@@ -195,16 +205,15 @@ if (
             }
 
             // Skip non-picture files
- 
             if (!in_array($ext, $conf['picture_ext'], true)) {
                 continue;
             }
 
             // Validate dimensions
             if (empty($img['width']) || empty($img['height']) || $img['width'] <= 0 || $img['height'] <= 0) {
-                $msg     = sprintf(l10n('log_invalid_dimensions'), $img['id'], $img['path']);
+                $msg    = sprintf(l10n('log_invalid_dimensions'), $img['id'], $img['path']);
                 log_message('⛔ ' . $msg);
-                $log[]   = '⛔ ' . $msg;
+                $log[]  = '⛔ ' . $msg;
                 continue;
             }
 
@@ -216,6 +225,7 @@ if (
                 $src = new SrcImage($img);
             } catch (Throwable $e) {
                 $msg   = sprintf(l10n('log_srcimage_error'), $img['id'], $img['path'], $e->getMessage());
+				
                 log_message('❌ ' . $msg);
                 $log[] = '❌ ' . $msg;
                 continue;
@@ -224,19 +234,18 @@ if (
             // Determine which derivatives to generate
             try {
                 $derivsToGenerate = [];
-	 
                 foreach (DerivativeImage::get_all($src) as $type => $deriv) {
-										   
                     if (!empty($allowedTypes) && !in_array($type, $allowedTypes, true)) {
                         continue;
                     }
-
                     if (!$deriv->is_cached()) {
                         $derivsToGenerate[$type] = $deriv;
                     }
                 }
             } catch (Throwable $e) {
+
                 $msg   = sprintf(l10n('log_derivative_error'), $img['id'], $img['path'], $e->getMessage());
+							   
                 log_message('❌ ' . $msg);
                 $log[] = '❌ ' . $msg;
                 continue;
@@ -250,7 +259,7 @@ if (
             if (empty($img['width']) || empty($img['height'])) {
                 $fullPath = PHPWG_ROOT_PATH . $img['path'];
                 if (!file_exists($fullPath)) {
-                    $msg   = sprintf(l10n('log_file_missing'), $img['id'], $img['path']);
+                    $msg    = sprintf(l10n('log_file_missing'), $img['id'], $img['path']);
                     log_message('❌ ' . $msg);
                     $log[] = '❌ ' . $msg;
                     continue;
@@ -258,7 +267,7 @@ if (
 
                 $sizeData = @getimagesize($fullPath);
                 if ($sizeData === false) {
-                    $msg   = sprintf(l10n('log_getimagesize_error'), $img['id'], $img['path']);
+                    $msg    = sprintf(l10n('log_getimagesize_error'), $img['id'], $img['path']);
                     log_message('❌ ' . $msg);
                     $log[] = '❌ ' . $msg;
                     continue;
@@ -271,12 +280,11 @@ if (
             $origWidth  = $img['width'];
             $origHeight = $img['height'];
 
-	
             foreach ($derivsToGenerate as $type => $deriv) {
                 try {
                     list($targetWidth, $targetHeight) = $deriv->get_size();
                 } catch (Throwable $e) {
-                    $msg   = sprintf(
+                    $msg = sprintf(
                         l10n('log_get_target_size_error'),
                         $type,
                         $img['id'],
@@ -290,17 +298,14 @@ if (
 
                 // Only proceed if the source is large enough
                 if ($origWidth >= $targetWidth && $origHeight >= $targetHeight) {
-
+                    
 					// If overwrite is enabled and thumbnail is cached: delete it first												   
-                    if ($overwriteThumbs && $deriv->is_cached()) {
+					if ($overwriteThumbs && $deriv->is_cached()) {
                         $path = $deriv->get_path();
                         if (file_exists($path)) {
                             @unlink($path);
-																										
                         }
                     }
-
-																  
                     if (!$deriv->is_cached()) {
                         $queue[] = [
                             'img'   => $img,
@@ -308,23 +313,8 @@ if (
                             'deriv' => $deriv,
                         ];
                     }
-
-                } else {
-                    $msg   = sprintf(
-                        l10n('log_image_too_small'),
-                        $type,
-                        $img['id'],
-                        $img['path'],
-                        $origWidth,
-                        $origHeight,
-                        $targetWidth,
-                        $targetHeight
-                    );
-                    log_message('⛔ ' . $msg);
-                    $log[] = '⛔ ' . $msg;
                 }
             }
-
         }
 
         $_SESSION['thumb_progress'] = [
@@ -349,7 +339,7 @@ if (
     $blockGenerated = 0;
     $simulate       = (bool) $prog['simulate'];
 
-    $steps          = 1;
+    $steps = 1;
 
     while ($index < count($queue) && $blockGenerated < $steps) {
         $item  = $queue[$index];
@@ -388,7 +378,6 @@ if (
                 'thumb_type' => l10n($type),
             ];
 
-	  
             $logLine = sprintf(
                 l10n('log_thumb_progress_line'),
                 $prog['generated'],
@@ -399,8 +388,7 @@ if (
                 l10n($type),
                 $img['path']
             );
-   
-	 
+
             log_message($logLine);
         }
 
@@ -421,7 +409,6 @@ if (
         unset($_SESSION['thumb_progress']);
     }
 
-										   
     echo json_encode([
         'processed' => $blockGenerated,
         'generated' => $prog['generated'],
@@ -433,4 +420,3 @@ if (
     ]);
     exit;
 }
-

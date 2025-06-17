@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: AlbumPilot
-Version: 0.3.5
+Version: 0.3.6
 Description: Batch processing: Media sync, thumbs, video posters, maintenance
 Author: Hendrik Schöttle
 Has Settings: true

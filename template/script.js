@@ -355,8 +355,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.warn('⚠️ renderImageOptions not defined');
             }
         }
-
-        // ✅ Einfacher globaler Zugriff – funktioniert mit {combine_script}
+        
         if (step[0] === 'step2') {
             if (typeof window.renderVideoOptions === 'function') {
                 window.renderVideoOptions({
@@ -508,7 +507,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         saveSyncSettings(syncSettings);
 
-        // Deaktiviere Thumb-Optionen, wenn step3 beim Laden deaktiviert ist
+        // Deactivate thumb options, if step3 is deactivated on loading
         const step3Checkbox = document.getElementById('step3');
         const thumbOverwrite = document.querySelector('.thumb-overwrite-checkbox');
         const thumbTypeCheckboxes = document.querySelectorAll('.thumb-type-checkbox');
@@ -587,7 +586,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('start-sync').addEventListener('click', async function () {
         generateExternalUrlFromSelection(); // Ensure current URL is regenerated
 
-        // mirror full album path into the typeahead input on Sync start
+        // Mirror full album path into the typeahead input on Sync start
         const ta = document.getElementById('album-typeahead');
         if (ta && Array.isArray(window.AlbumPilotAlbums)) {
             const album = window.AlbumPilotAlbums.find(a => a.id === hiddenInput.value);
@@ -702,6 +701,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const id = step[0];
                 const name = step[1];
                 let url = step[2].replace(/ALBUM_ID/g, albumId);
+				
                 // Only pass selected thumbnail types for step3
                 if (id === 'step3') {
                     const selectedThumbTypes = [];
@@ -917,7 +917,7 @@ document.addEventListener('DOMContentLoaded', function () {
         generateExternalUrlFromSelection();
     });
 
-    // --- Auto-start sync when triggered via external_run URL parameter ---
+    // Auto-start sync when triggered via external_run URL parameter
     function autoStartFromExternalParams() {
         const params = new URLSearchParams(window.location.search);
 

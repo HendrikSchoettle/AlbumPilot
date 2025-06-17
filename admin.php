@@ -174,8 +174,6 @@ if (
     exit;
 }
 
-
-
 // Start sync via GET
 if (
     isset($_GET['sync_begin'], $_GET['pwg_token']) &&
@@ -278,13 +276,11 @@ if (
         $safeKey = pwg_db_real_escape_string($key);
         $safeVal = pwg_db_real_escape_string($value);
 
-        // [BEGIN REPLACEMENT: REPLACE user settings]
         $table = $prefixeTable . 'album_pilot_settings';
         pwg_query(
             "REPLACE INTO `$table` (user_id, setting_key, setting_value)
              VALUES ($userId, '$safeKey', '$safeVal')"
-        );
-        // [END REPLACEMENT]
+        );        
     }
 
     header('Content-Type: application/json');
@@ -502,7 +498,7 @@ function abortOnRootNoSubs(int $cat_id, bool $includeSubalbums, array &$log): vo
     }
 }
 
-// --- Step 1: File synchronization ---
+// Step 1: File synchronization
 if (
     isset($_GET['wrapped_sync'], $_GET['pwg_token']) &&
     $_GET['pwg_token'] === get_pwg_token()
@@ -516,10 +512,6 @@ if (
     $simulate         = isset($_GET['simulate'])   && $_GET['simulate']   === '1';
     $onlyNew          = isset($_GET['onlynew'])    && $_GET['onlynew']    === '1';
     $includeSubalbums = isset($_GET['subalbums'])  && $_GET['subalbums']  === '1';
-
-    // 🔧 DEBUG: Log wrapped_sync parameters
-    log_message('[AlbumPilot ### DEBUG] wrapped_sync GET → ' . json_encode($_GET));
-    log_message('[AlbumPilot ### DEBUG] wrapped_sync POST before include → ' . json_encode($_POST));
 
     log_message("📂 " . l10n('log_sync_step1_start'));
     log_message(
@@ -595,8 +587,6 @@ if (
     exit;
 }
 
-
-// #### debug
 // If a global reset was requested, clear all progress at once
 check_and_clear_reset();
 

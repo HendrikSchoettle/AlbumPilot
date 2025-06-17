@@ -9,8 +9,6 @@ if (!defined('PHPWG_ROOT_PATH')) {
 }
 
 // Determine plugin folder name and convert to a valid class name
-
-
 $pluginId   = basename(__DIR__);                          
 $pluginClass = preg_replace('/[^A-Za-z0-9_]/', '_', $pluginId) . '_maintain';
 

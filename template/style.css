@@ -212,7 +212,6 @@ li:has(.step-checkbox:disabled) {
 }
 
 .videojs-output-format-line {
-  color: #777;
   font-size: 15px;
   line-height: 1.2;
   margin-top: 0px;
@@ -332,44 +331,88 @@ li:has(.step-checkbox:disabled) {
   color: #666 !important;
 }
 
-/* --------------------------------------------------
-   Override default disabled-input coloring in Chrome
--------------------------------------------------- */
 input:disabled,
 select:disabled,
 textarea:disabled,
 button:disabled {
-  color: #666 !important;               /* desired light-gray text */
-  -webkit-text-fill-color: #666 !important; /* override WebKit default */
-  background-color: #f7f7f7 !important; /* optional: slightly gray bg */
+  color: #666 !important;              
+  -webkit-text-fill-color: #666 !important; 
+  background-color: #f7f7f7 !important;
 }
-
-/* --------------------------------------------------
-   Labels next to disabled checkboxes
--------------------------------------------------- */
-/* enabled labels stay dark */
 .step-list li:has(.step-checkbox:not(:disabled)) label {
   color: #111 !important;
 }
-/* disabled labels become light gray */
+
 .step-checkbox:disabled + label,
 .step-checkbox:disabled + span,
 li:has(.step-checkbox:disabled) label {
   color: #666 !important;
 }
 
-/* --------------------------------------------------
-   Grey out all settings (titles, labels, lists)
-   when in batch-mode 
--------------------------------------------------- */
-/* Title above settings */
 .album-sync-wrapper.batch-mode h2 {
   color: #666 !important;
 }
 
-/* Entire settings box and all its contents */
 .album-sync-wrapper.batch-mode .album-settings-box,
 .album-sync-wrapper.batch-mode .album-settings-box * {
   color: #666 !important;
+}
+
+.videojs-output-format-line {
+  margin-bottom: 4px !important;
+}
+
+.videojs-output-format-line label:has(input:disabled) {
+  color: #666 !important;
+}
+
+.videojs-output-format-line label:has(input:not(:disabled)) {
+  color: #111 !important;
+}
+
+.videojs-options-wrapper.disabled-block,
+.thumb-options-wrapper.disabled-block {
+  opacity: 0.5;
+  color: #777 !important;
+}
+
+.videojs-options-wrapper label.disabled-block {
+  opacity: 0.5;
+  color: #777 !important;
+}
+
+.videojs-options-wrapper label.disabled-block span {
+  color: #777 !important;
+}
+
+
+.videojs-options-wrapper .disabled-block,
+.videojs-options-wrapper .disabled-block *,
+.videojs-output-format-line.disabled-block,
+.videojs-output-format-line.disabled-block *,
+.videojs-options-wrapper.disabled-block label,
+.videojs-options-wrapper.disabled-block label *,
+.videojs-options-wrapper label.disabled-block,
+.videojs-options-wrapper label.disabled-block *,
+.videojs-output-format-line.disabled-block label,
+.videojs-output-format-line.disabled-block span {
+  color: #777 !important;
+  opacity: 1 !important;
+}
+
+
+.videojs-output-format-line.disabled-block {
+  pointer-events: none;
+  opacity: 1;
+}
+
+.videojs-output-format-line.disabled-block label,
+.videojs-output-format-line.disabled-block span {
+  color: #777 !important;
+}
+
+.videojs-output-format-line label,
+.videojs-output-format-line span {
+  color: #111 !important;
 }
 
