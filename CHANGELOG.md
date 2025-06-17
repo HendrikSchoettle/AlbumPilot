@@ -5,8 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [0.3.6] – 2025-06-17
 
 ### Fixed
-- Improved CSS styling for disabled VideoJS options now correctly applies light-gray to all labels and inputs when video poster generation is turned off.
 - Thumbnail generation for `XXLarge` (and similar) video posters no longer loops indefinitely: added a size‐equality guard so that source dimensions equal to target dimensions are skipped.
+- Improved CSS styling for disabled VideoJS options now correctly applies light-gray to all labels and inputs when video poster generation is turned off.
 
 ## [0.3.5] – 2025-06-17
 

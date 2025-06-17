@@ -48,8 +48,8 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 ## What’s New in v0.3.6
 
 ### Fixed
-- Improved CSS styling for disabled VideoJS options now correctly applies light-gray to all labels and inputs when video poster generation is turned off.
 - Thumbnail generation for `XXLarge` (and similarly sized) video posters no longer loops indefinitely: a size-equality guard has been added so that source dimensions equal to target dimensions are skipped.
+- Improved CSS styling for disabled VideoJS options now correctly applies light-gray to all labels and inputs when video poster generation is turned off.
 
 ## What’s New in v0.3.5
 
