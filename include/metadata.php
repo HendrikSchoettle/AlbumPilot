@@ -149,7 +149,24 @@ if (
 
     if (!$simulate && !empty($batchIds)) {
         include_once(PHPWG_ROOT_PATH . 'admin/include/functions_metadata.php');
-        sync_metadata($batchIds);
+        // temporarily convert warnings to exceptions for sync_metadata
+        set_error_handler(function($errno, $errstr) {
+            throw new \ErrorException($errstr, 0, $errno);
+        });
+        try {
+            sync_metadata($batchIds);
+        } catch (\Throwable $e) {
+            // log missing file or metadata sync error
+            $errMsg = sprintf(
+                l10n('log_file_missing'),
+                $imageId,
+                $path
+            );
+            log_message('❌ ' . $errMsg);
+            $log[] = '❌ ' . $errMsg;
+        }
+        restore_error_handler();
+
     }
 
     $updated       += count($batchIds);

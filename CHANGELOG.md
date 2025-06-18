@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## What’s New in v0.3.8
+
+### Fixed
+- Prevent crash during metadata update when a file is missing or unreadable: such cases are now caught and logged.
+
 ## [0.3.7] – 2025-06-18
 
 ### Fixed

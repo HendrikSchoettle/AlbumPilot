@@ -1,6 +1,6 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 0.3.7
+**Version:** 0.3.8
 **Release Date:** 2025-06-18
 **Tested with:** Piwigo 15.5.0
 
@@ -9,6 +9,7 @@
 ## Table of Contents
 
 - [Overview](#overview)  
+  - [What's New in v0.3.8](#whats-new-in-v038)
   - [What's New in v0.3.7](#whats-new-in-v037)
   - [What's New in v0.3.6](#whats-new-in-v036)
   - [What's New in v0.3.5](#whats-new-in-v035)
@@ -46,6 +47,11 @@
 AlbumPilot automates several key synchronization steps within Piwigo, saving you time and effort during album management. It allows you to batch process file synchronization, thumbnail generation, video poster creation, metadata updates, checksum calculations, and other features with a simple, user-friendly interface.
 
 ---
+
+## What’s New in v0.3.8
+
+### Fixed
+- Prevent crash during metadata update when a file is missing or unreadable: such cases are now caught and logged.
 
 ## What’s New in v0.3.7
 
