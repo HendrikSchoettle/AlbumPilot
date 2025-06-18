@@ -155,8 +155,19 @@ if (
 
                 try {
                     $sizeData = @getimagesize($posterPath);
-                    $posterW  = $sizeData[0] ?? 0;
-                    $posterH  = $sizeData[1] ?? 0;
+                    if ($sizeData === false) {
+                    // Log getimagesize failure and skip this poster
+                    $errMsg = sprintf(
+                        l10n('log_invalid_dimensions'),
+                        $posterImg['id'],
+                        $posterRelPath
+                    );
+                    log_message('⛔ ' . $errMsg);
+                    $log[] = '⛔ ' . $errMsg;
+                        continue;
+                    }
+                    $posterW = $sizeData[0];
+                    $posterH = $sizeData[1];
 
                     foreach (DerivativeImage::get_all($srcPoster) as $type => $deriv) {
                         if (!empty($allowedTypes) && !in_array($type, $allowedTypes, true)) {

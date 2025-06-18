@@ -1,7 +1,7 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 0.3.6
-**Release Date:** 2025-06-17
+**Version:** 0.3.7
+**Release Date:** 2025-06-18
 **Tested with:** Piwigo 15.5.0
 
 ---
@@ -9,6 +9,7 @@
 ## Table of Contents
 
 - [Overview](#overview)  
+  - [What's New in v0.3.7](#whats-new-in-v037)
   - [What's New in v0.3.6](#whats-new-in-v036)
   - [What's New in v0.3.5](#whats-new-in-v035)
   - [What's New in v0.3.4](#whats-new-in-v034)
@@ -45,11 +46,20 @@
 AlbumPilot automates several key synchronization steps within Piwigo, saving you time and effort during album management. It allows you to batch process file synchronization, thumbnail generation, video poster creation, metadata updates, checksum calculations, and other features with a simple, user-friendly interface.
 
 ---
+
+## What’s New in v0.3.7
+
+### Fixed
+- Skip video posters or thumbnails when image dimensions cannot be read, with improved error messaging.
+
+### Changed
+- Minor UI improvements.
+
 ## What’s New in v0.3.6
 
 ### Fixed
-- Thumbnail generation for `XXLarge` (and similarly sized) video posters no longer loops indefinitely: a size-equality guard has been added so that source dimensions equal to target dimensions are skipped.
 - Improved CSS styling for disabled VideoJS options now correctly applies light-gray to all labels and inputs when video poster generation is turned off.
+- Thumbnail generation for `XXLarge` (and similarly sized) video posters no longer loops indefinitely: a size-equality guard has been added so that source dimensions equal to target dimensions are skipped.
 
 ## What’s New in v0.3.5
 
