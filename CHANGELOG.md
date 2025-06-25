@@ -2,7 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
-## What’s New in v0.3.8
+## [0.3.9] – 2025-06-25
+
+### Fixed
+- Improved error handling during metadata scan: when a file (e.g. large video) cannot be processed, the metadata scan is now aborted safely without crashing the entire sync. All remaining steps continue as expected.
+
+### Changed
+- Albums and subalbums are now alphabetically sorted prior to video scan and processing. This ensures consistent order during batch processing and improves log traceability.
+- Poster and thumbnail overwrite logic now safely preserves existing files: old poster or thumbnail images are only deleted if the new file has been successfully written.
+-Update metadata has now become step 2 (initially being step 5), in order to enable a coherent workflow. 
+- Minor UI wording adjustments and improvements.
+
+## [0.3.8] – 2025-06-18
 
 ### Fixed
 - Prevent crash during metadata update when a file is missing or unreadable: such cases are now caught and logged.
@@ -63,7 +74,7 @@ All notable changes to this project will be documented in this file.
 ## [0.3.1] – 2025-06-13
 
 ### Fixed
-- Resetting the Step 2 settings now correctly re-enables the “Import poster” and “Generate poster from frame” checkboxes instead of leaving them greyed-out.
+- Resetting the Step 3 settings now correctly re-enables the “Import poster” and “Generate poster from frame” checkboxes instead of leaving them greyed-out.
 - Added an extra safeguard so that video thumbnails themselves are never treated as poster-source files — no more thumbnails of thumbnails.
 - If video thumbnail generation was disabled in the UI, it is no longer erroneously re-enabled when starting a batch run (`external_run=1`).
 
@@ -79,7 +90,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - **Thumbnail cleanup for VideoJS**: Automatically deletes previously generated thumbnails when updating a video poster, preventing display of outdated thumbnails (improvement over official VideoJS behavior).
-- **Step order swapped**: Step 2 is now **Generate Video Posters** and Step 3 **Generate Thumbnails**, so thumbnails are generated from the updated posters.
+- **Step order swapped**: Step 3 is now **Generate Video Posters** and Step 4 **Generate Thumbnails**, so thumbnails are generated from the updated posters.
 - **Backend refactoring**: Restructured and cleaned up code for improved readability and maintainability.
 - **Batch-mode enhancements**: Optimized processing and handling of batch synchronizations.
 
@@ -98,14 +109,14 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - **Plugin directory name is now dynamic**: AlbumPilot is now independent of its installation folder name. The plugin no longer requires a specific directory name and will function correctly regardless of how the plugin folder is named. However, folder names must not contain hyphens (`-`), as this breaks plugin activation and internal references.
 - **URL-based sync triggering added**: Synchronization steps can now be run externally by appending `external_run=1` with additional parameters to the plugin URL.
-- **Reordered sync steps**: Step 4 (Checksum Calculation) and Step 5 (Metadata Update) swapped positions to improve logical processing order.
+- **Reordered sync steps**: Step 5 (Checksum Calculation) and Step 2 (Metadata Update) swapped positions to improve logical processing order.
 - **Optimized language loading**: Frontend now loads only the currently active language and only strings relevant for JavaScript.
 - **Improved visual log output**: Bullet symbol glitches in log output have been resolved for clearer display.
 
 ## [0.1.1] – 2025-05-28
 
 ### Added
-- Video metadata writing for video files in Step 4 (duration, resolution, etc.).
+- Video metadata writing for video files in Step 5 (duration, resolution, etc.).
 
 ### Changed
 - Consistent use of visual log symbols across all steps.

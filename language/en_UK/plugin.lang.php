@@ -29,11 +29,11 @@ $lang = array(
     'thumb_type_label'                  => 'Type',
 
     // Step names
-    'step_sync_files'                   => '1. Sync new files and metadata',
-    'step_generate_video_posters'       => '2. Generate video posters',
-	'step_generate_thumbnails'          => '3. Generate thumbnails',
-    'step_calculate_checksums'          => '4. Calculate missing checksums',
-    'step_update_metadata'              => '5. Import metadata from image files into database (slow!)',
+    'step_sync_files'                   => '1. Import new files and their metadata into database',
+    'step_update_metadata'              => '2. Import metadata of all files into database (slow!)',
+	'step_generate_video_posters'       => '3. Generate video posters',
+	'step_generate_thumbnails'          => '4. Generate thumbnails',
+    'step_calculate_checksums'          => '5. Calculate missing checksums',
     'step_reassign_smart_albums'        => '6. Reassign smart albums',
     'step_update_album_metadata'        => '7. Update album metadata',
     'step_update_photo_information'     => '8. Update photo information',
@@ -83,7 +83,7 @@ $lang = array(
     'Options_heading'                   => 'Options',
     'Simulate_mode'                     => 'Run as simulation only',
     'External_trigger_url'              => 'External Trigger URL',
-    'External_trigger_description'      => 'This link can be used in a script to run AlbumPilot externally. Start on Windows using: start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --new-window --autoplay-policy=no-user-gesture-required --disable-blink-features=AutomationControlled --disable-popup-blocking --disable-features=SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure --disable-background-timer-throttling --disable-renderer-backgrounding --disable-infobars "https://..."',
+    'External_trigger_description'      => 'This link can be used in a script to run AlbumPilot externally. Start on Windows using Chrome with: start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --new-window --autoplay-policy=no-user-gesture-required --disable-blink-features=AutomationControlled --disable-popup-blocking --disable-features=SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure --disable-background-timer-throttling --disable-renderer-backgrounding --disable-infobars "https://..."',
 
     // Logging errors and admin diagnostics
     'log_write_error'                   => 'Write error: no write permissions for log file or directory.',
@@ -171,4 +171,3 @@ $lang = array(
     'log_sync_step1_simulation_done'    => 'Simulation completed. No changes made.',
 );
 
-?>

@@ -139,8 +139,6 @@ if (
             sort($newAlbumList);
         }
 
-
-
         $upload_dir       = $conf['upload_dir'] ?? 'upload';
         $video_extensions = $conf['video_ext']   ?? ['mp4', 'mov', 'avi', 'mkv'];
 
@@ -149,7 +147,8 @@ if (
             'SELECT i.id, i.path
              FROM ' . IMAGES_TABLE . ' i
              JOIN ' . IMAGE_CATEGORY_TABLE . ' ic ON i.id = ic.image_id
-             WHERE ic.category_id IN (' . implode(',', $newAlbumList) . ')'
+             WHERE ic.category_id IN (' . implode(',', $newAlbumList) . ')
+			 ORDER BY i.path ASC'
         );
 
         $log[] = '🔍 ' . l10n('log_video_scan_start');
@@ -277,10 +276,6 @@ if (
             $posterExists = file_exists($poster);
 
             if (! $simulate) {
-                // Overwrite existing poster if needed
-                if ($posterExists && $needsPoster) {
-                    @unlink($poster);
-                }
 
                 // Invalidate any existing derivatives
                 if (class_exists('DerivativeImage')) {
@@ -326,9 +321,28 @@ if (
                 $cmd = 'ffmpeg -y -i ' . escapeshellarg($filename)
                      . ' -ss ' . escapeshellarg($posterTime)
                      . ' -vframes 1 -q:v 2 -f image2 ' . escapeshellarg($poster) . ' 2>&1';
+                
+                // Backup existing poster
+                if ($posterExists && $needsPoster) {
+                    $backupPoster = $poster . '.bak';
+                    @rename($poster, $backupPoster);
+                }
+				
                 exec($cmd, $_, $_);
 
-                insert_videojs_metadata((int) $img['id'], $filename);
+				// Restore or delete backup 
+				if (isset($backupPoster)) {
+    				if (file_exists($poster)) {
+        				// if new poster OK, delete backup
+        				@unlink($backupPoster);
+    				} else {
+        				// it poster failed, then restore backup
+        				@rename($backupPoster, $poster);
+    				}
+    				unset($backupPoster);
+				}
+				
+				insert_videojs_metadata((int) $img['id'], $filename);
 
                 if ($addOverlay && function_exists('add_movie_frame')) {
                     $testImage = @imagecreatefromjpeg($poster);
@@ -374,14 +388,34 @@ if (
                         $shortWarning = true;
                     }
                     if ($duration > 0 && $thumbInterval > 0) {
+
                         for ($second = 0; $second < $duration; $second += $thumbInterval) {
                             $thumbPath = $posterDir . $baseName . '-th_' . $second . '.' . $outputFormat;
-                            $cmdThumb  = 'ffmpeg -ss ' . escapeshellarg($second)
-                                       . ' -i ' . escapeshellarg($filename)
-                                       . ' -vframes 1 -q:v 3 ' . $sizeArg
-                                       . ' -f image2 ' . escapeshellarg($thumbPath) . ' 2>&1';
+
+                            // Backup existing thumbnail if exists
+                            $thumbBackup = null;
+                            if (file_exists($thumbPath)) {
+                                $thumbBackup = $thumbPath . '.bak';
+                                @rename($thumbPath, $thumbBackup);
+                            }
+
+                            $cmdThumb = 'ffmpeg -ss ' . escapeshellarg($second)
+                                      . ' -i ' . escapeshellarg($filename)
+                                      . ' -vframes 1 -q:v 3 ' . $sizeArg
+                                      . ' -f image2 ' . escapeshellarg($thumbPath) . ' 2>&1';
                             exec($cmdThumb);
+
+                            // Restore or delete backup
+                            if (isset($thumbBackup)) {
+                                if (file_exists($thumbPath)) {
+                                    @unlink($thumbBackup); // success
+                                } else {
+                                    @rename($thumbBackup, $thumbPath); // restore
+                                }
+                                unset($thumbBackup);
+                            }
                         }
+
                         pwg_query(
                             "UPDATE " . IMAGES_TABLE .
                             " SET representative_ext = '" . pwg_db_real_escape_string($outputFormat) . "'" .

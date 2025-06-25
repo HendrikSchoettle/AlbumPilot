@@ -8,19 +8,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Toggle enable/disable of dependent checkboxes (e.g. for thumb/video options)
     function updateDependentCheckboxStates() {
+        const step4 = document.getElementById('step4');
         const step3 = document.getElementById('step3');
-        const step2 = document.getElementById('step2');
 
         const thumbOptions = document.querySelectorAll('.thumb-type-checkbox');
         const videoWrapper = document.querySelector('.videojs-options-wrapper');
 
-        // Thumbnails (Step 3)
+        // Thumbnails (Step 4)
         thumbOptions.forEach(cb => {
-            cb.disabled = !step3?.checked;
+            cb.disabled = !step4?.checked;
         });
 
-        // VideoJS (Step 2)
-        if (!step2?.checked || !videoWrapper) {
+        // VideoJS (Step 3)
+        if (!step3?.checked || !videoWrapper) {
             // Deactivate everything
             videoWrapper?.querySelectorAll('input, select').forEach(el => el.disabled = true);
             return;
@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function () {
         fullPath.searchParams.set('subalbums', includeSubalbums ? '1' : '0');
         fullPath.searchParams.set('steps', selectedStepIds.join(','));
 
-        // Add selected thumb types if step3 is selected
+        // Add selected thumb types if step4 is selected
         if (selectedStepIds.includes('3')) {
             const selectedThumbTypes = [];
             document.querySelectorAll('.thumb-type-checkbox').forEach(cb => {
@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', function () {
             fullPath.searchParams.set('thumb_overwrite', overwriteThumbs ? '1' : '0');
         }
 
-        // Add VideoJS parameters if step2 is selected
+        // Add VideoJS parameters if step3 is selected
         if (selectedStepIds.includes('2')) {
             const posterSec = document.querySelector('.videojs-poster-second')?.value || '4';
             const thumbInterval = document.querySelector('.videojs-thumb-interval')?.value || '5';
@@ -296,10 +296,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const urls = [].concat(
         [
             ['step1', t('step_sync_files'), root + pluginPageUrl + '&wrapped_sync=1&pwg_token=' + token],
-            ['step2', t('step_generate_video_posters') + (isVideoJSActive ? '' : ' (' + t('videojs_not_active') + ')'), root + pluginPageUrl + '&video_thumb_block=1&cat_id=ALBUM_ID&pwg_token=' + token],
-            ['step3', t('step_generate_thumbnails'), root + pluginPageUrl + '&generate_image_thumbs=1&album_id=ALBUM_ID&pwg_token=' + token],
-            ['step4', t('step_calculate_checksums'), root + pluginPageUrl + '&calculate_md5=1&album_id=ALBUM_ID&pwg_token=' + token],
-            ['step5', t('step_update_metadata'), root + pluginPageUrl + '&update_metadata_for_album=ALBUM_ID&pwg_token=' + token],
+            ['step2', t('step_update_metadata'), root + pluginPageUrl + '&update_metadata_for_album=ALBUM_ID&pwg_token=' + token],
+			['step3', t('step_generate_video_posters') + (isVideoJSActive ? '' : ' (' + t('videojs_not_active') + ')'), root + pluginPageUrl + '&video_thumb_block=1&cat_id=ALBUM_ID&pwg_token=' + token],
+            ['step4', t('step_generate_thumbnails'), root + pluginPageUrl + '&generate_image_thumbs=1&album_id=ALBUM_ID&pwg_token=' + token],
+            ['step5', t('step_calculate_checksums'), root + pluginPageUrl + '&calculate_md5=1&album_id=ALBUM_ID&pwg_token=' + token]            
         ],
         [
             ['step6', t('step_reassign_smart_albums') + (isSmartAlbumsActive ? '' : ' (' + t('smartalbums_not_active') + ')'), root + 'admin.php?page=plugin-SmartAlbums-cat_list&smart_generate=all'],
@@ -319,11 +319,11 @@ document.addEventListener('DOMContentLoaded', function () {
         checkbox.className = 'step-checkbox';
         checkbox.id = step[0];
 
-        // By default, step 5 (metadata) is unchecked; others remain checked initially
-        checkbox.checked = step[0] !== 'step5';
+        // By default, step 2 (metadata) is unchecked; others remain checked initially
+        checkbox.checked = step[0] !== 'step2';
 
-        // For VideoJS step (step2), only enable if plugin is active
-        if (step[0] === 'step2') {
+        // For VideoJS step (step3), only enable if plugin is active
+        if (step[0] === 'step3') {
             // plugin inactive → leave unchecked and disabled
             checkbox.checked = isVideoJSActive;
             checkbox.disabled = !isVideoJSActive;
@@ -343,7 +343,7 @@ document.addEventListener('DOMContentLoaded', function () {
         li.appendChild(label);
         // create Options for thumb generation
 
-        if (step[0] === 'step3') {
+        if (step[0] === 'step4') {
             if (typeof window.renderImageOptions === 'function') {
                 window.renderImageOptions({
                     stepCheckbox: checkbox,
@@ -356,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
         
-        if (step[0] === 'step2') {
+        if (step[0] === 'step3') {
             if (typeof window.renderVideoOptions === 'function') {
                 window.renderVideoOptions({
                     stepCheckbox: checkbox,
@@ -507,12 +507,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         saveSyncSettings(syncSettings);
 
-        // Deactivate thumb options, if step3 is deactivated on loading
-        const step3Checkbox = document.getElementById('step3');
+        // Deactivate thumb options, if step4 is deactivated on loading
+        const step4Checkbox = document.getElementById('step4');
         const thumbOverwrite = document.querySelector('.thumb-overwrite-checkbox');
         const thumbTypeCheckboxes = document.querySelectorAll('.thumb-type-checkbox');
 
-        if (step3Checkbox && !step3Checkbox.checked) {
+        if (step4Checkbox && !step4Checkbox.checked) {
             if (thumbOverwrite)
                 thumbOverwrite.disabled = true;
             thumbTypeCheckboxes.forEach(cb => cb.disabled = true);
@@ -613,7 +613,7 @@ document.addEventListener('DOMContentLoaded', function () {
         syncBeginParams.set('pwg_token', token);
 
         // VideoJS-related options (only if step 2 is selected)
-        if (document.getElementById('step2')?.checked) {
+        if (document.getElementById('step3')?.checked) {
             syncBeginParams.set('poster_second', document.querySelector('.videojs-poster-second')?.value || '4');
             syncBeginParams.set('thumb_interval', document.querySelector('.videojs-thumb-interval')?.value || '5');
             syncBeginParams.set('thumb_size', document.querySelector('.videojs-size-input')?.value || '120x68');
@@ -628,7 +628,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Thumbnail-related options (only if step 3 is selected)
-        if (document.getElementById('step3')?.checked) {
+        if (document.getElementById('step4')?.checked) {
             const selectedThumbTypes = [];
             document.querySelectorAll('.thumb-type-checkbox').forEach(cb => {
                 if (cb.checked)
@@ -702,8 +702,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const name = step[1];
                 let url = step[2].replace(/ALBUM_ID/g, albumId);
 				
-                // Only pass selected thumbnail types for step3
-                if (id === 'step3') {
+                // Only pass selected thumbnail types for step4
+                if (id === 'step4') {
                     const selectedThumbTypes = [];
                     document.querySelectorAll('.thumb-type-checkbox').forEach(cb => {
                         if (cb.checked)
@@ -720,7 +720,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 }
 
-                if (id === 'step2') {
+                if (id === 'step3') {
                     const posterSec = document.querySelector('.videojs-poster-second')?.value || '4';
                     const thumbInterval = document.querySelector('.videojs-thumb-interval')?.value || '5';
                     const thumbSize = document.querySelector('.videojs-size-input')?.value || '120x68';
@@ -821,17 +821,15 @@ document.addEventListener('DOMContentLoaded', function () {
             selectedAlbum: ''
         };
 
-        const allSteps = [].concat(
-            ['step1', 'step3', 'step2', 'step4'],
-            ['step5', 'step6', 'step7', 'step8', 'step9', 'step10']);
+        const allSteps = urls.map(step => step[0]);
 
         allSteps.forEach(id => {
             const cb = document.getElementById(id);
             if (cb) {
                 if (!cb.disabled) {
-                    cb.checked = id !== 'step5';
+                    cb.checked = id !== 'step2';
                 }
-                syncSettings[id] = (!cb.disabled && id !== 'step5') ? '1' : '0';
+                syncSettings[id] = (!cb.disabled && id !== 'step2') ? '1' : '0';
             }
         });
 
@@ -910,11 +908,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Re-enable dependent fields (e.g. input fields under unchecked steps)
-        requestAnimationFrame(() => updateDependentCheckboxStates());
+        
 
         saveSyncSettings(syncSettings);
 
-        generateExternalUrlFromSelection();
+        requestAnimationFrame(() => updateDependentCheckboxStates());generateExternalUrlFromSelection();
     });
 
     // Auto-start sync when triggered via external_run URL parameter

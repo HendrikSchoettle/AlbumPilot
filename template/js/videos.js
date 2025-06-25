@@ -56,7 +56,7 @@ window.renderVideoOptions = function ({
     optionsWrapper.appendChild(cb4);
 
     const cb5 = document.createElement('label');
-    cb5.innerHTML = `<br><input type="checkbox" class="videojs-option" data-key="videojs_add_thumbs"> ${t('VideoJS_AddThumb')}`;
+    cb5.innerHTML = `<br><br><input type="checkbox" class="videojs-option" data-key="videojs_add_thumbs"> ${t('VideoJS_AddThumb')}`;
 
     const thumbSecInput = document.createElement('input');
     thumbSecInput.type = 'number';

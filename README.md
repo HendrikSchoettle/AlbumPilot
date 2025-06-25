@@ -1,7 +1,7 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 0.3.8
-**Release Date:** 2025-06-18
+**Version:** 0.3.9
+**Release Date:** 2025-06-25
 **Tested with:** Piwigo 15.5.0
 
 ---
@@ -9,6 +9,7 @@
 ## Table of Contents
 
 - [Overview](#overview)  
+  - [What's New in v0.3.9](#whats-new-in-v039)
   - [What's New in v0.3.8](#whats-new-in-v038)
   - [What's New in v0.3.7](#whats-new-in-v037)
   - [What's New in v0.3.6](#whats-new-in-v036)
@@ -23,10 +24,10 @@
   - [What's New in v0.1.1](#whats-new-in-v011)
 - [Synchronization Steps](#synchronization-steps)
   - [Step 1: Sync Files](#step-1-sync-files)
-  - [Step 2: Generate Video Posters](#step-3-generate-video-posters)
-  - [Step 3: Generate Thumbnails](#step-2-generate-thumbnails)
-  - [Step 4: Calculate Checksums](#step-4-calculate-checksums)
-  - [Step 5: Update Metadata](#step-5-update-metadata)
+  - [Step 3: Generate Video Posters](#step-3-generate-video-posters)
+  - [Step 4: Generate Thumbnails](#step-2-generate-thumbnails)
+  - [Step 5: Calculate Checksums](#step-4-calculate-checksums)
+  - [Step 2: Update Metadata](#step-5-update-metadata)
   - [Step 6: Reassign Smart Albums](#step-6-reassign-smart-albums)
   - [Step 7: Update Album Metadata](#step-7-update-album-metadata)
   - [Step 8: Update Photo Information](#step-8-update-photo-information)
@@ -47,6 +48,17 @@
 AlbumPilot automates several key synchronization steps within Piwigo, saving you time and effort during album management. It allows you to batch process file synchronization, thumbnail generation, video poster creation, metadata updates, checksum calculations, and other features with a simple, user-friendly interface.
 
 ---
+
+## What’s New in v0.3.9
+
+### Fixed
+- Improved error handling during metadata scan: when a file (e.g. large video) cannot be processed, the metadata scan is now aborted safely without crashing the entire sync. All remaining steps continue as expected.
+
+### Changed
+- Albums and subalbums are now alphabetically sorted prior to video scan and processing. This ensures consistent order during batch processing and improves log traceability.
+- Poster and thumbnail overwrite logic now safely preserves existing files: old poster or thumbnail images are only deleted if the new file has been successfully written.
+-Update metadata has now become step 2 (initially being step 5), in order to enable a coherent workflow.  
+- Minor UI wording adjustments and improvements.
 
 ## What’s New in v0.3.8
 
@@ -103,7 +115,7 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 ## What’s New in v0.3.1
 
 ### Fixed
-- The two checkboxes under Step 2 (“Import poster” and “Generate poster from frame”) are now always re-activated when you reset the Step 2 settings.
+- The two checkboxes under Step 3 (“Import poster” and “Generate poster from frame”) are now always re-activated when you reset the Step 3 settings.
 - An extra safety check has been added to prevent the plugin from ever creating thumbnails of existing video-thumbnail files.
 - Disabling video thumbnail generation in the UI is now correctly honoured in batch mode (`external_run=1`), so video thumbnails stay off when you run externally.
 
@@ -117,7 +129,7 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 - **Optional database reset during uninstall**: a maintain script is included (disabled by default) to drop the plugin’s database tables on uninstall. Ensure the plugin folder is named `AlbumPilot` if enabling it. See CHANGELOG.md for details
 
 ### Changed
-- **Step order swapped**: Step 2 is now **Generate Video Posters** and Step 3 **Generate Thumbnails**, so thumbnails are generated from the updated posters.  
+- **Step order swapped**: Step 3 is now **Generate Video Posters** and Step 4 **Generate Thumbnails**, so thumbnails are generated from the updated posters.  
 - **Thumbnail cleanup for VideoJS**: old thumbnails are now automatically removed when regenerating video posters (prevents showing stale images).  
 - **Backend refactoring**: code reorganized for clarity and maintainability.  
 - **Batch-mode enhancements**: optimized processing and reliability for external runs.  
@@ -148,7 +160,7 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
   Synchronization can now be externally triggered using `external_run=1` and corresponding URL parameters. This enables automated or script-based integration without manual UI interaction.
 
 - **Step Order Adjustment:**  
-  Step 4 (Checksum Calculation) and Step 5 (Metadata Update) have been reordered to improve logical consistency and execution flow.
+  Step 5 (Checksum Calculation) and Step 2 (Metadata Update) have been reordered to improve logical consistency and execution flow.
 
 - **Optimized Language Loading:**  
   Only the active language is now loaded into the page, significantly reducing HTML payload. Furthermore, only translation strings relevant to the frontend interface are included in the JavaScript scope.
@@ -166,7 +178,7 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
   Previously, it was licensed under MIT only.
 
 - **Video Metadata Writing Added:**  
-  The plugin now updates metadata (such as duration and resolution) for video files during the metadata update step (Step 4). This closes a previous gap where video files lacked associated metadata after synchronization.
+  The plugin now updates metadata (such as duration and resolution) for video files during the metadata update step (Step 5). This closes a previous gap where video files lacked associated metadata after synchronization.
 
 - **Improved Log Symbol Consistency:**  
   Log messages across all sync steps now consistently use visual prefixes. Previously inconsistent symbol usage between steps has been aligned.
@@ -187,24 +199,24 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 ## Synchronization Steps
 
 ### Step 1: Sync Files  
-This step calls Piwigo’s core synchronization mechanism to detect new, changed, or removed files and update the database accordingly. It updates the file structure and database entries to reflect the current content of the storage directories. Options allow including subalbums. It is restricted to processing only new or changed files. This step ensures the gallery is in sync with the underlying file system. Use Step 5 to update metadata of existing files.
+This step calls Piwigo’s core synchronization mechanism to detect new, changed, or removed files and update the database accordingly. It updates the file structure and database entries to reflect the current content of the storage directories. Options allow including subalbums. It is restricted to processing only new or changed files. This step ensures the gallery is in sync with the underlying file system. Use Step 2 to update metadata of existing files.
 
-### Step 2: Generate Video Posters  
+### Step 2: Update Metadata  
+This step reads metadata (EXIF, IPTC, etc.) from the image files and updates the corresponding entries in the Piwigo database for all images in the selected album(s), including subalbums if selected. The operation is performed in small batches to avoid PHP timeouts with large galleries. While the metadata update in step 1 is restricted to new or changed images, this step processes all items in the selected album.  
+**Note:** This step can be very slow and resource-intensive, so it should only be run when necessary. It does not write any metadata back to the image files. If you need to embed tags or other metadata into the actual image files, use a dedicated tool or plugin like Write Metadata.
+
+### Step 3: Generate Video Posters  
 For video files, this step generates preview images ("video posters"), optionally using the "filmstrip" effect, which captures a frame 4 seconds into the video. You can customize all VideoJS parameters (poster time, overlay, thumbnail interval, output format, etc.) via the plugin UI. When a poster is regenerated, any previously generated thumbnails are automatically deleted, preventing stale images from appearing (unlike the official VideoJS behavior).
 
-In addition to a single poster, the plugin can now also automatically produce **video thumbnails** at a defined interval (e.g. every 5 seconds), creating a series of preview frames throughout the duration of the video. These video thumbnails differ from the standard image thumbnails generated in **Step 3**—which are simply resized copies of original photos—in that they are actual frames extracted from the video itself, offering a storyboard-like sequence.
+In addition to a single poster, the plugin can now also automatically produce **video thumbnails** at a defined interval (e.g. every 5 seconds), creating a series of preview frames throughout the duration of the video. These video thumbnails differ from the standard image thumbnails generated in **Step 4**—which are simply resized copies of original photos—in that they are actual frames extracted from the video itself, offering a storyboard-like sequence.
 
 This step requires the **piwigo-videojs** plugin to be installed and active; it is otherwise disabled. Video posters (and video thumbnails) are generated only for videos that do not yet have a poster image, or when you explicitly choose to overwrite them.
 
-### Step 3: Generate Thumbnails  
+### Step 4: Generate Thumbnails  
 AlbumPilot generates missing thumbnails for images in all resolutions defined in the configuration. You can specify which thumbnail types to create or overwrite. An overwrite option is also available. so you can force-regenerate existing thumbnails (for example, if they have been modified externally). Otherwise, only images without existing thumbnails are processed, avoiding redundant work.
 
-### Step 4: Calculate Checksums  
+### Step 5: Calculate Checksums  
 This step computes and stores MD5 checksums for images that are missing them in the database. It processes only images without existing checksums, and it works in batches to maintain stability during long runs. It is limited to items contained in the chosen folder.
-
-### Step 5: Update Metadata  
-This step reads metadata (EXIF, IPTC, etc.) from the image files and updates the corresponding entries in the Piwigo database for all images in the selected album(s), including subalbums if selected. The operation is performed in small batches to avoid PHP timeouts with large galleries. While the metadata update in step 1 is restricted to new or changed images, this step processes all items in the selected album.  
-**Note:** This step can be very slow and resource-intensive, so it should only be run when necessary. It does not write any metadata back to the image files. If you need to embed tags or other metadata into the actual image files, use a dedicated tool or plugin like Write Metadata.
 
 ### Step 6: Reassign Smart Albums  
 This step triggers the **SmartAlbums** plugin’s function to regenerate smart album assignments for images. It automates what normally requires manual activation in the SmartAlbums plugin interface. If the SmartAlbums plugin is not installed or activated, this step is disabled.
@@ -288,9 +300,9 @@ The feature for generating thumbnails at fixed time intervals (e.g. every 5 seco
 
 ## Screenshots
 
-### Video Poster Generation (Step 3)
+### Video Poster Generation (Step 4)
 
-This screenshot shows the progress interface while generating video posters (Step 3), including real-time percentage, image ID, and thumbnail type.
+This screenshot shows the progress interface while generating video posters (Step 4), including real-time percentage, image ID, and thumbnail type.
 
 <img src="screenshots/albumpilot_video_poster_generation.png" alt="Video poster generation screenshot" style="max-width: 100%; height: auto;">
 

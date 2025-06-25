@@ -68,13 +68,14 @@ if (
                 }
             }
         }
-
-        $albumsList = implode(',', $albums);
+		
+		$albumsList = implode(',', $albums);
         $images     = array_from_query(
             "SELECT DISTINCT i.id, i.path
              FROM " . IMAGES_TABLE . " i
              JOIN " . IMAGE_CATEGORY_TABLE . " ic ON i.id = ic.image_id
-             WHERE ic.category_id IN ($albumsList)"
+             WHERE ic.category_id IN ($albumsList)
+			 ORDER BY i.path ASC"
         );
 
         $_SESSION['meta_progress'] = [
@@ -103,7 +104,7 @@ if (
         exit;
     }
 
-    // Step 2: Follow-up: process next batch from session queue
+    // Step 3: Follow-up: process next batch from session queue
     $prog             = &$_SESSION['meta_progress'];
     $queue            = &$prog['queue'];
     $index            = &$prog['index'];

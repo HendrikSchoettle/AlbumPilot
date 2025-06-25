@@ -98,7 +98,8 @@ if (
             "SELECT DISTINCT i.id, i.path, i.file, i.width, i.height, i.rotation
              FROM " . IMAGES_TABLE . " i
              JOIN " . IMAGE_CATEGORY_TABLE . " ic ON i.id = ic.image_id
-             WHERE ic.category_id IN ($albumsList)"
+             WHERE ic.category_id IN ($albumsList)
+			 ORDER BY i.path ASC"
         );
 
         $queue = [];
@@ -184,13 +185,6 @@ if (
                             ));
                             */
                             continue;
-                        }
-
-                        if ($overwriteThumbs && $deriv->is_cached()) {
-                            $thumbPath = $deriv->get_path();
-                            if (file_exists($thumbPath)) {
-                                @unlink($thumbPath);
-                            }
                         }
 
                         if (!$deriv->is_cached()) {
@@ -343,7 +337,7 @@ if (
         log_message('🧮 ' . $countMsg);
     }
 
-    // Step 2: Process the queue in steps
+    // Step 3: Process the queue in steps
     $prog           = &$_SESSION['thumb_progress'];
     $queue          = &$prog['queue'];
     $index          = &$prog['index'];
@@ -359,17 +353,41 @@ if (
         $deriv = $item['deriv'];
 
         if (!$deriv->is_cached()) {
-            if (!$simulate) {
-                $url = get_base_url() . '/' . ltrim($deriv->get_url(), '/');
-                $ch  = curl_init($url);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_HEADER, true);
-                curl_setopt($ch, CURLOPT_NOBODY, false);
-                curl_setopt($ch, CURLOPT_COOKIE, 'pwg_id=' . $_COOKIE['pwg_id']);
-                curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-                curl_exec($ch);
-                curl_close($ch);
-            }
+
+          if (!$simulate) {
+              $url = get_base_url() . '/' . ltrim($deriv->get_url(), '/');
+              $ch  = curl_init($url);
+              curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+              curl_setopt($ch, CURLOPT_HEADER, true);
+              curl_setopt($ch, CURLOPT_NOBODY, false);
+              curl_setopt($ch, CURLOPT_COOKIE, 'pwg_id=' . $_COOKIE['pwg_id']);
+              curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+
+              // Backup old file
+              if ($overwriteThumbs && $deriv->is_cached()) {
+                  $existingPath = $deriv->get_path();
+                  if (file_exists($existingPath)) {
+                      $backupPath = $existingPath . '.bak';
+                      @rename($existingPath, $backupPath);
+                  }
+              }
+
+              curl_exec($ch);
+              curl_close($ch);
+
+              // Restore or delete backup
+              if (isset($backupPath)) {
+                  $newPath = $deriv->get_path();
+                  if (file_exists($newPath)) {
+                      // new file created successfully, remove backup
+                      @unlink($backupPath);
+                  } else {
+                      // new file creation failed, restore backup
+                      @rename($backupPath, $newPath);
+                  }
+                  unset($backupPath);
+              }
+          }
 
             $prog['generated']++;
             $blockGenerated++;

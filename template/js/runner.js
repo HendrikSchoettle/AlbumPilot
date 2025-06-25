@@ -83,13 +83,13 @@ window.next = function () {
 
     li.textContent = '🔄 ' + step.name;
 
-    if (['step1', 'step3', 'step2', 'step4', 'step5'].includes(step.id)) {
+    if (['step1', 'step2', 'step3', 'step4', 'step5'].includes(step.id)) {
         const heading = document.createElement('h5');
         heading.textContent = step.name;
         heading.className = 'step-heading';
         log.appendChild(heading);
 
-        if (['step3', 'step2', 'step4', 'step5'].includes(step.id)) {
+        if (['step2', 'step3', 'step4', 'step5'].includes(step.id)) {
             let offset = 0;
             let progressElement = null;
             let filenameElement = null;
@@ -98,8 +98,8 @@ window.next = function () {
                 // build base URL
                 let fetchUrlBase = step.url;
 
-                // for thumbnails (step3) always append current thumb_types & overwrite flag
-                if (step.id === 'step3') {
+                // for thumbnails (step4) always append current thumb_types & overwrite flag
+                if (step.id === 'step4') {
                     const types = Array.from(document.querySelectorAll('.thumb-type-checkbox:checked'))
                         .map(cb => cb.value);
                     const overwrite = document.querySelector('.thumb-overwrite-checkbox')?.checked ? '1' : '0';
@@ -108,7 +108,7 @@ window.next = function () {
                 }
 
                 // add offset only for chunked steps
-                const fetchUrl = (['step3', 'step4', 'step5'].includes(step.id))
+                const fetchUrl = (['step2', 'step4', 'step5'].includes(step.id))
                  ? fetchUrlBase + '&offset=' + offset
                  : fetchUrlBase;
 
@@ -325,19 +325,38 @@ window.handleJsonStep = window.handleJsonStep || function (url, onSuccess) {
 
     fetchSafeJSON(url).then(data => {
 
-        if (data.error) {
-            const div = document.createElement('div');
-            div.className = 'sync-step-block error';
 
-            if (data.htmlFallback) {
-                div.innerHTML = window.AlbumPilotLang.invalid_response + '<br><pre>' +
-                    data.rawText.substring(0, 2000) + '</pre>';
-            } else {
-                div.textContent = window.AlbumPilotLang.network_error + ' ' + data.message;
-            }
 
-            log.appendChild(div);
-        } else {
+if (data.error) {
+    const div = document.createElement('div');
+    div.className = 'sync-step-block error';
+
+    if (data.htmlFallback) {
+        div.innerHTML = window.AlbumPilotLang.invalid_response + '<br><pre>' +
+            data.rawText.substring(0, 2000) + '</pre>';
+    } else {
+        div.textContent = window.AlbumPilotLang.network_error + ' ' + data.message;
+    }
+
+    log.appendChild(div);
+
+    // Continue to next step even after error
+    if (typeof window._runnerIndex !== 'undefined' && typeof window._runnerSelectedSteps !== 'undefined') {
+        const liList = document.querySelectorAll('#sync-steps li');
+        const li = liList[window._runnerIndex];
+        if (li) li.innerHTML = '❌ ' + window._runnerSelectedSteps[window._runnerIndex].name;
+
+        window._runnerIndex++;
+        setTimeout(window.next, 1000); // delay helps UI stay smooth
+    }
+}
+
+
+
+
+
+
+else {
             onSuccess(data);
         }
     });

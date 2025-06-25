@@ -590,16 +590,16 @@ if (
 // If a global reset was requested, clear all progress at once
 check_and_clear_reset();
 
-// --- Step 2: Video processing ---
+// --- Step 3: Video processing ---
 include __DIR__ . '/include/videos.php';
 
-// --- Step 3: Image thumbnails ---
+// --- Step 4: Image thumbnails ---
 include __DIR__ . '/include/images.php';
 
-// --- Step 4: Checksum calculation ---
+// --- Step 5: Checksum calculation ---
 include __DIR__ . '/include/checksum.php';
 
-// --- Step 5: Metadata update ---
+// --- Step 2: Metadata update ---
 include __DIR__ . '/include/metadata.php';
 
 // Assign full language pack to Smarty
@@ -725,4 +725,4 @@ if (!empty($_SESSION['log_write_error_text'])) {
 $template->assign('BATCH_MODE_ACTIVE', isset($_GET['external_run']) && $_GET['external_run'] === '1');
 $template->set_filename('album_pilot', realpath(ALBUM_PILOT_PATH . 'template/admin.tpl'));
 $template->assign_var_from_handle('ADMIN_CONTENT', 'album_pilot');
-?>
+

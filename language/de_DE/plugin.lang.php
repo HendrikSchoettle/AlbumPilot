@@ -29,11 +29,11 @@ $lang = array(
     'thumb_type_label'                  => 'Typ',
 
     // Step names
-    'step_sync_files'                   => '1. Neue Dateien und Metadaten synchronisieren',
-    'step_generate_video_posters'       => '2. Videoposter generieren',
-    'step_generate_thumbnails'          => '3. Thumbnails generieren',
-    'step_calculate_checksums'          => '4. Fehlende Checksummen berechnen',
-    'step_update_metadata'              => '5. Metadaten aus Bilddateien in Datenbank importieren (langsam!)',
+    'step_sync_files'                   => '1. Neue Dateien und deren Metadaten in Datenbank importieren',
+    'step_update_metadata'              => '2. Metadaten aller Dateien in Datenbank importieren (langsam!)',
+	'step_generate_video_posters'       => '3. Videoposter generieren',
+    'step_generate_thumbnails'          => '4. Thumbnails generieren',
+    'step_calculate_checksums'          => '5. Fehlende Checksummen berechnen',
     'step_reassign_smart_albums'        => '6. Smart-Alben neu zuweisen',
     'step_update_album_metadata'        => '7. Album-Metadaten aktualisieren',
     'step_update_photo_information'     => '8. Bildinformationen aktualisieren',
@@ -83,7 +83,7 @@ $lang = array(
     'Options_heading'                   => 'Optionen',
     'Simulate_mode'                     => 'Nur Simulation durchführen',
     'External_trigger_url'              => 'Externer Aufruf-Link',
-    'External_trigger_description'      => 'Dieser Link kann z. B. in einem Script verwendet werden, um AlbumPilot extern auszuführen. Start unter Windows mit start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --new-window --autoplay-policy=no-user-gesture-required --disable-blink-features=AutomationControlled --disable-popup-blocking --disable-features=SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure --disable-background-timer-throttling --disable-renderer-backgrounding --disable-infobars "https://..."',
+    'External_trigger_description'      => 'Dieser Link kann z. B. in einem Script verwendet werden, um AlbumPilot extern auszuführen. Start unter Windows und Chrome mit start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --new-window --autoplay-policy=no-user-gesture-required --disable-blink-features=AutomationControlled --disable-popup-blocking --disable-features=SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure --disable-background-timer-throttling --disable-renderer-backgrounding --disable-infobars "https://..."',
 
     // Logging errors and admin diagnostics
     'log_write_error'                   => 'Schreibfehler: Keine Schreibrechte für Logdatei oder Verzeichnis.',
@@ -170,4 +170,3 @@ $lang = array(
     'log_sync_step1_simulation_done'    => 'Simulation abgeschlossen. Keine Änderungen vorgenommen.',
 );
 
-?>

@@ -59,7 +59,8 @@ if (isset($_GET['calculate_md5'], $_GET['pwg_token']) && $_GET['pwg_token'] === 
             "SELECT i.id, i.path
              FROM " . IMAGES_TABLE . " i
              JOIN " . IMAGE_CATEGORY_TABLE . " ic ON i.id = ic.image_id
-             WHERE ic.category_id IN ($albumsList)"
+             WHERE ic.category_id IN ($albumsList)
+			 ORDER BY i.path ASC"
         );
 
         $queue = [];
