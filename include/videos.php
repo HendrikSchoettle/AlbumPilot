@@ -160,6 +160,7 @@ if (
 
         foreach ($results as $img) {
             $ext = strtolower(pathinfo($img['path'], PATHINFO_EXTENSION));
+
             if (!in_array($ext, $video_extensions, true)) {
                 continue;
             }
@@ -172,7 +173,7 @@ if (
             }
 
             $posterDir = dirname($filename) . '/pwg_representative/';
-            $baseName  = basename($filename, '.' . $ext);
+			$baseName = pathinfo($filename, PATHINFO_FILENAME); 
             $poster    = $posterDir . $baseName . '.' . $outputFormat;
 
             $needsPoster = (!$posterOverwrite && !file_exists($poster)) || $posterOverwrite;
@@ -271,7 +272,7 @@ if (
                 mkdir($posterDir, 0755, true);
             }
 
-            $baseName     = basename($filename, '.' . $ext);
+            $baseName     = pathinfo($filename, PATHINFO_FILENAME);
             $poster       = $posterDir . $baseName . '.' . $outputFormat;
             $posterExists = file_exists($poster);
 
