@@ -240,7 +240,8 @@ if (
                     if (!empty($allowedTypes) && !in_array($type, $allowedTypes, true)) {
                         continue;
                     }
-                    if (!$deriv->is_cached()) {
+                    /* Include existing thumbnails for overwrite or new thumbnails otherwise */
+                    if ($overwriteThumbs || !$deriv->is_cached()) {
                         $derivsToGenerate[$type] = $deriv;
                     }
                 }
