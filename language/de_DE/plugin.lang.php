@@ -58,7 +58,7 @@ $lang = array(
 
     // --- VideoJS UI translations ---
     'label_videojs_poster_and_thumb_options' => 'Optionen',
-    'VideoJS_RepAdd'                    => 'Hochgeladenes Poster übernehmen (falls vorhanden)',
+    'VideoJS_RepAdd'                    => 'Hochgeladenes Poster übernehmen (falls verfügbar)',
     'VideoJS_AddPoster'                 => 'Poster aus Frame generieren nach',
     'VideoJS_PosterSec'                 => 'Sekunden',
     'VideoJS_PosterOverwrite'           => 'Existierendes Poster überschreiben (falls vorhanden)',
