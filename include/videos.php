@@ -176,8 +176,11 @@ if (
 			$baseName = pathinfo($filename, PATHINFO_FILENAME); 
             $poster    = $posterDir . $baseName . '.' . $outputFormat;
 
-            $needsPoster = (!$posterOverwrite && !file_exists($poster)) || $posterOverwrite;
-            $needsThumbs = false;
+            // $needsPoster = (!$posterOverwrite && !file_exists($poster)) || $posterOverwrite;
+            $needsPoster = $createPoster && ((!$posterOverwrite && !file_exists($poster)) || $posterOverwrite);
+
+			
+			$needsThumbs = false;
             if ($addThumbs) {
                 $existing = glob($posterDir . $baseName . '-th_*.' . $outputFormat);
                 $needsThumbs = $posterOverwrite || empty($existing);
@@ -319,10 +322,12 @@ if (
                     log_message($msg);
                     $shortWarning = true;
                 }
-                $cmd = 'ffmpeg -y -i ' . escapeshellarg($filename)
-                     . ' -ss ' . escapeshellarg($posterTime)
-                     . ' -vframes 1 -q:v 2 -f image2 ' . escapeshellarg($poster) . ' 2>&1';
-                
+
+                $cmd = 'ffmpeg -ss ' . escapeshellarg($posterTime)
+                     . ' -i ' . escapeshellarg($filename)
+                     . ' -vcodec ' . ($outputFormat === 'png' ? 'png' : 'mjpeg')
+                     . ' -vframes 1 -an -f rawvideo -y ' . escapeshellarg($poster) . ' 2>&1';
+
                 // Backup existing poster
                 if ($posterExists && $needsPoster) {
                     $backupPoster = $poster . '.bak';
@@ -342,9 +347,10 @@ if (
         				// it poster failed, then restore backup
         				@rename($backupPoster, $poster);
     				}
-					
     				unset($backupPoster);
-    				// always delete the poster with the other extension when overwriting
+				}
+				
+				// always delete the poster with the other extension when overwriting
     				if (file_exists($poster)) {
         				$otherExt = ($outputFormat === 'jpg') ? 'png' : 'jpg';
         				$otherPoster = $posterDir . $baseName . '.' . $otherExt;
@@ -352,13 +358,16 @@ if (
             				@unlink($otherPoster);
         				}
     				}
-				}
 				
 				insert_videojs_metadata((int) $img['id'], $filename);
 
                 if ($addOverlay && function_exists('add_movie_frame')) {
-                    $testImage = @imagecreatefromjpeg($poster);
-                    if ($testImage !== false) {
+
+					$testImage = $outputFormat === 'png'
+						? @imagecreatefrompng($poster)
+						: @imagecreatefromjpeg($poster);
+
+					if ($testImage !== false) {
                         imagedestroy($testImage);
                         ob_start();
                         @add_movie_frame($poster);
@@ -370,13 +379,13 @@ if (
                 $check = pwg_db_fetch_assoc(
                     pwg_query("SELECT representative_ext FROM " . IMAGES_TABLE . " WHERE id = " . (int) $img['id'])
                 );
-                if (empty($check['representative_ext'])) {
-                    pwg_query(
-                        "UPDATE " . IMAGES_TABLE .
-                        " SET representative_ext = 'jpg'" .
-                        " WHERE id = " . (int) $img['id']
-                    );
-                }
+
+				// update representative_ext to current format
+				pwg_query(
+					"UPDATE " . IMAGES_TABLE .
+					" SET representative_ext = '" . pwg_db_real_escape_string($outputFormat) . "'" .
+					" WHERE id = " . (int) $img['id']
+				);
 
                 // Log start of thumbnails only in logfile, not GUI
                 log_message("📽️ " . sprintf(l10n('log_video_thumb_start'), $img['path']));
@@ -410,23 +419,40 @@ if (
                                 $thumbBackup = $thumbPath . '.bak';
                                 @rename($thumbPath, $thumbBackup);
                             }
+                            
+							$thumb_width = preg_split("/x/", $thumbSize);
+							if (!isset($thumb_width[0]) || empty($thumb_width[0])) {
+								$thumb_width[0] = "120";
+							}
 
-                            $cmdThumb = 'ffmpeg -ss ' . escapeshellarg($second)
-                                      . ' -i ' . escapeshellarg($filename)
-                                      . ' -vframes 1 -q:v 3 ' . $sizeArg
-                                      . ' -f image2 ' . escapeshellarg($thumbPath) . ' 2>&1';
-                            exec($cmdThumb);
+							$scale = "scale='".$thumb_width[0].":trunc(ow/a)'";
 
-                            // Restore or delete backup
-                            if (isset($thumbBackup)) {
-                                if (file_exists($thumbPath)) {
-                                    @unlink($thumbBackup); // success
-                                } else {
-                                    @rename($thumbBackup, $thumbPath); // restore
-                                }
-                                unset($thumbBackup);
-                            }
-                        }
+							$cmdThumb = 'ffmpeg -ss ' . escapeshellarg($second)
+									  . ' -i ' . escapeshellarg($filename)
+									  . ' -vcodec ' . ($outputFormat === 'png' ? 'png' : 'mjpeg')
+									  . ' -vframes 1 -an -f rawvideo -vf ' . escapeshellarg($scale)
+									  . ' -y ' . escapeshellarg($thumbPath) . ' 2>&1';
+
+							exec($cmdThumb);
+					
+							// Restore or delete backup
+							if (isset($thumbBackup)) {
+								if (file_exists($thumbPath)) {
+									@unlink($thumbBackup); // success
+								} else {
+									@rename($thumbBackup, $thumbPath); // restore
+								}
+								unset($thumbBackup);
+							}
+
+							// delete other-format thumbnails after successful thumbnail creation
+							if (file_exists($thumbPath)) {
+								$otherExt = ($outputFormat === 'jpg') ? 'png' : 'jpg';
+								foreach (glob($posterDir . $baseName . '-th_*.' . $otherExt) as $oldThumb) {
+									@unlink($oldThumb);
+								}
+							}
+						}
 
                         pwg_query(
                             "UPDATE " . IMAGES_TABLE .
