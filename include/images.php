@@ -59,9 +59,6 @@ if (
     include_once(PHPWG_ROOT_PATH . 'include/derivative.inc.php');
     include_once(PHPWG_ROOT_PATH . 'include/derivative_params.inc.php');
 
-    // If root album selected but "search in subalbums" is OFF, abort without scanning
-    abortOnRootNoSubs($albumId, $includeSubalbums, $log);
-
     // Step 1: Initial request – build processing queue and store in session
     if (!isset($_SESSION['thumb_progress'])) {
         // Log scan start
