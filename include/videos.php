@@ -333,6 +333,8 @@ if (
 
 				// Restore or delete backup 
 				if (isset($backupPoster)) {
+
+
     				if (file_exists($poster)) {
         				// if new poster OK, delete backup
         				@unlink($backupPoster);
@@ -340,7 +342,16 @@ if (
         				// it poster failed, then restore backup
         				@rename($backupPoster, $poster);
     				}
+					
     				unset($backupPoster);
+    				// always delete the poster with the other extension when overwriting
+    				if (file_exists($poster)) {
+        				$otherExt = ($outputFormat === 'jpg') ? 'png' : 'jpg';
+        				$otherPoster = $posterDir . $baseName . '.' . $otherExt;
+        				if (file_exists($otherPoster)) {
+            				@unlink($otherPoster);
+        				}
+    				}
 				}
 				
 				insert_videojs_metadata((int) $img['id'], $filename);
