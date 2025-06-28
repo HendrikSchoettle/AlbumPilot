@@ -176,9 +176,7 @@ if (
 			$baseName = pathinfo($filename, PATHINFO_FILENAME); 
             $poster    = $posterDir . $baseName . '.' . $outputFormat;
 
-            // $needsPoster = (!$posterOverwrite && !file_exists($poster)) || $posterOverwrite;
             $needsPoster = $createPoster && ((!$posterOverwrite && !file_exists($poster)) || $posterOverwrite);
-
 			
 			$needsThumbs = false;
             if ($addThumbs) {

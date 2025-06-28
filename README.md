@@ -1,7 +1,7 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 0.3.9
-**Release Date:** 2025-06-25
+**Version:** 0.3.10
+**Release Date:** 2025-06-28
 **Tested with:** Piwigo 15.5.0
 
 ---
@@ -9,6 +9,7 @@
 ## Table of Contents
 
 - [Overview](#overview)  
+  - [What's New in v0.3.10](#whats-new-in-v0310)
   - [What's New in v0.3.9](#whats-new-in-v039)
   - [What's New in v0.3.8](#whats-new-in-v038)
   - [What's New in v0.3.7](#whats-new-in-v037)
@@ -48,6 +49,19 @@
 AlbumPilot automates several key synchronization steps within Piwigo, saving you time and effort during album management. It allows you to batch process file synchronization, thumbnail generation, video poster creation, metadata updates, checksum calculations, and other features with a simple, user-friendly interface.
 
 ---
+
+## What’s New in v0.3.10
+
+### Fixed
+- Poster filenames now use the selected output format; old extensions are removed
+- pwg_representative folder is cleared before regenerating video posters
+- Apply film effect overlay works for both JPG and PNG output
+- Overwrite existing thumbnails functionality has been restored
+
+### Changed
+- When switching output format, thumbnails of the previous format are deleted after successful creation
+- Minor UI layout and label fixes
+- Checkbox enable/disable logic for poster and thumbnail controls now depends solely on the “Generate video posters” and “Generate thumbnails” steps
 
 ## What’s New in v0.3.9
 

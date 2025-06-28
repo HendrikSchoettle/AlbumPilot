@@ -43,15 +43,15 @@ window.renderVideoOptions = function ({
     formatWrapper.className = 'videojs-output-format-line option-line';
 
     formatWrapper.innerHTML =
-        t('VideoJS_OutputFormat') + ': ' +
+       '<br>' + t('VideoJS_OutputFormat') + '/' + t('step_thumbnail') + ': ' +
+
         '<label><input type="radio" name="videojs_output_format" value="jpg" checked class="readonly-radio"><span> ' + t('VideoJS_jpg') + ' </span></label>' +
         '<label><input type="radio" name="videojs_output_format" value="png" class="readonly-radio"><span> ' + t('VideoJS_png') + ' </span></label>';
 
-    optionsWrapper.appendChild(formatWrapper);
-
     const cb4 = document.createElement('label');
 
-    cb4.innerHTML = `<input type="checkbox" class="videojs-option" data-key="videojs_add_overlay" checked> <span>${t('VideoJS_OverlayAdd')}</span>`;
+    cb4.innerHTML = `<br><input type="checkbox" class="videojs-option" data-key="videojs_add_overlay" checked> <span>${t('VideoJS_OverlayAdd')}</span>`;
+
 
     optionsWrapper.appendChild(cb4);
 
@@ -79,6 +79,7 @@ window.renderVideoOptions = function ({
     thumbSizeInput.style.width = '80px';
     cb6.appendChild(thumbSizeInput);
     optionsWrapper.appendChild(cb6);
+    optionsWrapper.appendChild(formatWrapper);
 
     listItem.appendChild(optionsWrapper);
 
@@ -91,7 +92,8 @@ window.renderVideoOptions = function ({
         const posterDisabled = !isMainChecked || !isCreatePosterChecked;
         cb2.classList.toggle('disabled-block', !isMainChecked);
         cb3.classList.toggle('disabled-block', posterDisabled);
-        formatWrapper.classList.toggle('disabled-block', posterDisabled);
+        formatWrapper.classList.toggle('disabled-block', !isMainChecked);
+
         cb4.classList.toggle('disabled-block', posterDisabled);
 
         const isCreateThumbsChecked = optionsWrapper.querySelector('[data-key="videojs_add_thumbs"]')?.checked;
@@ -107,8 +109,9 @@ window.renderVideoOptions = function ({
         cb4.querySelector('input').disabled = posterDisabled;
 
         formatWrapper.querySelectorAll('input[type="radio"]').forEach(radio => {
-            radio.disabled = !isMainChecked || !isCreatePosterChecked;
-        });
+    radio.disabled = !isMainChecked;
+});
+
 
         optionsWrapper.querySelector('[data-key="videojs_add_overlay"]').disabled = !isMainChecked || !isCreatePosterChecked;
 

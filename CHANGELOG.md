@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.10] – 2025-06-28
+
+### Fixed
+- Poster filenames now use the selected output format; old extensions are removed
+- pwg_representative folder is cleared before regenerating video posters
+- Apply film effect overlay works for both JPG and PNG output
+- Overwrite existing thumbnails functionality has been restored
+
+### Changed
+- When switching output format, thumbnails of the previous format are deleted after successful creation
+- Minor UI layout and label fixes
+- Checkbox enable/disable logic for poster and thumbnail controls now depends solely on the “Generate video posters” and “Generate thumbnails” steps
+
+### Miscellaneous
+- Minor code cleanup and comment refinements.
+
 ## [0.3.9] – 2025-06-25
 
 ### Fixed
