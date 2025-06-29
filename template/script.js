@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function () {
         fullPath.searchParams.set('steps', selectedStepIds.join(','));
 
         // Add selected thumb types if step4 is selected
-        if (selectedStepIds.includes('3')) {
+        if (selectedStepIds.includes('4')) {
             const selectedThumbTypes = [];
             document.querySelectorAll('.thumb-type-checkbox').forEach(cb => {
                 if (cb.checked)
@@ -243,7 +243,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Add VideoJS parameters if step3 is selected
-        if (selectedStepIds.includes('2')) {
+        if (selectedStepIds.includes('3')) {
             const posterSec = document.querySelector('.videojs-poster-second')?.value || '4';
             const thumbInterval = document.querySelector('.videojs-thumb-interval')?.value || '5';
             const thumbSize = document.querySelector('.videojs-size-input')?.value || '120x68';
