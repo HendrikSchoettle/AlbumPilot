@@ -147,7 +147,7 @@ $lang = array(
     'log_video_too_short'               => 'Notice: The video "%s" is shorter (%d sec) than the configured poster time (%d sec). Adjusted to %d sec.',
     'log_video_thumb_start'             => 'Starting thumbnail generation for video: %s',
     'log_video_thumb_done'              => 'Thumbnail generation completed (%d thumbnails) for: %s',
-    'log_video_combined_counts'         => '%d file(s) to process (%d missing posters, %d missing thumbnails)',
+    'log_video_combined_counts'         => '%d file(s) to process (%d missing posters, %d files with missing thumbnails)',
 
     // Step summaries and simulation labels
     'log_step_completed_with_count'     => 'Step completed: %s for %d %s.',
@@ -167,7 +167,7 @@ $lang = array(
     'label_subalbums_no'                => 'album only',
     'log_sync_step1_before_count'       => 'Before: %d images in database',
     'log_sync_step1_after_count'        => 'After: %d images. Difference: %d new files',
-    'log_sync_step1_summary'            => 'Synchronisation completed. New files: %d (before: %d, after: %d)',
+    'log_sync_step1_summary'            => 'Synchronisation completed. File delta: %d (before: %d, after: %d)',
     'log_sync_step1_simulation_done'    => 'Simulation completed. No changes made.',
 );
 

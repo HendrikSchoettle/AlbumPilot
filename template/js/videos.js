@@ -43,7 +43,7 @@ window.renderVideoOptions = function ({
     formatWrapper.className = 'videojs-output-format-line option-line';
 
     formatWrapper.innerHTML =
-       '<br>' + t('VideoJS_OutputFormat') + '/' + t('step_thumbnail') + ': ' +
+        '<br>' + t('VideoJS_OutputFormat') + '/' + t('step_thumbnail') + ': ' +
 
         '<label><input type="radio" name="videojs_output_format" value="jpg" checked class="readonly-radio"><span> ' + t('VideoJS_jpg') + ' </span></label>' +
         '<label><input type="radio" name="videojs_output_format" value="png" class="readonly-radio"><span> ' + t('VideoJS_png') + ' </span></label>';
@@ -51,7 +51,6 @@ window.renderVideoOptions = function ({
     const cb4 = document.createElement('label');
 
     cb4.innerHTML = `<br><input type="checkbox" class="videojs-option" data-key="videojs_add_overlay" checked> <span>${t('VideoJS_OverlayAdd')}</span>`;
-
 
     optionsWrapper.appendChild(cb4);
 
@@ -67,7 +66,15 @@ window.renderVideoOptions = function ({
     thumbSecInput.style.margin = '0 8px';
     cb5.appendChild(thumbSecInput);
     cb5.append(' ' + t('VideoJS_ThumbSec'));
+
     optionsWrapper.appendChild(cb5);
+    const cbThumbOverwrite = document.createElement('label');
+    cbThumbOverwrite.className = 'videojs-thumb-overwrite';
+    cbThumbOverwrite.innerHTML =
+`<br><input type="checkbox" class="videojs-option" data-key="videojs_thumb_overwrite"`
+         + (savedSettings['videojs_thumb_overwrite'] === '1' ? ' checked' : '')
+         + `> <span>${t('label_thumb_overwrite')}</span>`;
+    optionsWrapper.appendChild(cbThumbOverwrite);
 
     const cb6 = document.createElement('label');
     cb6.innerHTML = `<br>${t('VideoJS_ThumbSize')}: `;
@@ -109,9 +116,8 @@ window.renderVideoOptions = function ({
         cb4.querySelector('input').disabled = posterDisabled;
 
         formatWrapper.querySelectorAll('input[type="radio"]').forEach(radio => {
-    radio.disabled = !isMainChecked;
-});
-
+            radio.disabled = !isMainChecked;
+        });
 
         optionsWrapper.querySelector('[data-key="videojs_add_overlay"]').disabled = !isMainChecked || !isCreatePosterChecked;
 
@@ -119,6 +125,14 @@ window.renderVideoOptions = function ({
 
         thumbSecInput.disabled = !isMainChecked || !isCreateThumbsChecked;
         thumbSizeInput.disabled = !isMainChecked || !isCreateThumbsChecked;
+
+        // disable / grey‐out “Overwrite existing thumbnails” exactly like the poster options
+        const thumbDisabled = !isMainChecked || !isCreateThumbsChecked;
+        cbThumbOverwrite.classList.toggle('disabled-block', thumbDisabled);
+        const thumbOverwriteInput = cbThumbOverwrite.querySelector('input');
+        if (thumbOverwriteInput) {
+            thumbOverwriteInput.disabled = thumbDisabled;
+        }
 
         // toggle grey-out class on entire block
         optionsWrapper.classList.toggle('disabled-block', !stepCheckbox.checked);

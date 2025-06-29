@@ -103,7 +103,8 @@ if (
     // Flags from checkboxes
     $createPoster    = ($_GET['videojs_create_poster']  ?? '1') === '1';
     $posterOverwrite = ($_GET['videojs_poster_overwrite'] ?? '1') === '1';
-    $addOverlay      = ($_GET['videojs_add_overlay']    ?? '1') === '1';
+    $thumbOverwrite  = ($_GET['videojs_thumb_overwrite']   ?? '0') === '1';
+	$addOverlay      = ($_GET['videojs_add_overlay']    ?? '1') === '1';
     $addThumbs       = ($_GET['videojs_add_thumbs']     ?? '0') === '1';
 
     // Initial scan: prepare queue if not set
@@ -181,7 +182,9 @@ if (
 			$needsThumbs = false;
             if ($addThumbs) {
                 $existing = glob($posterDir . $baseName . '-th_*.' . $outputFormat);
-                $needsThumbs = $posterOverwrite || empty($existing);
+                // ###### neu
+				// $needsThumbs = $posterOverwrite || empty($existing);
+				$needsThumbs = $thumbOverwrite  || empty($existing);
             }
 
             if ($needsPoster || $needsThumbs) {

@@ -7,6 +7,8 @@ SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
 document.addEventListener('DOMContentLoaded', function () {
 
     // Toggle enable/disable of dependent checkboxes (e.g. for thumb/video options)
+
+
     function updateDependentCheckboxStates() {
         const step4 = document.getElementById('step4');
         const step3 = document.getElementById('step3');
@@ -291,15 +293,36 @@ document.addEventListener('DOMContentLoaded', function () {
     const isVideoJSActive = window.AlbumPilotConfig.videojsActive === true;
     const isSmartAlbumsActive = window.AlbumPilotConfig.smartalbumsActive === true;
 
+    // disable steps for inactive plugins at any time
+    function enforcePluginDisableStates() {
+        if (!window.AlbumPilotConfig.videojsActive) {
+            const s3 = document.getElementById('step3');
+            if (s3) {
+                s3.checked = false;
+                s3.disabled = true;
+            }
+        }
+        if (!window.AlbumPilotConfig.smartalbumsActive) {
+            const s6 = document.getElementById('step6');
+            if (s6) {
+                s6.checked = false;
+                s6.disabled = true;
+            }
+        }
+    }
+    // call immediately after init
+    enforcePluginDisableStates();
+    window.enforcePluginDisableStates = enforcePluginDisableStates; // expose for runner
+    window.updateDependentCheckboxStates = updateDependentCheckboxStates; // expose for runner
     // Define step list with labels and URLs
 
     const urls = [].concat(
         [
             ['step1', t('step_sync_files'), root + pluginPageUrl + '&wrapped_sync=1&pwg_token=' + token],
             ['step2', t('step_update_metadata'), root + pluginPageUrl + '&update_metadata_for_album=ALBUM_ID&pwg_token=' + token],
-			['step3', t('step_generate_video_posters') + (isVideoJSActive ? '' : ' (' + t('videojs_not_active') + ')'), root + pluginPageUrl + '&video_thumb_block=1&cat_id=ALBUM_ID&pwg_token=' + token],
+            ['step3', t('step_generate_video_posters') + (isVideoJSActive ? '' : ' (' + t('videojs_not_active') + ')'), root + pluginPageUrl + '&video_thumb_block=1&cat_id=ALBUM_ID&pwg_token=' + token],
             ['step4', t('step_generate_thumbnails'), root + pluginPageUrl + '&generate_image_thumbs=1&album_id=ALBUM_ID&pwg_token=' + token],
-            ['step5', t('step_calculate_checksums'), root + pluginPageUrl + '&calculate_md5=1&album_id=ALBUM_ID&pwg_token=' + token]            
+            ['step5', t('step_calculate_checksums'), root + pluginPageUrl + '&calculate_md5=1&album_id=ALBUM_ID&pwg_token=' + token]
         ],
         [
             ['step6', t('step_reassign_smart_albums') + (isSmartAlbumsActive ? '' : ' (' + t('smartalbums_not_active') + ')'), root + 'admin.php?page=plugin-SmartAlbums-cat_list&smart_generate=all'],
@@ -355,7 +378,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.warn('⚠️ renderImageOptions not defined');
             }
         }
-        
+
         if (step[0] === 'step3') {
             if (typeof window.renderVideoOptions === 'function') {
                 window.renderVideoOptions({
@@ -701,7 +724,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const id = step[0];
                 const name = step[1];
                 let url = step[2].replace(/ALBUM_ID/g, albumId);
-				
+
                 // Only pass selected thumbnail types for step4
                 if (id === 'step4') {
                     const selectedThumbTypes = [];
@@ -862,6 +885,9 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (key === 'videojs_poster_overwrite') {
                 cb.checked = false;
                 syncSettings[key] = '0';
+            } else if (key === 'videojs_thumb_overwrite') {
+                cb.checked = false;
+                syncSettings[key] = '0';
             } else {
                 cb.checked = true;
                 syncSettings[key] = '1';
@@ -908,11 +934,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Re-enable dependent fields (e.g. input fields under unchecked steps)
-        
+
 
         saveSyncSettings(syncSettings);
 
-        requestAnimationFrame(() => updateDependentCheckboxStates());generateExternalUrlFromSelection();
+        requestAnimationFrame(() => updateDependentCheckboxStates());
+        generateExternalUrlFromSelection();
+
     });
 
     // Auto-start sync when triggered via external_run URL parameter

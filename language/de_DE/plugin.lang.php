@@ -62,13 +62,14 @@ $lang = array(
     'VideoJS_AddPoster'                 => 'Poster aus Frame generieren nach',
     'VideoJS_PosterSec'                 => 'Sekunden',
     'VideoJS_PosterOverwrite'           => 'Existierendes Poster überschreiben (falls vorhanden)',
-    'VideoJS_OutputFormat'              => 'Ausgabeformat für Poster',
+	'VideoJS_OutputFormat'              => 'Ausgabeformat für Poster',
     'VideoJS_jpg'                       => 'JPG',
     'VideoJS_png'                       => 'PNG',
     'VideoJS_OverlayAdd'                => 'Filmeffekt auf Poster anwenden',
     'VideoJS_AddThumb'                  => 'Vorschaubilder automatisch erzeugen alle',
     'VideoJS_ThumbSec'                  => 'Sekunden',
-    'VideoJS_ThumbSize'                 => 'Größe der Thumbnails',
+    'VideoJS_ThumbOverwrite'            => 'Sekunden',
+	'VideoJS_ThumbSize'                 => 'Größe der Thumbnails',
 
     'end_frontend_section'              => '', // Separator - from here on backend only
 
@@ -146,7 +147,7 @@ $lang = array(
     'log_video_too_short'               => 'Hinweis: Das Video "%s" ist kürzer (%d Sek.) als der eingestellte Poster-Zeitpunkt (%d Sek.). Es wird auf %d Sek. zurückgesetzt.',
     'log_video_thumb_start'             => 'Starte Thumbnail-Erstellung für Video: %s',
     'log_video_thumb_done'              => 'Thumbnail-Erstellung abgeschlossen (%d Thumbnails) für: %s',
-    'log_video_combined_counts'         => '%d zu behandelnde Dateien (%d fehlende Poster, %d fehlende Thumbnails)',
+    'log_video_combined_counts'         => '%d zu behandelnde Dateien (%d fehlende Poster, %d Dateien mit fehlenden Thumbnails)',
 
     // Step summaries and simulation labels
     'log_step_completed_with_count'     => 'Schritt abgeschlossen: %s für %d %s.',
@@ -166,7 +167,7 @@ $lang = array(
     'label_subalbums_no'                => 'nur dieses Album',
     'log_sync_step1_before_count'       => 'Vorher: %d Bilder in der Datenbank',
     'log_sync_step1_after_count'        => 'Nachher: %d Bilder. Unterschied: %d neue Dateien',
-    'log_sync_step1_summary'            => 'Synchronisation abgeschlossen. Neue Dateien: %d (vorher: %d, nachher: %d)',
+    'log_sync_step1_summary'            => 'Synchronisation abgeschlossen. Dateidifferenz: %d (vorher: %d, nachher: %d)',
     'log_sync_step1_simulation_done'    => 'Simulation abgeschlossen. Keine Änderungen vorgenommen.',
 );
 

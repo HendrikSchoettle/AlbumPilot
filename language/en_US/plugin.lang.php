@@ -29,8 +29,8 @@ $lang = array(
     'thumb_type_label'                  => 'Type',
 
     // Step names
-    'step_sync_files'                   => '1. Sync new files and metadata',
-    'step_update_metadata'              => '2. Import metadata from image files into database (slow!)',
+    'step_sync_files'                   => '1. Import new files and their metadata into database',
+    'step_update_metadata'              => '2. Import metadata of all files into database (slow!)',
     'step_generate_video_posters'       => '3. Generate video posters',
     'step_generate_thumbnails'          => '4. Generate thumbnails',
     'step_calculate_checksums'          => '5. Calculate missing checksums',
@@ -147,7 +147,7 @@ $lang = array(
     'log_video_too_short'               => 'Notice: The video "%s" is shorter (%d sec) than the configured poster time (%d sec). Adjusted to %d sec.',
     'log_video_thumb_start'             => 'Starting thumbnail generation for video: %s',
     'log_video_thumb_done'              => 'Thumbnail generation completed (%d thumbnails) for: %s',
-    'log_video_combined_counts'         => '%d file(s) to process (%d missing posters, %d missing thumbnails)',
+    'log_video_combined_counts'         => '%d file(s) to process (%d missing posters, %d files with missing thumbnails)',
 
     // Step summaries and simulation labels
     'log_step_completed_with_count'     => 'Step completed: %s for %d %s.',
@@ -167,6 +167,6 @@ $lang = array(
     'label_subalbums_no'                => 'album only',
     'log_sync_step1_before_count'       => 'Before: %d images in database',
     'log_sync_step1_after_count'        => 'After: %d images. Difference: %d new files',
-    'log_sync_step1_summary'            => 'Synchronization completed. New files: %d (before: %d, after: %d)',
+    'log_sync_step1_summary'            => 'Synchronization completed. File delta: %d (before: %d, after: %d)',
     'log_sync_step1_simulation_done'    => 'Simulation completed. No changes made.',
 );

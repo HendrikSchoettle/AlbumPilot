@@ -1,7 +1,7 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 0.3.10
-**Release Date:** 2025-06-28
+**Version:** 0.3.11
+**Release Date:** 2025-06-29
 **Tested with:** Piwigo 15.5.0
 
 ---
@@ -9,6 +9,7 @@
 ## Table of Contents
 
 - [Overview](#overview)  
+  - [What's New in v0.3.11](#whats-new-in-v0311)
   - [What's New in v0.3.10](#whats-new-in-v0310)
   - [What's New in v0.3.9](#whats-new-in-v039)
   - [What's New in v0.3.8](#whats-new-in-v038)
@@ -49,6 +50,22 @@
 AlbumPilot automates several key synchronization steps within Piwigo, saving you time and effort during album management. It allows you to batch process file synchronization, thumbnail generation, video poster creation, metadata updates, checksum calculations, and other features with a simple, user-friendly interface.
 
 ---
+
+## What’s New in v0.3.11
+
+### Changed 
+- Added a separate option to overwrite existing video poster thumbnails independently from the main poster overwrite setting.
+
+### Fixed
+- Fixed an issue where disabled plugins (e.g. VideoJS or SmartAlbums) were incorrectly re-enabled in the UI after a sync run. 
+- Improved the enable/disable logic for all dependent poster and thumbnail options: these now consistently follow the main step checkboxes for “Generate video posters” (step 3) and “Generate thumbnails” (step 4).
+- The “Select all steps” toggle now correctly re-enables all nested sub-options for video and thumbnail generation.
+
+### Known Limitations
+- The text color for nested options under step 3 and step 4 may remain visually light gray after the workflow finishes, when selecting them via the selecet/unselect all option, even though the controls are re-enabled and clickable. This does not affect functionality but will be addressed in an upcoming patch.
+
+### Miscellaneous
+- Minor internal refactoring of dependency handlers to reduce duplicate calls.
 
 ## What’s New in v0.3.10
 
@@ -213,7 +230,7 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 ## Synchronization Steps
 
 ### Step 1: Sync Files  
-This step calls Piwigo’s core synchronization mechanism to detect new, changed, or removed files and update the database accordingly. It updates the file structure and database entries to reflect the current content of the storage directories. Options allow including subalbums. It is restricted to processing only new or changed files. This step ensures the gallery is in sync with the underlying file system. Use Step 2 to update metadata of existing files.
+This step calls Piwigo’s core synchronization mechanism to detect new, changed, or removed files and update the database accordingly. It updates the file structure and database entries to reflect the current content of the storage directories. Options allow including subalbums. It is restricted to processing only new or changed files. This step ensures the gallery is in sync with the underlying file system. Use Step 2 to update metadata of existing files. Note: unlike the Piwigo web interface, this plugin currently only reports the net number of files changed (file delta) and does not provide separate counts of additions versus deletions. 
 
 ### Step 2: Update Metadata  
 This step reads metadata (EXIF, IPTC, etc.) from the image files and updates the corresponding entries in the Piwigo database for all images in the selected album(s), including subalbums if selected. The operation is performed in small batches to avoid PHP timeouts with large galleries. While the metadata update in step 1 is restricted to new or changed images, this step processes all items in the selected album.  
@@ -320,6 +337,9 @@ This screenshot shows the progress interface while generating video posters (Ste
 
 <img src="screenshots/albumpilot_video_poster_generation.png" alt="Video poster generation screenshot" style="max-width: 100%; height: auto;">
 
+## Acknowledgements
+
+A huge thank you to **windracer**/[@jradwan](https://github.com/jradwan) for his ongoing support, extensive testing, detailed feedback and countless suggestions!
 
 ## Personal Note
 

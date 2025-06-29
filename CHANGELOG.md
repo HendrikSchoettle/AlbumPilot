@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.11] – 2025-06-29
+
+### Changed 
+- Added a separate option to overwrite existing video poster thumbnails independently from the main poster overwrite setting.
+
+### Fixed
+- Fixed an issue where disabled plugins (e.g. VideoJS or SmartAlbums) were incorrectly re-enabled in the UI after a sync run. 
+- Improved the enable/disable logic for all dependent poster and thumbnail options: these now consistently follow the main step checkboxes for “Generate video posters” (step 3) and “Generate thumbnails” (step 4).
+- The “Select all steps” toggle now correctly re-enables all nested sub-options for video and thumbnail generation.
+
+### Known Limitations
+- The text color for nested options under step 3 and step 4 may remain visually light gray after the workflow finishes, when selecting them via the selecet/unselect all option, even though the controls are re-enabled and clickable. This does not affect functionality but will be addressed in an upcoming patch.
+
+### Miscellaneous
+- Minor internal refactoring of dependency handlers to reduce duplicate calls.
+
 ## [0.3.10] – 2025-06-28
 
 ### Fixed

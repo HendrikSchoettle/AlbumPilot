@@ -43,7 +43,16 @@ window.next = function () {
         // Fire a change on each step-checkbox to reapply nested enable/disable logic
         document.querySelectorAll('.step-checkbox').forEach(cb => {
             cb.dispatchEvent(new Event('change'));
+            if (typeof enforcePluginDisableStates === 'function')
+                enforcePluginDisableStates(); // update plugin disable states
+            if (typeof updateDependentCheckboxStates === 'function')
+                updateDependentCheckboxStates(); // update dependent checkboxes
         });
+
+        if (typeof enforcePluginDisableStates === 'function')
+            enforcePluginDisableStates();
+        if (typeof updateDependentCheckboxStates === 'function')
+            updateDependentCheckboxStates();
 
         // Regenerate external-URL preview
         generateExternalUrlFromSelection();
@@ -325,38 +334,30 @@ window.handleJsonStep = window.handleJsonStep || function (url, onSuccess) {
 
     fetchSafeJSON(url).then(data => {
 
+        if (data.error) {
+            const div = document.createElement('div');
+            div.className = 'sync-step-block error';
 
+            if (data.htmlFallback) {
+                div.innerHTML = window.AlbumPilotLang.invalid_response + '<br><pre>' +
+                    data.rawText.substring(0, 2000) + '</pre>';
+            } else {
+                div.textContent = window.AlbumPilotLang.network_error + ' ' + data.message;
+            }
 
-if (data.error) {
-    const div = document.createElement('div');
-    div.className = 'sync-step-block error';
+            log.appendChild(div);
 
-    if (data.htmlFallback) {
-        div.innerHTML = window.AlbumPilotLang.invalid_response + '<br><pre>' +
-            data.rawText.substring(0, 2000) + '</pre>';
-    } else {
-        div.textContent = window.AlbumPilotLang.network_error + ' ' + data.message;
-    }
+            // Continue to next step even after error
+            if (typeof window._runnerIndex !== 'undefined' && typeof window._runnerSelectedSteps !== 'undefined') {
+                const liList = document.querySelectorAll('#sync-steps li');
+                const li = liList[window._runnerIndex];
+                if (li)
+                    li.innerHTML = '❌ ' + window._runnerSelectedSteps[window._runnerIndex].name;
 
-    log.appendChild(div);
-
-    // Continue to next step even after error
-    if (typeof window._runnerIndex !== 'undefined' && typeof window._runnerSelectedSteps !== 'undefined') {
-        const liList = document.querySelectorAll('#sync-steps li');
-        const li = liList[window._runnerIndex];
-        if (li) li.innerHTML = '❌ ' + window._runnerSelectedSteps[window._runnerIndex].name;
-
-        window._runnerIndex++;
-        setTimeout(window.next, 1000); // delay helps UI stay smooth
-    }
-}
-
-
-
-
-
-
-else {
+                window._runnerIndex++;
+                setTimeout(window.next, 1000); // delay helps UI stay smooth
+            }
+        } else {
             onSuccess(data);
         }
     });
