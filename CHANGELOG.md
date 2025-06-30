@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.12] – 2025-06-30
+
+### Fixed
+- Fully restored greying-out of nested options for “Select all”/“Unselect all” and “Reset settings,” including text color.
+- PNG posters are now properly detected and used as the source, resulting in thumbnails generated in the original PNG format (Step 4).
+
 ## [0.3.11] – 2025-06-29
 
 ### Changed 

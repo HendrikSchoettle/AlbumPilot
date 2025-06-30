@@ -1,7 +1,7 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 0.3.11
-**Release Date:** 2025-06-29
+**Version:** 0.3.12
+**Release Date:** 2025-06-30
 **Tested with:** Piwigo 15.5.0
 
 ---
@@ -9,6 +9,7 @@
 ## Table of Contents
 
 - [Overview](#overview)  
+  - [What's New in v0.3.12](#whats-new-in-v0312)
   - [What's New in v0.3.11](#whats-new-in-v0311)
   - [What's New in v0.3.10](#whats-new-in-v0310)
   - [What's New in v0.3.9](#whats-new-in-v039)
@@ -50,6 +51,12 @@
 AlbumPilot automates several key synchronization steps within Piwigo, saving you time and effort during album management. It allows you to batch process file synchronization, thumbnail generation, video poster creation, metadata updates, checksum calculations, and other features with a simple, user-friendly interface.
 
 ---
+
+## What’s New in v0.3.12
+
+### Fixed
+- Fully restored greying-out of nested options for “Select all”/“Unselect all” and “Reset settings,” including text color.
+- PNG posters are now properly detected and used as the source, resulting in thumbnails generated in the original PNG format (Step 4).
 
 ## What’s New in v0.3.11
 

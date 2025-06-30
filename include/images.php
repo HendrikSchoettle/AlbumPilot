@@ -119,23 +119,31 @@ if (
                     continue;
                 }
 
-                $posterPath = dirname($videoPath)
-                    . '/pwg_representative/'
-                    . basename($videoPath, '.' . $ext)
-                    . '.jpg';
-                if (!file_exists($posterPath)) {
-                    continue;
-                }
+                $baseName    = basename($videoPath, '.' . $ext);
+				$posterDir   = dirname($videoPath) . '/pwg_representative/';
+				$jpgPath     = $posterDir . $baseName . '.jpg';
+				$pngPath     = $posterDir . $baseName . '.png';
 
-                $posterRelPath = str_replace(PHPWG_ROOT_PATH, '', $posterPath);
-                $posterImg     = [
-                    'id'       => $img['id'],
-                    'path'     => $posterRelPath,
-                    'file'     => basename($posterRelPath),
-                    'width'    => null,
-                    'height'   => null,
-                    'rotation' => 0,
-                ];
+				// PNG-Poster bevorzugen, ansonsten JPG, sonst überspringen
+				if (file_exists($pngPath)) {
+					$posterPath = $pngPath;
+				}
+				elseif (file_exists($jpgPath)) {
+					$posterPath = $jpgPath;
+				}
+				else {
+					continue;
+				}
+
+				$posterRelPath = str_replace(PHPWG_ROOT_PATH, '', $posterPath);
+				$posterImg     = [
+					'id'       => $img['id'],
+					'path'     => $posterRelPath,
+					'file'     => basename($posterRelPath),
+					'width'    => null,
+					'height'   => null,
+					'rotation' => 0,
+				];
 
                 try {
                     $srcPoster = new SrcImage($posterImg);
