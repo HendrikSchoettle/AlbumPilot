@@ -18,8 +18,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Thumbnails (Step 4)
         thumbOptions.forEach(cb => {
-            cb.disabled = !step4?.checked;
-        });
+    cb.disabled = !step4?.checked;
+    cb.parentElement?.classList.toggle('disabled-block', cb.disabled); // toggle grey-out on label
+});
+
 
         // VideoJS (Step 3)
         if (!step3?.checked || !videoWrapper) {
@@ -436,13 +438,15 @@ document.addEventListener('DOMContentLoaded', function () {
         const syncSettings = {};
 
         document.querySelectorAll('.step-checkbox').forEach(cb => {
-            if (!cb.disabled) {
-                cb.checked = newState;
-                syncSettings[cb.id] = newState ? '1' : '0';
-            } else {
-                syncSettings[cb.id] = '0';
-            }
-        });
+    if (!cb.disabled) {
+        cb.checked = newState;
+        syncSettings[cb.id] = newState ? '1' : '0';
+    } else {
+        syncSettings[cb.id] = '0';
+    }
+    cb.dispatchEvent(new Event('change'));
+});
+
 
         // Apply dependency logic for UI (enable/disable sub-options)
         updateDependentCheckboxStates();
@@ -846,15 +850,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const allSteps = urls.map(step => step[0]);
 
-        allSteps.forEach(id => {
-            const cb = document.getElementById(id);
-            if (cb) {
-                if (!cb.disabled) {
-                    cb.checked = id !== 'step2';
-                }
-                syncSettings[id] = (!cb.disabled && id !== 'step2') ? '1' : '0';
-            }
-        });
+     allSteps.forEach(id => {
+    const cb = document.getElementById(id);
+    if (cb) {
+        if (!cb.disabled) {
+            cb.checked = id !== 'step2';
+        }
+        syncSettings[id] = (!cb.disabled && id !== 'step2') ? '1' : '0';
+        cb.dispatchEvent(new Event('change'));
+    }
+});
+
 
         document.getElementById('simulate').checked = true;
         document.getElementById('onlyNew').checked = true;
