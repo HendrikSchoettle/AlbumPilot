@@ -58,10 +58,11 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 ### Fixed
 
 - **Critical bugfix:** Fixed a severe issue in Step 4 (thumbnail generation) that could accidentally delete original source image files if the “Overwrite existing thumbnails” option was enabled.  
-  This affected images whose dimensions exactly matched certain thumbnail sizes.  
-  Now, multiple safe-guards have been added to ensure that only actual derivative thumbnails can ever be deleted.  
+  - This affected images whose dimensions exactly matched certain thumbnail sizes.  
+  - Now, multiple safe-guards have been added to ensure that only actual derivative thumbnails can ever be deleted.  
 
   **Important:** If you ran Step 4 with the overwrite option in any previous version, I strongly recommend double-checking your albums to ensure no original photos were unintentionally removed.  
+  
   Apologies for this oversight - despite careful testing, this edge case slipped through. Please excuse any inconvenience caused.
 
 ### Note
