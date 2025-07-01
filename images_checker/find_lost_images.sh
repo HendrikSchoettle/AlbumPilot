@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
 # ---------------------------------------------------------------------------------------------------------
-# File: images_checker/check_missing_files.sh – AlbumPilot Plugin for Piwigo - Helper to find missing files
+# File: images_checker/find_lost_images.sh – AlbumPilot Plugin for Piwigo - Helper to find missing files
 # Author: Hendrik Schöttle
 # SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
 #
 # This script checks if files listed in a CSV export exist
 # on disk under your Piwigo installation.
 #
-# Adjust ROOT_PATH and CSV_FILE below.
+# Tip: If you have filenames with commas, export only the 'path' column in your CSV.
 # ---------------------------------------------------------------------------------------------------------
 
 # === CONFIG ===
@@ -25,8 +25,8 @@ missing=0
 
 echo "Starting file existence check..."
 
-# Use process substitution to keep variables in main shell
-while IFS=',' read -r id file path width height filesize; do
+# Then we only read the first column:
+while IFS=',' read -r path; do
 
   # Remove any double quotes
   path="${path%\"}"
@@ -41,7 +41,8 @@ while IFS=',' read -r id file path width height filesize; do
   ((total++))
 
   if [[ -f "$fullpath" ]]; then
-    echo "[FOUND] $fullpath"
+    # Include the following line for full report:
+    # echo "[FOUND] $fullpath"
     ((found++))
   else
     echo "[MISSING] $fullpath"

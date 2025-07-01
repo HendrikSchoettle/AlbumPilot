@@ -57,12 +57,7 @@ If you do not adjust the sizes to your own setup, you might miss affected images
 
 ```sql
 SELECT
-  id,
-  file,
-  path,
-  width,
-  height,
-  filesize
+  path
 FROM
   piwigo_images
 WHERE
