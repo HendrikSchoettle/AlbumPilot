@@ -652,7 +652,7 @@ check_logfile_permissions();
 global $template;
 
 // Fetch categories with directory set
-$query  = 'SELECT id, name, uppercats FROM ' . CATEGORIES_TABLE . ' WHERE dir IS NOT NULL ORDER BY global_rank ASC';
+$query  = 'SELECT id, name, uppercats, global_rank FROM ' . CATEGORIES_TABLE . ' WHERE dir IS NOT NULL';
 $result = pwg_query($query);
 
 $categories = [];
@@ -675,8 +675,7 @@ function build_album_select(int $parent, array $tree, int $depth = 0): string {
     $html = '';
 
     if (isset($tree[$parent])) {
-        usort($tree[$parent], fn($a, $b) => strcmp($a['name'], $b['name']));
-
+        usort($tree[$parent], 'global_rank_compare');
         foreach ($tree[$parent] as $node) {
             $indent = str_repeat('&nbsp;&nbsp;&nbsp;', $depth);
             $html  .= '<option value="'
