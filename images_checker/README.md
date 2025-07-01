@@ -1,15 +1,15 @@
 # Lost Images Checker
 
-This small helper shows you how to check your Piwigo gallery for any potentially missing original images that might have been accidentally deleted due to a bug in the “Overwrite existing thumbnails” function **in all versions up to 0.3.12.1**.  
+This small helper shows you how to check your Piwigo gallery for any potentially missing original images that might have been accidentally deleted due to a bug in the “Overwrite existing thumbnails” function **in all versions up to 0.3.12**.  
 
 ## Background
 
-**Critical bug:** In versions up to **AlbumPilot 0.3.12.1**, there was a severe issue in Step 4 (thumbnail generation) that could accidentally delete original source image files if the “Overwrite existing thumbnails” option was enabled.  
+**Critical bug:** In versions up to **AlbumPilot 0.3.12**, there was a severe issue in Step 4 (thumbnail generation) that could accidentally delete original source image files if the “Overwrite existing thumbnails” option was enabled.  
 This affected original images whose dimensions exactly matched certain configured derivative (thumbnail) sizes.  
 
 In **version 0.3.13**, multiple safety guards were added to fully fix this issue and make sure that only actual derivative thumbnails can ever be deleted.  
 
-**Important:** If you ever ran Step 4 with the overwrite option enabled using an older version (0.3.12.1 or earlier), it is strongly recommended to double-check your albums to ensure that no original photos were unintentionally removed.
+**Important:** If you ever ran Step 4 with the overwrite option enabled using an older version (0.3.12 or earlier), it is strongly recommended to double-check your albums to ensure that no original photos were unintentionally removed.
 
 ## What you should do
 
@@ -29,6 +29,7 @@ Again, apologies for this oversight - despite careful testing, this edge case sl
 
 You can view and adjust your gallery’s configured image sizes in the **Piwigo Admin Panel** under:  
 **Configuration → Options → Photo Sizes**  
+
 Check here to see which derivative sizes you use. The default sizes are typically:
 
 ```
@@ -39,8 +40,8 @@ xxsmall     432x324
 xsmall      576x432
 small       792x594
 medium      1008x756
-large       1920x1080
-xlarge      3840x2400
+large       1224x918
+xlarge      1656x1242
 ```
 
 ---
@@ -49,9 +50,9 @@ xlarge      3840x2400
 
 Use the following SQL query in phpMyAdmin to list all images with dimensions that exactly match your defined derivative sizes:
 
-**Important:** The example list of sizes below must be adapted to your own Piwigo configuration! These dimensions are just an example and will probably not match your setup.  
-Especially the last two sizes (`1920x1080` and `3840x2400`) differ from Piwigo’s default and must be changed to your own standard dimensions if needed.  
-If you do not adjust them, you might miss affected images!
+**Important:** The example list of sizes below must be adapted to your own Piwigo configuration! These dimensions are default values and may not match your setup.  
+
+If you do not adjust the sizes to your own setup, you might miss affected images!
 
 
 ```sql
@@ -72,8 +73,8 @@ WHERE
   OR (width = 576 AND height = 432)
   OR (width = 792 AND height = 594)
   OR (width = 1008 AND height = 756)
-  OR (width = 1920 AND height = 1080)
-  OR (width = 3840 AND height = 2400)
+  OR (width = 1224 AND height = 918)
+  OR (width = 1656 AND height = 1242)
 ORDER BY
   id ASC;
 ```
@@ -85,6 +86,7 @@ ORDER BY
 1. Run the SQL in phpMyAdmin.
 2. Click **Export** → Select **CSV** format.
 3. Download the `.csv` file.  
+   
    This should contain your potentially affected images.
 
 ---
