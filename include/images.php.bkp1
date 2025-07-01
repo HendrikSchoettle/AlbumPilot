@@ -366,61 +366,51 @@ if (
 
         if (!$deriv->is_cached()) {
 
-            if (!$simulate) {
+          if (!$simulate) {
+              // $url = get_base_url() . '/' . ltrim($deriv->get_url(), '/');
+              
+			  $rawPath = ltrim($deriv->get_url(), '/');
 
-                $rawUrl = ltrim($deriv->get_url(), '/');
+              // Encode each path segment to safely handle spaces and special chars
+              $encodedPath = implode('/', array_map('rawurlencode', explode('/', $rawPath)));
 
-                if (strpos($rawUrl, '?') !== false) {
-                    [$script, $query] = explode('?', $rawUrl, 2);
-                } else {
-                    $script = $rawUrl;
-                    $query = '';
-                }
+              $url = get_base_url() . '/' . $encodedPath;
 
-                $script = trim($script); // e.g., "i.php"
-                $query  = trim($query);  // e.g., "/galleries/..."
+              // ######## debug
+			  log_message('🔗 Generated encoded derivative URL: "' . $url . '"');
+			  			  
+			  $ch  = curl_init($url);
+              curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+              curl_setopt($ch, CURLOPT_HEADER, true);
+              curl_setopt($ch, CURLOPT_NOBODY, false);
+              curl_setopt($ch, CURLOPT_COOKIE, 'pwg_id=' . $_COOKIE['pwg_id']);
+              curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 
-                // Encode the query part in order to process filenames with e.g. blanks correctly
-                $encodedPath = implode('/', array_map('rawurlencode', explode('/', $query)));
+              // Backup old file
+              if ($overwriteThumbs && $deriv->is_cached()) {
+                  $existingPath = $deriv->get_path();
+                  if (file_exists($existingPath)) {
+                      $backupPath = $existingPath . '.bak';
+                      @rename($existingPath, $backupPath);
+                  }
+              }
 
-                $baseUrl = get_base_url();
-                $url = $baseUrl . '/' . $script;
-                if ($encodedPath !== '') {
-                    $url .= '?' . $encodedPath;
-                }
+              curl_exec($ch);
+              curl_close($ch);
 
-                $ch = curl_init($url);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_HEADER, true);
-                curl_setopt($ch, CURLOPT_NOBODY, false);
-                curl_setopt($ch, CURLOPT_COOKIE, 'pwg_id=' . $_COOKIE['pwg_id']);
-                curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-
-                // Backup old file
-                if ($overwriteThumbs && $deriv->is_cached()) {
-                    $existingPath = $deriv->get_path();
-                    if (file_exists($existingPath)) {
-                        $backupPath = $existingPath . '.bak';
-                        @rename($existingPath, $backupPath);
-                    }
-                }
-
-                curl_exec($ch);
-                curl_close($ch);
-
-                // Restore or delete backup
-                if (isset($backupPath)) {
-                    $newPath = $deriv->get_path();
-                    if (file_exists($newPath)) {
-                        // new file created successfully, remove backup
-                        @unlink($backupPath);
-                    } else {
-                        // new file creation failed, restore backup
-                        @rename($backupPath, $newPath);
-                    }
-                    unset($backupPath);
-                }
-            }
+              // Restore or delete backup
+              if (isset($backupPath)) {
+                  $newPath = $deriv->get_path();
+                  if (file_exists($newPath)) {
+                      // new file created successfully, remove backup
+                      @unlink($backupPath);
+                  } else {
+                      // new file creation failed, restore backup
+                      @rename($backupPath, $newPath);
+                  }
+                  unset($backupPath);
+              }
+          }
 
             $prog['generated']++;
             $blockGenerated++;

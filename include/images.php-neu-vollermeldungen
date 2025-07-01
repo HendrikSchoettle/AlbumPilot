@@ -102,15 +102,25 @@ if (
         $queue = [];
 
         foreach ($images as $img) {
-            $ext = strtolower(pathinfo($img['path'], PATHINFO_EXTENSION));
+            
+			// ######## debug
+			log_message('DEBUG: Image path = ' . $img['path']);
+            log_message('DEBUG: Image file = ' . $img['file']);	
+			
+			$ext = strtolower(pathinfo($img['path'], PATHINFO_EXTENSION));
+
+log_message('DEBUG: ext = ' . $ext);	
 
             // Skip extra video thumbnails to avoid recursive thumbnail generation
             if (strpos($img['path'], '-th_') !== false) {
-                continue;
+       //         continue;
             }
 
             global $conf;
             $video_extensions = $conf['video_ext'] ?? ['mp4', 'mov', 'avi', 'mkv'];
+
+log_message('❌ hier!');
+
 
             // Handle video posters
             if (in_array($ext, $video_extensions, true)) {
@@ -214,10 +224,17 @@ if (
                 continue;
             }
 
+
+log_message('❌ hier2!');
+
+
             // Skip non-picture files
             if (!in_array($ext, $conf['picture_ext'], true)) {
                 continue;
             }
+
+log_message('❌ hier3!');
+
 
             // Validate dimensions
             if (empty($img['width']) || empty($img['height']) || $img['width'] <= 0 || $img['height'] <= 0) {
@@ -231,6 +248,13 @@ if (
                 $img['rotation'] = 0;
             }
 
+
+
+
+// ######### alt
+/*
+
+
             try {
                 $src = new SrcImage($img);
             } catch (Throwable $e) {
@@ -240,15 +264,50 @@ if (
                 $log[] = '❌ ' . $msg;
                 continue;
             }
+*/
+
+
+// ######### tempneu
+
+// Create the SrcImage object for processing
+try {
+    log_message('🔍 Trying to create SrcImage for image: ' . $img['path']);
+    log_message('🔍 Image ID: ' . $img['id']);
+    log_message('🔍 Image file: ' . $img['file']);
+    
+    // Attempt to create the SrcImage object
+    $src = new SrcImage($img);
+    
+    log_message('✅ SrcImage created successfully for image: ' . $img['path']);
+} catch (Throwable $e) {
+    // Log error if SrcImage creation fails
+    $msg = sprintf(l10n('log_srcimage_error'), $img['id'], $img['path'], $e->getMessage());
+    
+    log_message('❌ ' . $msg);
+    $log[] = '❌ ' . $msg;
+
+    // You can also log the stack trace for deeper investigation if needed
+    log_message('🔴 Stack trace: ' . $e->getTraceAsString());
+
+    continue; // Skip this image and move on to the next
+}
+
+
+
 
             // Determine which derivatives to generate
+
+
+/* 
+// alt  ######### debug
+
             try {
                 $derivsToGenerate = [];
                 foreach (DerivativeImage::get_all($src) as $type => $deriv) {
                     if (!empty($allowedTypes) && !in_array($type, $allowedTypes, true)) {
                         continue;
                     }
-                    /* Include existing thumbnails for overwrite or new thumbnails otherwise */
+                    // Include existing thumbnails for overwrite or new thumbnails otherwise 
                     if ($overwriteThumbs || !$deriv->is_cached()) {
                         $derivsToGenerate[$type] = $deriv;
                     }
@@ -261,6 +320,48 @@ if (
                 $log[] = '❌ ' . $msg;
                 continue;
             }
+*/
+
+// ##### neu
+// Determine which derivatives to generate
+try {
+    $derivsToGenerate = [];
+    
+    // Log some useful info before the loop starts
+    log_message('🔍 Derivative check for image: ' . $img['path']);
+    log_message('🔍 Allowed types: ' . implode(', ', $allowedTypes));
+    
+    foreach (DerivativeImage::get_all($src) as $type => $deriv) {
+        // Log each type and whether it's allowed
+        log_message('🔍 Checking derivative type: ' . $type);
+        
+        // Check if the type is in the allowed types list
+        if (!empty($allowedTypes) && !in_array($type, $allowedTypes, true)) {
+            log_message('🔍 Skipping type: ' . $type . ' (not in allowed types)');
+            continue;
+        }
+
+        // Log if it's being included for generation
+        if ($overwriteThumbs || !$deriv->is_cached()) {
+            log_message('🔍 Including derivative: ' . $type . ' for image: ' . $img['path']);
+            $derivsToGenerate[$type] = $deriv;
+        } else {
+            log_message('🔍 Skipping derivative: ' . $type . ' (cached)');
+        }
+    }
+
+} catch (Throwable $e) {
+    // Log error if something went wrong in the derivative generation
+    $msg = sprintf(l10n('log_derivative_error'), $img['id'], $img['path'], $e->getMessage());
+    
+    log_message('❌ ' . $msg);
+    $log[] = '❌ ' . $msg;
+    continue;
+}
+
+// ########### neu ende
+
+
 
             if (empty($derivsToGenerate)) {
                 continue;
@@ -323,7 +424,15 @@ if (
 							}
 						}
 					}				
-                    if (!$deriv->is_cached()) {
+                    
+					
+					// ####### debug
+					log_message('DEBUG: Checking if thumbnail exists for: ' . $img['path']);
+                    log_message('DEBUG: Thumbnail path to check: ' . $deriv->get_path());
+
+					
+					
+					if (!$deriv->is_cached()) {
                         $queue[] = [
                             'img'   => $img,
                             'type'  => $type,
@@ -366,61 +475,118 @@ if (
 
         if (!$deriv->is_cached()) {
 
-            if (!$simulate) {
 
-                $rawUrl = ltrim($deriv->get_url(), '/');
+//######## alt
 
-                if (strpos($rawUrl, '?') !== false) {
-                    [$script, $query] = explode('?', $rawUrl, 2);
-                } else {
-                    $script = $rawUrl;
-                    $query = '';
-                }
+/*
 
-                $script = trim($script); // e.g., "i.php"
-                $query  = trim($query);  // e.g., "/galleries/..."
+          if (!$simulate) {
+              $url = get_base_url() . '/' . ltrim($deriv->get_url(), '/');
+              $ch  = curl_init($url);
+              curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+              curl_setopt($ch, CURLOPT_HEADER, true);
+              curl_setopt($ch, CURLOPT_NOBODY, false);
+              curl_setopt($ch, CURLOPT_COOKIE, 'pwg_id=' . $_COOKIE['pwg_id']);
+              curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 
-                // Encode the query part in order to process filenames with e.g. blanks correctly
-                $encodedPath = implode('/', array_map('rawurlencode', explode('/', $query)));
+              // Backup old file
+              if ($overwriteThumbs && $deriv->is_cached()) {
+                  $existingPath = $deriv->get_path();
+                  if (file_exists($existingPath)) {
+                      $backupPath = $existingPath . '.bak';
+                      @rename($existingPath, $backupPath);
+                  }
+              }
 
-                $baseUrl = get_base_url();
-                $url = $baseUrl . '/' . $script;
-                if ($encodedPath !== '') {
-                    $url .= '?' . $encodedPath;
-                }
+              curl_exec($ch);
+              curl_close($ch);
 
-                $ch = curl_init($url);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_HEADER, true);
-                curl_setopt($ch, CURLOPT_NOBODY, false);
-                curl_setopt($ch, CURLOPT_COOKIE, 'pwg_id=' . $_COOKIE['pwg_id']);
-                curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+              // Restore or delete backup
+              if (isset($backupPath)) {
+                  $newPath = $deriv->get_path();
+                  if (file_exists($newPath)) {
+                      // new file created successfully, remove backup
+                      @unlink($backupPath);
+                  } else {
+                      // new file creation failed, restore backup
+                      @rename($backupPath, $newPath);
+                  }
+                  unset($backupPath);
+              }
+          }
 
-                // Backup old file
-                if ($overwriteThumbs && $deriv->is_cached()) {
-                    $existingPath = $deriv->get_path();
-                    if (file_exists($existingPath)) {
-                        $backupPath = $existingPath . '.bak';
-                        @rename($existingPath, $backupPath);
-                    }
-                }
+*/
 
-                curl_exec($ch);
-                curl_close($ch);
+// ###### neu
 
-                // Restore or delete backup
-                if (isset($backupPath)) {
-                    $newPath = $deriv->get_path();
-                    if (file_exists($newPath)) {
-                        // new file created successfully, remove backup
-                        @unlink($backupPath);
-                    } else {
-                        // new file creation failed, restore backup
-                        @rename($backupPath, $newPath);
-                    }
-                    unset($backupPath);
-                }
+if (!$simulate) {
+    // Build the final URL for derivative generation
+    $url = get_base_url() . '/' . ltrim($deriv->get_url(), '/');
+    log_message('🔗 Generated derivative URL: "' . $url . '"');
+
+    // Initialize curl
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HEADER, true);
+    curl_setopt($ch, CURLOPT_NOBODY, false);
+    curl_setopt($ch, CURLOPT_COOKIE, 'pwg_id=' . ($_COOKIE['pwg_id'] ?? 'NO_COOKIE_FOUND'));
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+
+    log_message('🟢 Starting curl request for derivative.');
+    log_message('🟢 Session cookie (pwg_id): "' . ($_COOKIE['pwg_id'] ?? 'N/A') . '"');
+
+    // Check if we should backup an existing file first
+    if ($overwriteThumbs && $deriv->is_cached()) {
+        $existingPath = $deriv->get_path();
+        log_message('🔍 Found existing derivative path: "' . $existingPath . '"');
+
+        if (file_exists($existingPath)) {
+            $backupPath = $existingPath . '.bak';
+            log_message('🔄 Creating backup: "' . $backupPath . '"');
+
+            if (@rename($existingPath, $backupPath)) {
+                log_message('✅ Backup successfully created: "' . $backupPath . '"');
+            } else {
+                log_message('❌ Failed to create backup: "' . $backupPath . '"');
             }
+        } else {
+            log_message('⚠️ Existing derivative file does not exist on disk: "' . $existingPath . '"');
+        }
+    }
+
+    // Execute curl
+    $curlResult = curl_exec($ch);
+    $curlErr = curl_error($ch);
+    curl_close($ch);
+
+    if ($curlResult === false) {
+        log_message('❌ cURL failed: "' . $curlErr . '" for URL: "' . $url . '"');
+    } else {
+        log_message('✅ cURL finished successfully for URL: "' . $url . '"');
+    }
+
+    // Verify if the new derivative was actually created
+    if (isset($backupPath)) {
+        $newPath = $deriv->get_path();
+        log_message('🔍 Checking new derivative path: "' . $newPath . '"');
+
+        if (file_exists($newPath)) {
+            log_message('✅ New derivative created. Removing backup: "' . $backupPath . '"');
+            @unlink($backupPath);
+        } else {
+            log_message('❌ New derivative does not exist. Restoring backup: "' . $backupPath . '" => "' . $newPath . '"');
+            @rename($backupPath, $newPath);
+        }
+
+        unset($backupPath);
+    }
+}
+
+
+
+// ende neu #########
+
+
 
             $prog['generated']++;
             $blockGenerated++;

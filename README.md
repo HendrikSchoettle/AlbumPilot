@@ -61,6 +61,9 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 - Refined SQL checker: The built-in `images_checker/README.md` now uses a safer single-column search for width and height (`CONCAT(width, 'x', height)`), making it easier to detect suspicious images even when filenames contain commas. This improves reliability when adapting the query to your custom derivative sizes.
 - Album sorting behavior updated: The automatic alphabetic sort order for albums and subalbums has been removed. AlbumPilot now fully respects the `global_rank` from Piwigo’s album manager, so your manual drag & drop hierarchy remains untouched and displays exactly as configured.
 
+### Fixed
+- Filenames with spaces are now properly handled when generating thumbnails. This prevents repeated regeneration loops for the same thumbnails when spaces or special characters are present.
+
 ## What’s New in v0.3.13
 
 ### Fixed
