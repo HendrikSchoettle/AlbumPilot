@@ -165,9 +165,7 @@ $lang = array(
     'label_all_files'                   => 'alle Dateien',
     'label_subalbums_yes'               => 'inkl. Unteralben',
     'label_subalbums_no'                => 'nur dieses Album',
-    'log_sync_step1_before_count'       => 'Vorher: %d Bilder in der Datenbank',
-    'log_sync_step1_after_count'        => 'Nachher: %d Bilder. Unterschied: %d neue Dateien',
-    'log_sync_step1_summary'            => 'Synchronisation abgeschlossen. Dateidifferenz: %d (vorher: %d, nachher: %d)',
+    'log_sync_step1_summary'            => 'Synchronisation abgeschlossen. Hinzugefügt: %d, Gelöscht: %d, Differenz: %d (vorher: %d, nachher: %d)',
     'log_sync_step1_simulation_done'    => 'Simulation abgeschlossen. Keine Änderungen vorgenommen.',
 );
 

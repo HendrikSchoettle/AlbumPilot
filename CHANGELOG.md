@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. 
 
+## [0.3.14] – 2025-07-01
+
+### Changed
+- Improved sync summary for Step 1: The synchronization log now clearly lists how many files were added and deleted, in addition to the total delta.
+
 ## [0.3.13] – 2025-07-01
 
 ### Fixed

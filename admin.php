@@ -528,10 +528,8 @@ if (
                 : l10n('label_subalbums_no')
         )
     );
-
-    $before = count_total_images();
-    log_message(sprintf(l10n('log_sync_step1_before_count'), $before));
-
+    
+	$before = count_total_images();
     // Simulate POST for site update
     $_POST['submit']           = 'Quick Local Synchronization';
     $_POST['sync']             = 'files';
@@ -544,6 +542,12 @@ if (
     $_POST['only_new']         = $onlyNew ? '1' : '0';
     
     $_GET['site'] = 1;
+
+	// Snapshot IDs before sync
+	$before_ids = array_column(
+	  array_from_query("SELECT id FROM " . IMAGES_TABLE),
+	  'id'
+	);
 
     $albumId = isset($_GET['album']) && is_numeric($_GET['album'])
            ? (int)$_GET['album']
@@ -568,14 +572,37 @@ if (
     include(PHPWG_ROOT_PATH . 'admin/site_update.php');
     $output = ob_get_clean();
 
-
     if ($simulate) {
         $message = l10n('log_sync_step1_simulation_done');
     } else {
-        $after = count_total_images();
-        $diff  = $after - $before;
-        log_message(sprintf(l10n('log_sync_step1_after_count'), $after, $diff));
-        $message = sprintf(l10n('log_sync_step1_summary'), $diff, $before, $after);
+
+		// Snapshot IDs after sync
+		$after = count_total_images();
+
+		$after_ids = array_column(
+		  array_from_query("SELECT id FROM " . IMAGES_TABLE),
+		  'id'
+		);
+
+		// Compare before/after for added and deleted
+		$added   = array_diff($after_ids, $before_ids);
+		$deleted = array_diff($before_ids, $after_ids);
+
+		$added_count   = count($added);
+		$deleted_count = count($deleted);
+		$delta         = $after - $before;
+
+		// AlbumPilot: Build sync summary
+		$message = sprintf(
+		  l10n('log_sync_step1_summary'),
+		  $added_count,
+		  $deleted_count,
+		  $delta,
+		  $before,
+		  $after
+		);
+		log_message($message);
+
     }
 
     echo json_encode([

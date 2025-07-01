@@ -165,9 +165,7 @@ $lang = array(
     'label_all_files'                   => 'all files',
     'label_subalbums_yes'               => 'including subalbums',
     'label_subalbums_no'                => 'album only',
-    'log_sync_step1_before_count'       => 'Before: %d images in database',
-    'log_sync_step1_after_count'        => 'After: %d images. Difference: %d new files',
-    'log_sync_step1_summary'            => 'Synchronisation completed. File delta: %d (before: %d, after: %d)',
+    'log_sync_step1_summary'            => 'Synchronisation completed. Added: %d, Deleted: %d, Delta: %d (before: %d, after: %d)',
     'log_sync_step1_simulation_done'    => 'Simulation completed. No changes made.',
 );
 
