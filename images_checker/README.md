@@ -1,6 +1,6 @@
 # Lost Images Checker
 
-This small helper shows you how to check your Piwigo gallery for any potentially missing original images that might have been accidentally deleted due to a bug in the “Overwrite existing thumbnails” function **in all versions up to 0.3.12**.  
+This small helper shows you how to check your Piwigo gallery for any potentially missing original images that might have been accidentally deleted due to a bug in the “Overwrite existing thumbnails” function **in all versions up to 0.3.12**. 
 
 ## Background
 
