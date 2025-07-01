@@ -312,11 +312,17 @@ if (
                     
 					// If overwrite is enabled and thumbnail is cached: delete it first												   
 					if ($overwriteThumbs && $deriv->is_cached()) {
-                        $path = $deriv->get_path();
-                        if (file_exists($path)) {
-                            @unlink($path);
-                        }
-                    }
+						// skip deleting original files by comparing derivative and original directories 
+						// (Piwigo links to the original image if its measures equal a standard thumb size).
+						$origDir  = dirname(PHPWG_ROOT_PATH . $img['path']);
+						$derivDir = dirname($deriv->get_path());
+						if (realpath($derivDir) !== realpath($origDir)) {
+							$path = $deriv->get_path();
+							if (file_exists($path)) {
+								@unlink($path);
+							}
+						}
+					}				
                     if (!$deriv->is_cached()) {
                         $queue[] = [
                             'img'   => $img,

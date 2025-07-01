@@ -1,7 +1,7 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 0.3.12
-**Release Date:** 2025-06-30
+**Version:** 0.3.13
+**Release Date:** 2025-07-01
 **Tested with:** Piwigo 15.5.0
 
 ---
@@ -9,6 +9,7 @@
 ## Table of Contents
 
 - [Overview](#overview)  
+  - [What's New in v0.3.13](#whats-new-in-v0313)
   - [What's New in v0.3.12](#whats-new-in-v0312)
   - [What's New in v0.3.11](#whats-new-in-v0311)
   - [What's New in v0.3.10](#whats-new-in-v0310)
@@ -51,6 +52,22 @@
 AlbumPilot automates several key synchronization steps within Piwigo, saving you time and effort during album management. It allows you to batch process file synchronization, thumbnail generation, video poster creation, metadata updates, checksum calculations, and other features with a simple, user-friendly interface.
 
 ---
+
+## What’s New in v0.3.13
+
+### Fixed
+
+- **Critical bugfix:** Fixed a severe issue in Step 4 (thumbnail generation) that could accidentally delete original source image files if the “Overwrite existing thumbnails” option was enabled.  
+  This affected images whose dimensions exactly matched certain thumbnail sizes.  
+  Now, multiple safe-guards have been added to ensure that only actual derivative thumbnails can ever be deleted.  
+
+  **Important:** If you ran Step 4 with the overwrite option in any previous version, I strongly recommend double-checking your albums to ensure no original photos were unintentionally removed.  
+  Apologies for this oversight - despite careful testing, this edge case slipped through. Please excuse any inconvenience caused.
+
+### Note
+
+A simple SQL snippet and a ready-to-use shell script are provided to help you identify any potentially affected files.  
+For full instructions, see the **`images_checker/README.md`** included in this plugin.
 
 ## What’s New in v0.3.12
 
