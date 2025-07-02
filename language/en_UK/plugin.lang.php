@@ -70,6 +70,9 @@ $lang = array(
     'VideoJS_ThumbSec'                  => 'seconds',
     'VideoJS_ThumbSize'                 => 'Thumbnail size',
 
+    'External_trigger_url'              => 'External Trigger URL',
+    'External_trigger_description'      => 'This link can be used in a script to run AlbumPilot externally. Start on Windows using Chrome with: start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --new-window --autoplay-policy=no-user-gesture-required --disable-blink-features=AutomationControlled --disable-popup-blocking --disable-features=SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure --disable-background-timer-throttling --disable-renderer-backgrounding --disable-infobars "https://..."',
+
     'end_frontend_section'              => '', // Separator - from here on backend only
 
     // --- Backend only ---
@@ -82,8 +85,6 @@ $lang = array(
     'Select_all_steps'                  => 'Select/Deselect all',
     'Options_heading'                   => 'Options',
     'Simulate_mode'                     => 'Run as simulation only',
-    'External_trigger_url'              => 'External Trigger URL',
-    'External_trigger_description'      => 'This link can be used in a script to run AlbumPilot externally. Start on Windows using Chrome with: start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --new-window --autoplay-policy=no-user-gesture-required --disable-blink-features=AutomationControlled --disable-popup-blocking --disable-features=SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure --disable-background-timer-throttling --disable-renderer-backgrounding --disable-infobars "https://..."',
 
     // Logging errors and admin diagnostics
     'log_write_error'                   => 'Write error: no write permissions for log file or directory.',

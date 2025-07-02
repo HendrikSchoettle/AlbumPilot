@@ -310,6 +310,7 @@ li:has(.step-checkbox:disabled) {
 .album-sync-wrapper button,
 .album-sync-wrapper label {
   color: #111 !important;
+  font-family: inherit; 
 }
 
 .album-sync-wrapper input:disabled,
@@ -441,4 +442,32 @@ li:has(.step-checkbox:disabled) label {
 .videojs-subline input {
   margin-left: 8px;
   margin-right: 4px;
+}
+
+.external-url-wrapper {
+  margin-left: 20px;   /* gleich mit den anderen Blöcken */
+  margin-top: 20px;
+}
+
+.external-url-wrapper textarea {
+  width: calc(100% - 40px);  /* volle Breite, -padding wenn nötig */
+  min-height: 70px;
+  max-width: 100%;
+  box-sizing: border-box;
+  display: block;
+}
+
+.external-url-wrapper p {
+  font-size: 13px;  /* wieder kleiner wie Standard */
+  color: #555;
+  margin: 6px 0 0 0;
+}
+
+#external-url-toggle {
+  margin-top: 0 px;
+  margin-bottom: 8 px;
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  font-size: 15px;
+  color: #222;
+  line-height: 1.7;
 }

@@ -71,6 +71,9 @@ $lang = array(
     'VideoJS_ThumbOverwrite'            => 'Sekunden',
 	'VideoJS_ThumbSize'                 => 'Größe der Thumbnails',
 
+    'External_trigger_url'              => 'Externer Aufruf-Link',
+    'External_trigger_description'      => 'Dieser Link kann z. B. in einem Script verwendet werden, um AlbumPilot extern auszuführen. Start unter Windows und Chrome mit start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --new-window --autoplay-policy=no-user-gesture-required --disable-blink-features=AutomationControlled --disable-popup-blocking --disable-features=SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure --disable-background-timer-throttling --disable-renderer-backgrounding --disable-infobars "https://..."',
+
     'end_frontend_section'              => '', // Separator - from here on backend only
 
     // --- Backend only ---
@@ -83,9 +86,7 @@ $lang = array(
     'Select_all_steps'                  => 'Alle auswählen/abwählen',
     'Options_heading'                   => 'Optionen',
     'Simulate_mode'                     => 'Nur Simulation durchführen',
-    'External_trigger_url'              => 'Externer Aufruf-Link',
-    'External_trigger_description'      => 'Dieser Link kann z. B. in einem Script verwendet werden, um AlbumPilot extern auszuführen. Start unter Windows und Chrome mit start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --new-window --autoplay-policy=no-user-gesture-required --disable-blink-features=AutomationControlled --disable-popup-blocking --disable-features=SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure --disable-background-timer-throttling --disable-renderer-backgrounding --disable-infobars "https://..."',
-
+    
     // Logging errors and admin diagnostics
     'log_write_error'                   => 'Schreibfehler: Keine Schreibrechte für Logdatei oder Verzeichnis.',
     'log_write_error_path'              => 'Pfad zur Logdatei: %s',

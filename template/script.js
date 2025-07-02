@@ -7,8 +7,6 @@ SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
 document.addEventListener('DOMContentLoaded', function () {
 
     // Toggle enable/disable of dependent checkboxes (e.g. for thumb/video options)
-
-
     function updateDependentCheckboxStates() {
         const step4 = document.getElementById('step4');
         const step3 = document.getElementById('step3');
@@ -237,10 +235,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     selectedThumbTypes.push(cb.value);
             });
 
-            // Immer thumb_types setzen (auch wenn leer)
+            // Always set thumb_types (even if empty)
             fullPath.searchParams.set('thumb_types', selectedThumbTypes.join(','));
 
-            // thumb_overwrite unabhängig von Auswahl setzen
+            // Set thumb_overwrite independent from choice
             const overwriteThumbs = document.querySelector('.thumb-overwrite-checkbox')?.checked;
             fullPath.searchParams.set('thumb_overwrite', overwriteThumbs ? '1' : '0');
         }
@@ -277,6 +275,23 @@ document.addEventListener('DOMContentLoaded', function () {
     let settings = config.savedSettings;
     let syncSettings = {};
 
+    const toggle = document.getElementById('external-url-toggle');
+    const content = document.getElementById('external-url-content');
+
+    const showExternalUrl = window.AlbumPilotConfig.savedSettings?.show_external_url;
+
+    // Always start collapsed
+    content.style.display = 'none';
+    toggle.innerHTML = '▶ <strong>' + window.AlbumPilotLang.External_trigger_url + '</strong>';
+
+    toggle.addEventListener('click', () => {
+        const isVisible = content.style.display === 'block';
+
+        content.style.display = isVisible ? 'none' : 'block';
+        toggle.innerHTML = (isVisible ? '▶' : '▼') + ' <strong>' + window.AlbumPilotLang.External_trigger_url + '</strong>';
+
+    });
+
     if (typeof settings === 'string') {
         try {
             settings = JSON.parse(settings);
@@ -294,7 +309,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const isVideoJSActive = window.AlbumPilotConfig.videojsActive === true;
     const isSmartAlbumsActive = window.AlbumPilotConfig.smartalbumsActive === true;
 
-    // disable steps for inactive plugins at any time
+    // Disable steps for inactive plugins at any time
     function enforcePluginDisableStates() {
         if (!window.AlbumPilotConfig.videojsActive) {
             const s3 = document.getElementById('step3');
@@ -311,7 +326,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
-    // call immediately after init
+    // Call immediately after init
     enforcePluginDisableStates();
     window.enforcePluginDisableStates = enforcePluginDisableStates; // expose for runner
     window.updateDependentCheckboxStates = updateDependentCheckboxStates; // expose for runner

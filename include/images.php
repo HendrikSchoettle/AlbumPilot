@@ -183,16 +183,10 @@ if (
                         //skip derivats that are biger than the poster
                         list($targetW, $targetH) = $deriv->get_size();
                         if ($posterW <= $targetW || $posterH <= $targetH) {
-                            /*
-                            log_message(sprintf(
-                                "⛔ skip %s for image %d: target %dx%d > poster %dx%d",
-                                $type, $posterImg['id'], $targetW, $targetH, $posterW, $posterH
-                            ));
-                            */
                             continue;
                         }
-
-                        if (!$deriv->is_cached()) {
+                        
+						if ($overwriteThumbs || !$deriv->is_cached()) {
                             $queue[] = [
                                 'img'   => $posterImg,
                                 'type'  => $type,
@@ -248,7 +242,7 @@ if (
                     if (!empty($allowedTypes) && !in_array($type, $allowedTypes, true)) {
                         continue;
                     }
-                    /* Include existing thumbnails for overwrite or new thumbnails otherwise */
+                    // Include existing thumbnails for overwrite or new thumbnails otherwise 
                     if ($overwriteThumbs || !$deriv->is_cached()) {
                         $derivsToGenerate[$type] = $deriv;
                     }
@@ -309,27 +303,16 @@ if (
 
                 // Only proceed if the source is large enough
                 if ($origWidth >= $targetWidth && $origHeight >= $targetHeight) {
-                    
-					// If overwrite is enabled and thumbnail is cached: delete it first												   
-					if ($overwriteThumbs && $deriv->is_cached()) {
-						// skip deleting original files by comparing derivative and original directories 
-						// (Piwigo links to the original image if its measures equal a standard thumb size).
-						$origDir  = dirname(PHPWG_ROOT_PATH . $img['path']);
-						$derivDir = dirname($deriv->get_path());
-						if (realpath($derivDir) !== realpath($origDir)) {
-							$path = $deriv->get_path();
-							if (file_exists($path)) {
-								@unlink($path);
-							}
-						}
-					}				
-                    if (!$deriv->is_cached()) {
+                    					
+					if ($overwriteThumbs || !$deriv->is_cached()) {
+                    // if (!$deriv->is_cached()) {
                         $queue[] = [
                             'img'   => $img,
                             'type'  => $type,
                             'deriv' => $deriv,
                         ];
                     }
+										
                 }
             }
         }
@@ -364,7 +347,7 @@ if (
         $type  = $item['type'];
         $deriv = $item['deriv'];
 
-        if (!$deriv->is_cached()) {
+          if ($overwriteThumbs || !$deriv->is_cached()) {
 
             if (!$simulate) {
 
@@ -412,11 +395,11 @@ if (
                 if (isset($backupPath)) {
                     $newPath = $deriv->get_path();
                     if (file_exists($newPath)) {
-                        // new file created successfully, remove backup
+                        // New file created successfully, remove backup
                         @unlink($backupPath);
                     } else {
-                        // new file creation failed, restore backup
-                        @rename($backupPath, $newPath);
+                        // New file creation failed, restore backup
+                        @rename($backupPath, $existingPath);
                     }
                     unset($backupPath);
                 }

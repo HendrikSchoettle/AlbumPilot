@@ -75,15 +75,17 @@ SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
             <span class="btn-text">{'Start_sync'|@translate}</span>
         </button>
         <button id="reset-settings" class="btn btn-secondary">🔁 {'Reset_settings'|@translate}</button>
-    </div>
+     </div>
 
-    <div class="album-settings-box mt-block">
-        <p><strong>{'External_trigger_url'|@translate}</strong></p>
-        <textarea id="external-url-chain" readonly></textarea>
-        <p style="font-size:0.85em; color:#777; margin-top:6px;">
-            {'External_trigger_description'|@translate}
-        </p>
-    </div>
+     <div class="external-url-wrapper">
+       <p id="external-url-toggle" style="cursor:pointer;">
+         ▶ <strong>{'External_trigger_url'|@translate}</strong>
+       </p>
+       <div id="external-url-content" style="display:none;">
+         <textarea id="external-url-chain" readonly></textarea>
+         <p>{'External_trigger_description'|@translate}</p>
+       </div>
+     </div>
 
     <ul id="sync-steps" class="sync-steps"></ul>
     <div id="sync-log" class="sync-log" style="display:none;">
