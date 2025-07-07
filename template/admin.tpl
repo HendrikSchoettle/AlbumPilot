@@ -69,6 +69,12 @@ SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
         <input type="checkbox" id="onlyNew" checked class="hidden-checkbox">
     </div>
 
+    <div class="options-block">
+      📖 <a href="https://github.com/HendrikSchoettle/AlbumPilot#readme" target="_blank" style="color:#222;">
+        {'documentation_link'|@translate}
+      </a>
+    </div>    
+    
     <div class="button-row">
         <button id="start-sync" class="btn btn-primary" style="min-width:250px;">
             <span class="btn-icon">🚀</span>

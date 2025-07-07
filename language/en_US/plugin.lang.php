@@ -57,7 +57,6 @@ $lang = array(
     'label_thumb_overwrite'             => 'Overwrite existing thumbnails (if present)',
 
     // --- VideoJS UI translations ---
-    'label_videojs_poster_and_thumb_options' => 'Options',
     'VideoJS_RepAdd'                    => 'Use uploaded poster (if available)',
     'VideoJS_AddPoster'                 => 'Generate poster from frame at',
     'VideoJS_PosterSec'                 => 'seconds',
@@ -77,7 +76,6 @@ $lang = array(
 
     // --- Backend only ---
     'all_albums_label'                  => 'Albums',
-    'AlbumPilot_description'            => 'Automates synchronization and maintenance after media import (including videos, smart albums, etc).',
     'AlbumPilot_title'                  => 'AlbumPilot – Automated Synchronization',
     'Albums_to_sync'                    => 'Albums to be synchronized',
     'Album_search_placeholder'          => '🔍 Search albums …',
@@ -107,6 +105,9 @@ $lang = array(
     'batch_mode_warning'                => 'Batch mode active',
     'batch_mode_limited_ui'             => 'The user interface is disabled because the process was triggered externally.',
 
+    // Help link
+    'documentation_link'                => 'AlbumPilot Documentation',
+
     // Thumbnail generation logs
     'log_scan_missing_thumbs'           => 'Scanning for missing thumbnails...',
     'log_total_thumbs_to_generate'      => 'Total thumbnails to generate: %d',
@@ -114,7 +115,6 @@ $lang = array(
     'log_srcimage_error'                => 'SrcImage error for ID %d (%s): %s',
     'log_derivative_error'              => 'Derivative error for ID %d (%s): %s',
     'log_file_missing'                  => 'File missing for ID %d (%s) – file not found',
-    'log_getimagesize_error'            => 'getimagesize error for ID %d (%s)',
     'log_get_target_size_error'         => 'Failed to get target size (type: %s) – ID %d (%s): %s',
     'log_image_too_small'               => 'Too small for %s – ID %d (%s): Original %dx%d, required ≥ %dx%d',
     'log_thumb_progress_line'           => '🖼️ Thumbnail %d of %d (%d%%) – Image ID %d%s – Type: %s | Path: %s',

@@ -20,44 +20,48 @@ window.next = function () {
     const simulate = document.getElementById('simulate')?.checked || false;
     const startBtn = document.getElementById('start-sync');
 
+    const isBatchMode = new URLSearchParams(window.location.search).get('external_run') === '1';
+
+
     if (index >= selectedSteps.length) {
         steps.innerHTML += '<li><strong>✅ ' + (window.AlbumPilotLang.all_steps_completed) + '</strong></li>';
 
         window.syncInProgress = false;
 
-        // Remove batch-mode styling
-        const wrapper = document.querySelector('.album-sync-wrapper.batch-mode');
-        if (wrapper)
-            wrapper.classList.remove('batch-mode');
+        if (!isBatchMode) {
+            // Remove batch-mode styling
+            const wrapper = document.querySelector('.album-sync-wrapper.batch-mode');
+            if (wrapper)
+                wrapper.classList.remove('batch-mode');
 
-        // Only re-enable controls that were not disabled in the original markup
-        document.querySelectorAll('input, select, textarea, button').forEach(el => {
-            if (el.defaultDisabled)
-                return;
-            el.disabled = false;
-            el.style.opacity = '';
-            el.style.cursor = '';
-            el.title = '';
-        });
+            // Only re-enable controls that were not disabled in the original markup
+            document.querySelectorAll('input, select, textarea, button').forEach(el => {
+                if (el.defaultDisabled)
+                    return;
+                el.disabled = false;
+                el.style.opacity = '';
+                el.style.cursor = '';
+                el.title = '';
+            });
+        }
 
         // Fire a change on each step-checkbox to reapply nested enable/disable logic
-        document.querySelectorAll('.step-checkbox').forEach(cb => {
-            cb.dispatchEvent(new Event('change'));
+        if (!window.location.search.includes('external_run=1')) {
+            document.querySelectorAll('.step-checkbox').forEach(cb => {
+                cb.dispatchEvent(new Event('change'));
+                if (typeof enforcePluginDisableStates === 'function')
+                    enforcePluginDisableStates(); // update plugin disable states
+                if (typeof updateDependentCheckboxStates === 'function')
+                    updateDependentCheckboxStates(); // update dependent checkboxes
+            });
+
             if (typeof enforcePluginDisableStates === 'function')
-                enforcePluginDisableStates(); // update plugin disable states
+                enforcePluginDisableStates();
             if (typeof updateDependentCheckboxStates === 'function')
-                updateDependentCheckboxStates(); // update dependent checkboxes
-        });
-
-        if (typeof enforcePluginDisableStates === 'function')
-            enforcePluginDisableStates();
-        if (typeof updateDependentCheckboxStates === 'function')
-            updateDependentCheckboxStates();
-
+                updateDependentCheckboxStates();
+        }
         // Regenerate external-URL preview
         generateExternalUrlFromSelection();
-
-        const isBatchMode = new URLSearchParams(window.location.search).get('external_run') === '1';
 
         if (!isBatchMode) {
             if (startBtn && window.originalStartBtnHTML) {
@@ -360,23 +364,5 @@ window.handleJsonStep = window.handleJsonStep || function (url, onSuccess) {
         } else {
             onSuccess(data);
         }
-    });
-};
-
-window.resetProgress = function () {
-    const config = window.AlbumPilotConfig || {};
-    const token = config.token;
-
-    return fetch(config.pluginPageUrl + '&reset_progress=1&pwg_token=' + token, {
-        credentials: 'same-origin'
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (!data?.success) {
-            console.warn(window.AlbumPilotLang.reset_error);
-        }
-    })
-    .catch(err => {
-        console.error(window.AlbumPilotLang.reset_error_details, err);
     });
 };

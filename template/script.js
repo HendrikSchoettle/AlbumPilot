@@ -148,36 +148,10 @@ document.addEventListener('DOMContentLoaded', function () {
             };
         }
     };
-    // Simple and reusable for all AJAX step executions
-    function handleJsonStep(url, onSuccess) {
-        const log = document.getElementById('progress-log');
-
-        fetchSafeJSON(url).then(data => {
-            if (data.error) {
-                const div = document.createElement('div');
-                div.className = 'sync-step-block error';
-
-                if (data.htmlFallback) {
-                    div.innerHTML = window.AlbumPilotLang.invalid_response + '<br><pre>' +
-                        data.rawText.substring(0, 2000) + '</pre>';
-                } else {
-                    div.textContent = window.AlbumPilotLang.network_error + ' ' + data.message;
-                }
-
-                log.appendChild(div);
-            } else {
-                onSuccess(data);
-            }
-        });
-    }
 
     // Extract configuration from global JS object safely
     const config = window.AlbumPilotConfig || {};
     const pluginPageUrl = config.pluginPageUrl || '';
-    const pluginBasePath = pluginPageUrl.replace(/admin\.php.*/, '');
-
-    // Normalize plugin URL to ensure leading slash
-    const safePluginUrl = pluginPageUrl.startsWith('/') ? pluginPageUrl : '/' + pluginPageUrl;
     const root = config.rootUrl;
     const token = config.token;
 
@@ -277,8 +251,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const toggle = document.getElementById('external-url-toggle');
     const content = document.getElementById('external-url-content');
-
-    const showExternalUrl = window.AlbumPilotConfig.savedSettings?.show_external_url;
 
     // Always start collapsed
     content.style.display = 'none';
@@ -1021,49 +993,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (cb && !cb.disabled)
                 cb.checked = true;
         });
-
-        // VideoJS step configuration (step 2)
-        if (stepIds.includes('2')) {
-            const posterSec = params.get('poster_second') || '4';
-            const thumbInterval = params.get('thumb_interval') || '5';
-            const thumbSize = params.get('thumb_size') || '120x68';
-            const outputFormat = params.get('output_format') || 'jpg';
-
-            const posterInput = document.querySelector('.videojs-poster-second');
-            const intervalInput = document.querySelector('.videojs-thumb-interval');
-            const sizeInput = document.querySelector('.videojs-size-input');
-            const outputRadio = document.querySelector(`input[name="videojs_output_format"][value="${outputFormat}"]`);
-
-            if (posterInput)
-                posterInput.value = posterSec;
-            if (intervalInput)
-                intervalInput.value = thumbInterval;
-            if (sizeInput)
-                sizeInput.value = thumbSize;
-            if (outputRadio)
-                outputRadio.checked = true;
-
-            document.querySelectorAll('.videojs-option').forEach(cb => {
-                const key = cb.dataset.key;
-                if (key && params.has(key)) {
-                    cb.checked = params.get(key) === '1';
-                }
-            });
-        }
-
-        // Thumbnail generation step configuration (step 3)
-        if (stepIds.includes('3')) {
-            const types = (params.get('thumb_types') || '').split(',');
-            const overwrite = params.get('thumb_overwrite') === '1';
-
-            document.querySelectorAll('.thumb-type-checkbox').forEach(cb => {
-                cb.checked = types.includes(cb.value);
-            });
-
-            const overwriteCb = document.querySelector('.thumb-overwrite-checkbox');
-            if (overwriteCb)
-                overwriteCb.checked = overwrite;
-        }
 
         // Wait until DOM is fully ready and UI has focus before triggering the sync
         function waitAndStartSyncWithFocusCheck() {

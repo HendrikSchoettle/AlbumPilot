@@ -57,7 +57,7 @@ $lang = array(
     'label_thumb_overwrite'             => 'Existierende Thumbnails überschreiben (falls vorhanden)',
 
     // --- VideoJS UI translations ---
-    'label_videojs_poster_and_thumb_options' => 'Optionen',
+    // 'label_videojs_poster_and_thumb_options' => 'Optionen',
     'VideoJS_RepAdd'                    => 'Hochgeladenes Poster übernehmen (falls verfügbar)',
     'VideoJS_AddPoster'                 => 'Poster aus Frame generieren nach',
     'VideoJS_PosterSec'                 => 'Sekunden',
@@ -68,7 +68,6 @@ $lang = array(
     'VideoJS_OverlayAdd'                => 'Filmeffekt auf Poster anwenden',
     'VideoJS_AddThumb'                  => 'Vorschaubilder automatisch erzeugen alle',
     'VideoJS_ThumbSec'                  => 'Sekunden',
-    'VideoJS_ThumbOverwrite'            => 'Sekunden',
 	'VideoJS_ThumbSize'                 => 'Größe der Thumbnails',
 
     'External_trigger_url'              => 'Externer Aufruf-Link',
@@ -78,7 +77,6 @@ $lang = array(
 
     // --- Backend only ---
     'all_albums_label'                  => 'Alben',
-    'AlbumPilot_description'            => 'Automatisiert die Synchronisation und Wartung nach dem Medienimport (inkl. Videos, Smart-Alben usw.).',
     'AlbumPilot_title'                  => 'AlbumPilot – Automatisierte Synchronisation',
     'Albums_to_sync'                    => 'Zu synchronisierende Alben',
     'Album_search_placeholder'          => '🔍 Album suchen …',
@@ -106,7 +104,10 @@ $lang = array(
 	// Batch mode warnings 
     'batch_mode_warning'                => 'Batch-Modus aktiv',
     'batch_mode_limited_ui'             => 'Die Benutzeroberfläche ist deaktiviert, da der Vorgang extern gestartet wurde.',
-										  
+
+    // Help link
+    'documentation_link'                => 'AlbumPilot-Dokumentation (englisch)',
+									  
     // Thumbnail generation logs
     'log_scan_missing_thumbs'           => 'Suche nach fehlenden Thumbnails...',
     'log_total_thumbs_to_generate'      => 'Anzahl der zu generierenden Thumbnails: %d',
@@ -114,7 +115,6 @@ $lang = array(
     'log_srcimage_error'                => 'SrcImage-Fehler für ID %d (%s): %s',
     'log_derivative_error'              => 'Fehler bei Derivat-Erstellung für ID %d (%s): %s',
     'log_file_missing'                  => 'Datei fehlt für ID %d (%s) – Datei nicht gefunden',
-    'log_getimagesize_error'            => 'Fehler bei getimagesize für ID %d (%s)',
     'log_get_target_size_error'         => 'Fehler beim Ermitteln der Zielgröße (Typ: %s) – ID %d (%s): %s',
     'log_image_too_small'               => 'Zu klein für %s – ID %d (%s): Original %dx%d, erforderlich ≥ %dx%d',
     'log_thumb_progress_line'           => '🖼️ Thumbnail %d von %d (%d%%) – Bild-ID %d%s – Typ: %s | Pfad: %s',

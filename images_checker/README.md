@@ -1,13 +1,13 @@
-# Lost Images Checker
+# Lost Images Checker for AlbumPilot Plugin for Piwigo
 
-This small helper shows you how to check your Piwigo gallery for any potentially missing original images that might have been accidentally deleted due to a bug in the “Overwrite existing thumbnails” function **in all versions up to 0.3.12**. 
+This small helper shows you how to check your Piwigo gallery for any potentially missing original images that might have been accidentally deleted due to a bug in the "Overwrite existing thumbnails" function **in all versions up to 0.3.12**.
 
 ## Background
 
-**Critical bug:** In versions up to **AlbumPilot 0.3.12**, there was a severe issue in Step 4 (thumbnail generation) that could accidentally delete original source image files if the “Overwrite existing thumbnails” option was enabled.  
-This affected original images whose dimensions exactly matched certain configured derivative (thumbnail) sizes.  
+**Critical bug:** In versions up to **AlbumPilot 0.3.12**, there was a severe issue in Step 4 (thumbnail generation) that could accidentally delete original source image files if the "Overwrite existing thumbnails" option was enabled.  
+This affected original images whose dimensions exactly matched certain configured derivative (thumbnail) sizes.
 
-In **version 0.3.13**, multiple safety guards were added to fully fix this issue and make sure that only actual derivative thumbnails can ever be deleted.  
+In **version 0.3.13**, multiple safety guards were added to fully fix this issue and make sure that only actual derivative thumbnails can ever be deleted.
 
 **Important:** If you ever ran Step 4 with the overwrite option enabled using an older version (0.3.12 or earlier), it is strongly recommended to double-check your albums to ensure that no original photos were unintentionally removed.
 
@@ -27,8 +27,8 @@ Again, apologies for this oversight - despite careful testing, this edge case sl
 
 ## Where to find your standard image sizes in Piwigo
 
-You can view and adjust your gallery’s configured image sizes in the **Piwigo Admin Panel** under:  
-**Configuration → Options → Photo Sizes**  
+You can view and adjust your gallery's configured image sizes in the **Piwigo Admin Panel** under:  
+**Configuration -> Options -> Photo Sizes**
 
 Check here to see which derivative sizes you use. The default sizes are typically:
 
@@ -50,7 +50,7 @@ xlarge      1656x1242
 
 Use the following SQL query in phpMyAdmin to list all images with dimensions that exactly match your defined derivative sizes:
 
-**Important:** The example list of sizes below must be adapted to your own Piwigo configuration! These dimensions are default values and may not match your setup.  
+**Important:** The example list of sizes below must be adapted to your own Piwigo configuration! These dimensions are default values and may not match your setup.
 
 If you do not adjust the sizes to your own setup, you might miss affected images!
 
@@ -79,10 +79,10 @@ ORDER BY
 ## How to export the results
 
 1. Run the SQL in phpMyAdmin.
-2. Click **Export** → Select **CSV** format.
-3. Download the `.csv` file.  
-   
-   This should contain your potentially affected images.
+2. Click **Export** -> Select **CSV** format.
+3. Download the `.csv` file.
+
+This should contain your potentially affected images.
 
 ---
 
@@ -90,7 +90,7 @@ ORDER BY
 
 This plugin includes a simple shell script to verify which images exist on disk:
 
-1. Place your exported CSV in this directory as `piwigo_images.csv`.  
+1. Place your exported CSV in this directory as `piwigo_images.csv`.
 2. Adjust the `ROOT_PATH` in `find_lost_images.sh` to match your Piwigo root folder.
 3. Make the script executable:  
    ```bash
@@ -109,4 +109,5 @@ The script will loop through each image in the CSV, check if it exists, and log 
 
 If any files show up as `[MISSING]`, you should restore them from your backup.
 
----
+
+   
