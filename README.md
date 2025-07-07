@@ -44,6 +44,7 @@ Thanks to its chunked processing architecture, long-running tasks, including met
 
 ### Changed
 - Extensive documentation updates covering recent feature changes.
+- Inserted external link to documentation
 - Language files streamlined by removing unused translation entries.
 - Code cleaned up by removing obsolete functions and variables.
 
