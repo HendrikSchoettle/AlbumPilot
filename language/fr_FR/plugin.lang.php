@@ -125,3 +125,4 @@ $lang['External_trigger_description'] = 'Ce lien peut être utilisé dans un scr
 $lang['Albums_to_sync'] = 'Albums à synchroniser';
 $lang['Album_search_placeholder'] = 'Recherche d\'albums ...';
 $lang['AlbumPilot_title'] = 'AlbumPilot - Synchronisation automatisée';
+$lang['log_thumb_progress_line'] = 'Vignette %d de %d (%d%%) - Image ID %d%s - Type : %s | Chemin : %s';
