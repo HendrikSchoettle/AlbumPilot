@@ -1,10 +1,9 @@
 <?php
-// +-----------------------------------------------------------------------+
-// | This file is part of Piwigo.                                          |
-// |                                                                       |
-// | For copyright and license information, please view the COPYING.txt    |
-// | file that was distributed with this source code.                      |
-// +-----------------------------------------------------------------------+
+/*
+File: language/he_IL/plugin.lang.php – AlbumPilot Plugin for Piwigo
+Thanks to epifeny for the translation
+SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
+*/
 $lang['step_video'] = 'סרטונים';
 $lang['sync_in_progress'] = 'סנכרון בתהליך...';
 $lang['thumb_type_label'] = 'סוג';

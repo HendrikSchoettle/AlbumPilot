@@ -1,15 +1,15 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 1.0.0  
-**Release Date:** 2025-07-07
-**Tested with:** Piwigo 15.5.0
+**Version:** 1.1.0  
+**Release Date:** 2025-09-28
+**Tested with:** Piwigo 15.6.0
 
 ---
 
 ## Table of Contents
 
 - [Overview](#overview)
-- [What's New in v1.0.0](#whats-new-in-v100)
+- [What's New in v1.1.0](#whats-new-in-v110)
 - [Synchronization Steps](#synchronization-steps)
   - [Step 1: Sync Files](#step-1-sync-files)
   - [Step 2: Update Metadata](#step-2-update-metadata)
@@ -39,17 +39,20 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 Thanks to its chunked processing architecture, long-running tasks, including metadata updates for existing files, run reliably to completion, even when they take considerable time.
 
 ---
+## What's New in v1.1.0
 
-## What's New in v1.0.0
+### Added
+- New translations: Catalan, Spanish, French, Hebrew, and Norwegian Bokmål - thanks to the community contributors!
+- Updated language file headers with translator acknowledgements.
 
 ### Changed
-- Extensive documentation updates covering recent feature changes.
-- Inserted external link to documentation.
-- Code cleaned up by removing obsolete functions and variables.
+- Log files are no longer written into the plugin directory.  
+  Instead, AlbumPilot now uses Piwigo’s recommended location:  
+  `_data/logs/album_pilot.log`  
+  (with automatic rotation once the log exceeds 100 MB).
 
 ### Fixed
-- Batch-mode controls no longer re-enable at the end of a sync.
-- Hardcoded fallback for thumbnail labels in US-English locale where the plugin fails to load core translations (temporary workaround for en_US issue).
+- Minor improvements in language handling and frontend translation isolation.
 
 *For the full history of changes, see [CHANGELOG.md](./CHANGELOG.md).*
 

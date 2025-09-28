@@ -73,7 +73,7 @@ $lang = array(
     'External_trigger_url'              => 'Externer Aufruf-Link',
     'External_trigger_description'      => 'Dieser Link kann z. B. in einem Script verwendet werden, um AlbumPilot extern auszuführen. Start unter Windows und Chrome mit start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --new-window --autoplay-policy=no-user-gesture-required --disable-blink-features=AutomationControlled --disable-popup-blocking --disable-features=SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure --disable-background-timer-throttling --disable-renderer-backgrounding --disable-infobars "https://..."',
 
-    'end_frontend_section'              => '', // Separator - from here on backend only
+    // end of frontend section
 
     // --- Backend only ---
     'all_albums_label'                  => 'Alben',

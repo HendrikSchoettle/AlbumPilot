@@ -72,7 +72,7 @@ $lang = array(
     'External_trigger_url'              => 'External Trigger URL',
     'External_trigger_description'      => 'This link can be used in a script to run AlbumPilot externally. Start on Windows using Chrome with: start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --new-window --autoplay-policy=no-user-gesture-required --disable-blink-features=AutomationControlled --disable-popup-blocking --disable-features=SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure --disable-background-timer-throttling --disable-renderer-backgrounding --disable-infobars "https://..."',
 
-    'end_frontend_section'              => '', // Separator - from here on backend only
+    // end of frontend section
 
     // --- Backend only ---
     'all_albums_label'                  => 'Albums',

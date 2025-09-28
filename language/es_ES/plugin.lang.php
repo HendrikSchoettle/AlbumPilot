@@ -1,10 +1,9 @@
 <?php
-// +-----------------------------------------------------------------------+
-// | This file is part of Piwigo.                                          |
-// |                                                                       |
-// | For copyright and license information, please view the COPYING.txt    |
-// | file that was distributed with this source code.                      |
-// +-----------------------------------------------------------------------+
+/*
+File: language/es_ES/plugin.lang.php – AlbumPilot Plugin for Piwigo
+Thanks to Tirs for the translation
+SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
+*/
 $lang['AlbumPilot_title'] = 'AlbumPilot - Sincronización automatizada';
 $lang['Album_search_placeholder'] = 'Buscar álbumes...';
 $lang['Albums_to_sync'] = 'Álbumes para sincronizar';

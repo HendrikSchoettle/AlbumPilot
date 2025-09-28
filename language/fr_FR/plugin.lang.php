@@ -1,10 +1,9 @@
 <?php
-// +-----------------------------------------------------------------------+
-// | This file is part of Piwigo.                                          |
-// |                                                                       |
-// | For copyright and license information, please view the COPYING.txt    |
-// | file that was distributed with this source code.                      |
-// +-----------------------------------------------------------------------+
+/*
+File: language/fr_FR/plugin.lang.php – AlbumPilot Plugin for Piwigo
+Thanks to Katryne for the translation
+SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
+*/
 $lang['workflow_finished'] = 'Le processus est terminé.';
 $lang['yes'] = 'Oui';
 $lang['smartalbums_not_active'] = 'SmartAlbums n\'est pas activé';

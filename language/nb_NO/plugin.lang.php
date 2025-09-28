@@ -1,10 +1,9 @@
 <?php
-// +-----------------------------------------------------------------------+
-// | This file is part of Piwigo.                                          |
-// |                                                                       |
-// | For copyright and license information, please view the COPYING.txt    |
-// | file that was distributed with this source code.                      |
-// +-----------------------------------------------------------------------+
+/*
+File: language/nb_NO/plugin.lang.php – AlbumPilot Plugin for Piwigo
+Thanks to paulen for the translation
+SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
+*/
 $lang['step_update_photo_information'] = '8. Oppdater bildeinformasjon';
 $lang['step_video'] = 'videoer';
 $lang['sync_in_progress'] = 'Synkronisering pågår...';

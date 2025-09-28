@@ -360,8 +360,14 @@ function check_and_clear_reset(): void {
     * @param string $message
 */
 function log_message(string $message): void {
-    $logfile = ALBUM_PILOT_PATH . 'album_pilot.log';
-    $oldfile = ALBUM_PILOT_PATH . 'album_pilot_old.log';
+    // Use Piwigo's standard log directory
+    $logDir  = PHPWG_ROOT_PATH . '_data/logs/';
+    if (!is_dir($logDir)) {
+        @mkdir($logDir, 0777, true);
+    }
+
+    $logfile = $logDir . 'album_pilot.log';
+    $oldfile = $logDir . 'album_pilot_old.log';
     
     // Rotate log if exceeds 100 MB
     if (file_exists($logfile) && filesize($logfile) > 100 * 1024 * 1024) {
@@ -380,7 +386,7 @@ function log_message(string $message): void {
         }
         
         unset($_SESSION['log_write_error_text'], $_SESSION['log_write_error_displayed']);
-        } else {
+    } else {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -455,7 +461,13 @@ function log_sync_options_full(array $params, string $albumPath): void {
     * Ensure log file permissions are correct.
 */
 function check_logfile_permissions(): void {
-    $logfile = ALBUM_PILOT_PATH . 'album_pilot.log';
+    // Use Piwigo's standard log directory
+    $logDir  = PHPWG_ROOT_PATH . '_data/logs/';
+    if (!is_dir($logDir)) {
+        @mkdir($logDir, 0777, true);
+    }
+
+    $logfile = $logDir . 'album_pilot.log';
     
     if (!file_exists($logfile)) {
         @touch($logfile); // Try to create file
@@ -472,7 +484,7 @@ function check_logfile_permissions(): void {
             sprintf(l10n('log_write_error_path'), $logfile);
             $_SESSION['log_write_error_displayed'] = true;
         }
-        } else {
+    } else {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -651,14 +663,74 @@ include __DIR__ . '/include/checksum.php';
 // Assign full language pack to Smarty
 $template->assign('LANG', $lang);
 
-// Prepare frontend JS translations until 'end_frontend_section'
+// Prepare frontend JS translations via whitelist.
+// Earlier versions used a separator key to cut off the frontend section.
+// This approach was abandoned because the automatic translation sorts keys alphabetically,
+// which broke the separator logic. 
 $lang_frontend = [];
-foreach ($lang as $key => $value) {
-    if ($key === 'end_frontend_section') {
-        break;
+$frontend_keys = [
+    'Start_sync',
+    'Reset_settings',
+    'progress_heading',
+    'select_album_alert',
+    'select_step_alert',
+    'sync_in_progress',
+    'leave_warning',
+    'all_steps_completed',
+    'workflow_finished',
+    'simulation_suffix',
+    'file_label',
+    'step_completed',
+    'of',
+    'image_id',
+    'error_during_step',
+    'no_info_found',
+    'no_success_message',
+    'invalid_response',
+    'network_error',
+    'thumb_type_label',
+    'step_sync_files',
+    'step_update_metadata',
+    'step_generate_video_posters',
+    'step_generate_thumbnails',
+    'step_calculate_checksums',
+    'step_reassign_smart_albums',
+    'step_update_album_metadata',
+    'step_update_photo_information',
+    'step_optimize_database',
+    'step_run_integrity_check',
+    'videojs_not_active',
+    'smartalbums_not_active',
+    'skipped_simulation_mode',
+    'step_video',
+    'step_thumbnail',
+    'step_checksum',
+    'step_metadata',
+    'reset_error',
+    'reset_error_details',
+    'label_select_thumb_types',
+    'label_thumb_overwrite',
+    'VideoJS_RepAdd',
+    'VideoJS_AddPoster',
+    'VideoJS_PosterSec',
+    'VideoJS_PosterOverwrite',
+    'VideoJS_OutputFormat',
+    'VideoJS_jpg',
+    'VideoJS_png',
+    'VideoJS_OverlayAdd',
+    'VideoJS_AddThumb',
+    'VideoJS_ThumbSec',
+    'VideoJS_ThumbSize',
+    'External_trigger_url',
+    'External_trigger_description',
+];
+
+foreach ($frontend_keys as $k) {
+    if (isset($lang[$k])) {
+        $lang_frontend[$k] = $lang[$k];
     }
-    $lang_frontend[$key] = $value;
 }
+
 
 $template->assign('L10N_JS', $lang_frontend);
 

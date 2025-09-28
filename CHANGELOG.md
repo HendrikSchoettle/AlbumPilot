@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2025-09-28
+
+### Added
+- New translations: Catalan, Spanish, French, Hebrew, and Norwegian Bokmål - thanks to the community contributors!
+- Updated language file headers with translator acknowledgements.
+
+### Changed
+- Log files are no longer written into the plugin directory.  
+  Instead, AlbumPilot now uses Piwigo’s recommended location:  
+  `_data/logs/album_pilot.log`  
+  (with automatic rotation once the log exceeds 100 MB).
+
+### Fixed
+- Minor improvements in language handling and frontend translation isolation.
+
 ## [1.0.0] - 2025-07-07
 
 ### Changed
