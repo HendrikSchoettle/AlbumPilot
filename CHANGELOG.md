@@ -2,10 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2025-09-28
+
+Hotfix: corrected version number in `main.inc.php` (display issue only, no functional changes).
+
 ## [1.1.0] - 2025-09-28
 
 ### Added
-- New translations: Catalan, Spanish, French, Hebrew, and Norwegian Bokmål - thanks to the community contributors!
+- New translations: Catalan, French, Hebrew, Norwegian Bokmål and Spanish - thanks to the community contributors!
 - Updated language file headers with translator acknowledgements.
 
 ### Changed
