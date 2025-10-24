@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2025-10-24
+
+### Added
+- AlbumPilot now supports 11 language versions! New translations: Brazilian Portuguese, Icelandic, Italian and updated French.  
+  Many thanks to our community contributors!
+
+### Changed
+- Removed special icon characters (such as ❌) from translation files after reports of issues in some translations.  
+  These symbols are now hardcoded in the plugin code instead of the language files.  
+  This structural change should make translations more robust and prevent errors caused by problematic special characters.
+
 ## [1.1.1] - 2025-09-28
 
 Hotfix: corrected version number in `main.inc.php` (display issue only, no functional changes).

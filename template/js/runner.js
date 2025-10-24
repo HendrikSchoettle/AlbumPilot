@@ -343,10 +343,10 @@ window.handleJsonStep = window.handleJsonStep || function (url, onSuccess) {
             div.className = 'sync-step-block error';
 
             if (data.htmlFallback) {
-                div.innerHTML = window.AlbumPilotLang.invalid_response + '<br><pre>' +
+                div.innerHTML = '❌ ' + window.AlbumPilotLang.invalid_response + '<br><pre>' +
                     data.rawText.substring(0, 2000) + '</pre>';
             } else {
-                div.textContent = window.AlbumPilotLang.network_error + ' ' + data.message;
+                div.textContent = '❌ ' + window.AlbumPilotLang.network_error + ' ' + data.message;
             }
 
             log.appendChild(div);

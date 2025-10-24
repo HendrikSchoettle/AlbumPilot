@@ -1,10 +1,9 @@
 <?php
-// +-----------------------------------------------------------------------+
-// | This file is part of Piwigo.                                          |
-// |                                                                       |
-// | For copyright and license information, please view the COPYING.txt    |
-// | file that was distributed with this source code.                      |
-// +-----------------------------------------------------------------------+
+/*
+File: language/pt_BR/plugin.lang.php – AlbumPilot Plugin for Piwigo
+Thanks to flaviove for the translation
+SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
+*/
 $lang['label_thumb_overwrite'] = 'Sobrescrever miniaturas existentes (se houver)';
 $lang['label_subalbums_yes'] = 'incluindo subálbuns';
 $lang['label_subalbums_no'] = 'apenas álbum';
@@ -13,7 +12,7 @@ $lang['label_select_thumb_types'] = 'Tamanhos de miniaturas';
 $lang['label_only_new'] = 'apenas novos arquivos';
 $lang['label_live'] = 'Ao vivo';
 $lang['label_all_files'] = 'todos os arquivos';
-$lang['invalid_response'] = '❌ Resposta inválida (JSON não válido):';
+$lang['invalid_response'] = 'Resposta inválida (JSON não válido):';
 $lang['include_subalbums'] = 'Incluir subálbuns';
 $lang['image_id'] = 'ID da imagem';
 $lang['file_label'] = 'Arquivo';
@@ -36,7 +35,7 @@ $lang['log_video_error_details'] = 'Detalhes do erro: %s';
 $lang['log_video_combined_counts'] = '%d arquivo(s) para processar (%d pôsteres ausentes, %d arquivos com miniaturas ausentes)';
 $lang['log_video_add_frame_failed'] = 'Não foi possível adicionar quadro de vídeo: %s';
 $lang['log_total_thumbs_to_generate'] = 'Total de miniaturas a serem geradas: %d';
-$lang['log_thumb_progress_line'] = '������️ Miniatura %d de %d (%d%%) – ID da imagem %d%s – Tipo: %s | Caminho: %s';
+$lang['log_thumb_progress_line'] = 'Miniatura %d de %d (%d%%) – ID da imagem %d%s – Tipo: %s | Caminho: %s';
 $lang['log_total_images_to_process'] = 'Total de imagens a processar: %d';
 $lang['log_sync_step1_summary'] = 'Sincronização concluída. Adicionados: %d, Excluídos: %d, Delta: %d (antes: %d, depois: %d)';
 $lang['log_sync_step1_start'] = 'Iniciando a sincronização (arquivos)';
@@ -80,7 +79,7 @@ $lang['of'] = 'de';
 $lang['no_success_message'] = 'Nenhuma mensagem de sucesso encontrada.';
 $lang['no_info_found'] = 'Nenhuma informação encontrada no bloco de resultados.';
 $lang['no'] = 'Não';
-$lang['network_error'] = '❌ Erro de rede:';
+$lang['network_error'] = 'Erro de rede:';
 $lang['log_write_error_path'] = 'Caminho do arquivo de log: %s';
 $lang['log_write_error'] = 'Erro de gravação: sem permissões de gravação para arquivo de log ou diretório.';
 $lang['log_video_unreadable_poster'] = 'O pôster não pôde ser processado – JPG inválido ou corrompido: %s';

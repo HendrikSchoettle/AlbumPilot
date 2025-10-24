@@ -36,7 +36,7 @@ SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
             <input
                 type="text"
                 id="album-typeahead"
-                placeholder="{'Album_search_placeholder'|@translate}"
+                placeholder="🔍 {'Album_search_placeholder'|@translate}"
                 class="album-typeahead-input"
                 autocomplete="off"
                 style="width:99%; margin-bottom:0.75em;"

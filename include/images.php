@@ -401,7 +401,7 @@ isset($_GET['generate_image_thumbs'], $_GET['album_id'], $_GET['pwg_token'])
             ];
             
             $logLine = sprintf(
-            l10n('log_thumb_progress_line'),
+            '🖼️ '.l10n('log_thumb_progress_line'),
             $prog['generated'],
             $prog['totalThumbnails'],
             $percent,

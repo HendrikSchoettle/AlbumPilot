@@ -24,8 +24,8 @@ $lang = array(
     'error_during_step'                 => 'Fehler während des Schritts',
     'no_info_found'                     => 'Keine Informationen im Ergebnisblock gefunden.',
     'no_success_message'                => 'Keine Erfolgsnachricht gefunden.',
-    'invalid_response'                  => '❌ Ungültige Antwort (kein gültiges JSON):',
-    'network_error'                     => '❌ Netzwerkfehler:',
+    'invalid_response'                  => 'Ungültige Antwort (kein gültiges JSON):',
+    'network_error'                     => 'Netzwerkfehler:',
     'thumb_type_label'                  => 'Typ',
 
     // Step names
@@ -79,7 +79,7 @@ $lang = array(
     'all_albums_label'                  => 'Alben',
     'AlbumPilot_title'                  => 'AlbumPilot – Automatisierte Synchronisation',
     'Albums_to_sync'                    => 'Zu synchronisierende Alben',
-    'Album_search_placeholder'          => '🔍 Album suchen …',
+    'Album_search_placeholder'          => 'Album suchen …',
     'Include_subalbums'                 => 'Suche in Unteralben',
     'Select_all_steps'                  => 'Alle auswählen/abwählen',
     'Options_heading'                   => 'Optionen',
@@ -117,7 +117,7 @@ $lang = array(
     'log_file_missing'                  => 'Datei fehlt für ID %d (%s) – Datei nicht gefunden',
     'log_get_target_size_error'         => 'Fehler beim Ermitteln der Zielgröße (Typ: %s) – ID %d (%s): %s',
     'log_image_too_small'               => 'Zu klein für %s – ID %d (%s): Original %dx%d, erforderlich ≥ %dx%d',
-    'log_thumb_progress_line'           => '🖼️ Thumbnail %d von %d (%d%%) – Bild-ID %d%s – Typ: %s | Pfad: %s',
+    'log_thumb_progress_line'           => 'Thumbnail %d von %d (%d%%) – Bild-ID %d%s – Typ: %s | Pfad: %s',
 
     // Metadata sync logs
     'log_metadata_scan_start'           => 'Suche nach Bildern zur Metadaten-Aktualisierung...',

@@ -1,10 +1,9 @@
 <?php
-// +-----------------------------------------------------------------------+
-// | This file is part of Piwigo.                                          |
-// |                                                                       |
-// | For copyright and license information, please view the COPYING.txt    |
-// | file that was distributed with this source code.                      |
-// +-----------------------------------------------------------------------+
+/*
+File: language/is_IS/plugin.lang.php – AlbumPilot Plugin for Piwigo
+Thanks to sveinki for the translation
+SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
+*/
 $lang['workflow_finished'] = 'Vinnuferli lokið';
 $lang['yes'] = 'Já';
 $lang['smartalbums_not_active'] = 'SmartAlbums ekki virkt';
@@ -17,7 +16,7 @@ $lang['sync_in_progress'] = 'Samstilling í gangi...';
 $lang['thumb_type_label'] = 'Tegund';
 $lang['videojs_not_active'] = 'VideoJS ekki virkt';
 $lang['log_write_error_path'] = 'Slóð á atvikaskrá: %s';
-$lang['network_error'] = '❌ Villa í netkerfi:';
+$lang['network_error'] = 'Villa í netkerfi:';
 $lang['no'] = 'Nei';
 $lang['of'] = 'af';
 $lang['progress_heading'] = 'Framvinda';
@@ -34,7 +33,7 @@ $lang['all_albums_label'] = 'Albúm';
 $lang['file_label'] = 'Skrá';
 $lang['image_id'] = 'Auðkenni myndar';
 $lang['include_subalbums'] = 'Hafa með undiralbúm';
-$lang['invalid_response'] = '❌ Ógilt svar (ekki gilt JSON):';
+$lang['invalid_response'] = 'Ógilt svar (ekki gilt JSON):';
 $lang['label_all_files'] = 'allar skrár';
 $lang['label_live'] = 'Í beinni';
 $lang['label_only_new'] = 'aðeins nýjar skrár';
@@ -64,7 +63,7 @@ $lang['step_reassign_smart_albums'] = '6. Endurúthluta snjallalbúmum';
 $lang['log_md5_total_to_calculate'] = 'Heildarfjöldi gátsumma til að reikna: %d';
 $lang['log_video_thumb_done'] = 'Gerð smámynda lokið (%d smámyndir) fyrir: %s';
 $lang['log_sync_step1_simulation_done'] = 'Hermingu lokið. Engar breytingar gerðar.';
-$lang['log_thumb_progress_line'] = '������️ Smámynd %d af %d (%d%%) – Auðkenni myndar %d%s – Tegund: %s | Slóð: %s';
+$lang['log_thumb_progress_line'] = 'Smámynd %d af %d (%d%%) – Auðkenni myndar %d%s – Tegund: %s | Slóð: %s';
 $lang['log_sync_step1_start'] = 'Byrja samstillingu (skrár)';
 $lang['log_sync_step1_summary'] = 'Samstillingu lokið. Bætt við: %d, Eytt: %d, Mismunur: %d (áður: %d, eftir: %d)';
 $lang['log_metadata_scan_start'] = 'Leita að myndum til að uppfæra lýsigögn á...';

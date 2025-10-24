@@ -1,16 +1,15 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 1.1.1  
-**Release Date:** 2025-09-28
-**Tested with:** Piwigo 15.6.0
+**Version:** 1.2.0  
+**Release Date:** 2025-10-24
+**Tested with:** Piwigo 15.7.0
 
 ---
 
 ## Table of Contents
 
 - [Overview](#overview)
-- [What's New in v1.1.1](#whats-new-in-v111)
-- [What's New in v1.1.0](#whats-new-in-v110)
+- [What's New in v1.2.0](#whats-new-in-v120)
 - [Synchronization Steps](#synchronization-steps)
   - [Step 1: Sync Files](#step-1-sync-files)
   - [Step 2: Update Metadata](#step-2-update-metadata)
@@ -40,25 +39,16 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 Thanks to its chunked processing architecture, long-running tasks, including metadata updates for existing files, run reliably to completion, even when they take considerable time.
 
 ---
-## What's New in v1.1.1
-
-Hotfix: corrected version number in `main.inc.php` (display issue only, no functional changes).
-
----
-## What's New in v1.1.0
+## What's New in v1.2.0
 
 ### Added
-- New translations: Catalan, French, Hebrew, Norwegian Bokmål and Spanish - thanks to the community contributors!
-- Updated language file headers with translator acknowledgements.
+- AlbumPilot now supports 11 language versions! New translations: Brazilian Portuguese, Icelandic, Italian and updated French.  
+  Many thanks to our community contributors!
 
 ### Changed
-- Log files are no longer written into the plugin directory.  
-  Instead, AlbumPilot now uses Piwigo’s recommended location:  
-  `_data/logs/album_pilot.log`  
-  (with automatic rotation once the log exceeds 100 MB).
-
-### Fixed
-- Minor improvements in language handling and frontend translation isolation.
+- Removed special icon characters (such as ❌) from translation files after reports of issues in some translations.  
+  These symbols are now hardcoded in the plugin code instead of the language files.  
+  This structural change should make translations more robust and prevent errors caused by problematic special characters.
 
 *For the full history of changes, see [CHANGELOG.md](./CHANGELOG.md).*
 
@@ -191,7 +181,7 @@ My workflow has therefore been to first generate all thumbnails on the server be
 
 Also, updating image information and album metadata was crucial for me. Without manually triggering the album metadata update (step 7), new images may not show up immediately and might only appear after a while. This was one of the main reasons I integrated these steps into the plugin for smoother, more immediate synchronization.
 
-Currently, the plugin is only available in German and English. Translations to other languages are very welcome.
+The plugin is available in several languages. Translations to other languages are very welcome.
 
 There is no official support for this plugin.
 

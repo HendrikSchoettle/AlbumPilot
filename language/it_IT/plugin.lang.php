@@ -1,10 +1,9 @@
 <?php
-// +-----------------------------------------------------------------------+
-// | This file is part of Piwigo.                                          |
-// |                                                                       |
-// | For copyright and license information, please view the COPYING.txt    |
-// | file that was distributed with this source code.                      |
-// +-----------------------------------------------------------------------+
+/*
+File: language/it_IT/plugin.lang.php – AlbumPilot Plugin for Piwigo
+Thanks to TheFax for the translation
+SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
+*/
 $lang['no'] = 'No';
 $lang['progress_heading'] = 'Progressione';
 $lang['selected_album'] = 'Album';
@@ -85,7 +84,7 @@ $lang['select_step_alert'] = 'Selezionare almento una fase.';
 $lang['select_album_alert'] = 'Selezionare un album.';
 $lang['only_new_files'] = 'Solo nuovi file';
 $lang['of'] = 'di';
-$lang['network_error'] = '❌ Errore di rete:';
+$lang['network_error'] = 'Errore di rete:';
 $lang['log_write_error_path'] = 'Percorso del file di Log: %s';
 $lang['log_video_unknown_gd_error'] = 'Errore GD sconosciuto';
 $lang['log_total_thumbs_to_generate'] = 'Totale anteprime da generare: %d';
