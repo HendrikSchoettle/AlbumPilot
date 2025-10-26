@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2025-10-26
+
+### Fixed
+- Unfortunately, the plugin header in `main.inc.php` in earlier versions (up to v1.2.0) was missing the `Plugin URI` line that Piwigo uses to check for new releases.  
+  This line has now been added to the plugin header so that future updates will automatically appear in the Piwigo Extensions Manager as intended.
+
+### Important Note
+Because of this missing line in previous versions, **automatic updates will not work for AlbumPilot < v1.2.1**.  
+To **update manually once to v1.2.1** (and enable automatic update functionality for all future versions), please follow these quick steps:
+
+1. In your Piwigo admin panel, click **Plugins** in the left-hand navigation.  
+2. Click **Add a new plugin**.  
+3. In the search bar, type **AlbumPilot**.  
+4. Click **Add** next to the AlbumPilot entry.  
+
+This will install the new version directly over your existing one. All settings and logs are preserved.  
+After this, future updates will be detected and installed automatically.  
+
+Sorry for the inconvenience and thanks for your patience!
+
 ## [1.2.0] - 2025-10-24
 
 ### Added

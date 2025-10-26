@@ -1,7 +1,7 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 1.2.0  
-**Release Date:** 2025-10-24
+**Version:** 1.2.1  
+**Release Date:** 2025-10-26
 **Tested with:** Piwigo 15.7.0
 
 ---
@@ -9,7 +9,7 @@
 ## Table of Contents
 
 - [Overview](#overview)
-- [What's New in v1.2.0](#whats-new-in-v120)
+- [What's New in v1.2.1](#whats-new-in-v121)
 - [Synchronization Steps](#synchronization-steps)
   - [Step 1: Sync Files](#step-1-sync-files)
   - [Step 2: Update Metadata](#step-2-update-metadata)
@@ -39,16 +39,25 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 Thanks to its chunked processing architecture, long-running tasks, including metadata updates for existing files, run reliably to completion, even when they take considerable time.
 
 ---
-## What's New in v1.2.0
+## What's New in v1.2.1
 
-### Added
-- AlbumPilot now supports 11 language versions! New translations: Brazilian Portuguese, Icelandic, Italian and updated French.  
-  Many thanks to our community contributors!
+### Fixed
+- Unfortunately, the plugin header in `main.inc.php` in earlier versions (up to v1.2.0) was missing the `Plugin URI` line that Piwigo uses to check for new releases.  
+  This line has now been added to the plugin header so that future updates will automatically appear in the Piwigo Extensions Manager as intended.
 
-### Changed
-- Removed special icon characters (such as ❌) from translation files after reports of issues in some translations.  
-  These symbols are now hardcoded in the plugin code instead of the language files.  
-  This structural change should make translations more robust and prevent errors caused by problematic special characters.
+### Important Note
+Because of this missing line in previous versions, **automatic updates will not work for AlbumPilot < v1.2.1**.  
+To **update manually once to v1.2.1** (and enable automatic update functionality for all future versions), please follow these quick steps:
+
+1. In your Piwigo admin panel, click **Plugins** in the left-hand navigation.  
+2. Click **Add a new plugin**.  
+3. In the search bar, type **AlbumPilot**.  
+4. Click **Add** next to the AlbumPilot entry.  
+
+This will install the new version directly over your existing one. All settings and logs are preserved.  
+After this, future updates will be detected and installed automatically.  
+
+Sorry for the inconvenience and thanks for your patience!
 
 *For the full history of changes, see [CHANGELOG.md](./CHANGELOG.md).*
 
@@ -166,6 +175,8 @@ This screenshot shows the progress interface while generating video posters (Ste
 ## Acknowledgements
 
 A huge thank you to **windracer**/[@jradwan](https://github.com/jradwan) for his ongoing support, extensive testing, detailed feedback and countless suggestions!
+
+Many thanks to our translators **epifeny**, **flaviove**, **Katryne**, **paulen**, **sveinki**, **TheFax** and **Tirs** for making AlbumPilot available in multiple languages.
 
 ## Personal Note
 

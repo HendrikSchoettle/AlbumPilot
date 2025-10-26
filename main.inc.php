@@ -1,11 +1,12 @@
 <?php
 /*
 Plugin Name: AlbumPilot
-Version: 1.2.0
+Version: 1.2.1
 Description: Batch processing: Media sync, thumbs, video posters, maintenance
 Author: Hendrik Schöttle
 Has Settings: true
 SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
+Plugin URI: http://piwigo.org/ext/extension_view.php?eid=1038
 */
 
 if (!defined('PHPWG_ROOT_PATH')) {
