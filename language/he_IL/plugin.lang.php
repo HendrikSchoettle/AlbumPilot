@@ -124,3 +124,5 @@ $lang['VideoJS_PosterSec'] = 'שניות';
 $lang['VideoJS_RepAdd'] = 'השתמש בפוסטר שהועלה (אם קיים)';
 $lang['VideoJS_ThumbSec'] = 'שניות';
 $lang['VideoJS_ThumbSize'] = 'גודל תמונה ממוזערת';
+$lang['Album_search_placeholder'] = 'חפש אלבומים …';
+$lang['log_thumb_progress_line'] = 'תמונה ממוזערת %d מתוך %d (%d%%) – מזהה תמונה %d%s – סוג: %s | נתיב: %s';
