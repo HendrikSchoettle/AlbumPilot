@@ -207,9 +207,9 @@ window.next = function () {
         window.handleJsonStep(step.url, (data) => {
             let resultHTML = '';
             if (data.message)
-                resultHTML += '<div>' + data.message + '</div>';
+                resultHTML += '<div class="sync-step-block">' + data.message + '</div>';
             if (data.raw_output)
-                resultHTML += '<div>' + data.raw_output + '</div>';
+                resultHTML += '<div class="sync-step-block">' + data.raw_output + '</div>';
 
             const resultBlock = document.createElement('div');
             resultBlock.innerHTML = resultHTML;
@@ -257,6 +257,7 @@ window.next = function () {
             } else {
                 infoListItems.forEach(li => {
                     const line = document.createElement('div');
+                    line.className = 'sync-step-block';
                     line.textContent = li.textContent.trim();
                     log.appendChild(line);
                 });
@@ -305,14 +306,17 @@ window.next = function () {
             if (infoList.length > 0) {
                 infoList.forEach(el => {
                     const div = document.createElement('div');
+                    div.className = 'sync-step-block';
                     div.textContent = el.textContent.trim();
                     log.appendChild(div);
                 });
             } else {
                 const div = document.createElement('div');
+                div.className = 'sync-step-block';
                 div.textContent = '⚠️ ' + t('no_success_message');
                 log.appendChild(div);
             }
+
 
             li.innerHTML = '✅ ' + step.name;
             window._runnerIndex = index + 1;

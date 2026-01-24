@@ -20,6 +20,11 @@ window.renderVideoOptions = function ({
     cb1.innerHTML = `<input type="checkbox" class="videojs-option" data-key="videojs_import_uploaded" checked> ${t('VideoJS_RepAdd')}`;
     optionsWrapper.appendChild(cb1);
 
+    const cbMeta = document.createElement('label');
+    // Use Piwigo core translation key (de_DE: "Synchronisieren von Metadaten")
+    cbMeta.innerHTML = `<br><input type="checkbox" class="videojs-option" data-key="videojs_sync_metadata" checked> ${t('Synchronize metadata')}`;
+    optionsWrapper.appendChild(cbMeta);
+
     const cb2 = document.createElement('label');
     cb2.innerHTML = `<br><input type="checkbox" class="videojs-option" data-key="videojs_create_poster" checked> ${t('VideoJS_AddPoster')}`;
     const inputSec = document.createElement('input');

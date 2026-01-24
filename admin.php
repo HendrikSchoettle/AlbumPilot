@@ -78,6 +78,8 @@ $thumb_label_fallback = [
     'large'    => 'L – large',
     'xlarge'   => 'XL – extra large',
     'xxlarge'  => 'XXL – huge',
+    '3xlarge'  => '3XL – extra huge',
+    '4xlarge'  => '4XL – gigantic',
 ];
 
 foreach (ImageStdParams::get_defined_type_map() as $type => $params) {
@@ -599,9 +601,118 @@ $_GET['pwg_token'] === get_pwg_token()
         $_POST['cat_id'] = $albumId; // Core uses 'cat_id' to restrict the scan
     }
     
-    ob_start();
+        ob_start();
     include(PHPWG_ROOT_PATH . 'admin/site_update.php');
     $output = ob_get_clean();
+
+    // Prefer structured details produced by Piwigo core (admin/site_update.php),
+    // then fall back to parsing HTML output if nothing was collected.
+    $siteUpdateLines = [];
+
+    $collectLines = function ($val, string $prefix = '') use (&$siteUpdateLines): void {
+        if ($val === null) {
+            return;
+        }
+        if (is_string($val)) {
+            $val = [$val];
+        }
+        if (!is_array($val)) {
+            return;
+        }
+
+        foreach ($val as $item) {
+            // Some core structures may be arrays of fragments/titles.
+            if (is_array($item)) {
+                $item = implode(' – ', array_map('strval', $item));
+            }
+
+            $line = trim(html_entity_decode(strip_tags((string)$item), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+            if ($line !== '') {
+                $siteUpdateLines[] = $prefix . $line;
+            }
+        }
+    };
+
+    // admin/site_update.php collects detailed messages in $infos/$errors.
+    if (isset($infos)) {
+        $collectLines($infos);
+    }
+    if (isset($errors)) {
+        $collectLines($errors, '❌ ');
+    }
+
+    // Some Piwigo contexts additionally use $page['infos'/'warnings'/'errors'].
+    if (isset($page) && is_array($page)) {
+        if (isset($page['infos'])) {
+            $collectLines($page['infos']);
+        }
+        if (isset($page['warnings'])) {
+            $collectLines($page['warnings'], '⚠️ ');
+        }
+        if (isset($page['errors'])) {
+            $collectLines($page['errors'], '❌ ');
+        }
+    }
+
+    // De-duplicate while keeping order.
+    if (!empty($siteUpdateLines)) {
+        $seen = [];
+        $siteUpdateLines = array_values(array_filter($siteUpdateLines, function ($line) use (&$seen) {
+            if (isset($seen[$line])) {
+                return false;
+            }
+            $seen[$line] = true;
+            return true;
+        }));
+    }
+
+    // Fallback: parse HTML output (best-effort) if the structured arrays were empty.
+    if (empty($siteUpdateLines)) {
+        $siteUpdateHtml = trim((string)$output);
+
+        if ($siteUpdateHtml !== '') {
+            if (preg_match_all('~<li[^>]*>(.*?)</li>~is', $siteUpdateHtml, $matches)) {
+                foreach ($matches[1] as $liHtml) {
+                    $line = trim(html_entity_decode(strip_tags($liHtml), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+                    if ($line !== '') {
+                        $siteUpdateLines[] = $line;
+                    }
+                }
+            }
+
+            if (empty($siteUpdateLines)) {
+                $normalized = preg_replace('~<\s*br\s*/?\s*>~i', "\n", $siteUpdateHtml);
+                $normalized = preg_replace('~</\s*(p|li|tr|div|h[1-6])\s*>~i', "\n", $normalized);
+                $normalized = strip_tags((string)$normalized);
+                $decoded    = html_entity_decode($normalized, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+                $siteUpdateLines = array_values(array_filter(array_map(
+                    'trim',
+                    preg_split("/\R/u", (string)$decoded)
+                )));
+            }
+        }
+    }
+
+    // Prepare UI output: render each line as a sync-step-block to match the existing UI styling.
+    $rawOutputHtml = '';
+    if (!empty($siteUpdateLines)) {
+        $blocks = [];
+
+        foreach ($siteUpdateLines as $line) {
+            $blocks[] =
+                '<div class="sync-step-block">' .
+                htmlspecialchars($line, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') .
+                '</div>';
+        }
+
+        $rawOutputHtml = implode('', $blocks);
+
+        // Mirror details into the AlbumPilot logfile (one entry per line).
+        foreach ($siteUpdateLines as $line) {
+            log_message('📄 ' . $line);
+        }
+    }
     
     if ($simulate) {
         $message = l10n('log_sync_step1_simulation_done');
@@ -639,10 +750,11 @@ $_GET['pwg_token'] === get_pwg_token()
     echo json_encode([
     'success'    => true,
     'message'    => "📊 $message",
-    'raw_output' => nl2br(htmlspecialchars(trim($output))),
+    'raw_output' => $rawOutputHtml,
     ]);
     
     exit;
+
 }
 
 // If a global reset was requested, clear all progress at once
@@ -723,6 +835,7 @@ $frontend_keys = [
     'VideoJS_ThumbSize',
     'External_trigger_url',
     'External_trigger_description',
+    'Synchronize metadata',
 ];
 
 foreach ($frontend_keys as $k) {

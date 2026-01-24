@@ -1,10 +1,9 @@
 <?php
-// +-----------------------------------------------------------------------+
-// | This file is part of Piwigo.                                          |
-// |                                                                       |
-// | For copyright and license information, please view the COPYING.txt    |
-// | file that was distributed with this source code.                      |
-// +-----------------------------------------------------------------------+
+/*
+File: language/nl_NL/plugin.lang.php – AlbumPilot Plugin for Piwigo
+Thanks to walle for the translation
+SPDX-License-Identifier: MIT OR LGPL-2.1-or-later OR GPL-2.0-or-later
+*/
 $lang['workflow_finished'] = '工作流已完成';
 $lang['yes'] = '是';
 $lang['skipped_simulation_mode'] = '已跳过 - 模拟模式';

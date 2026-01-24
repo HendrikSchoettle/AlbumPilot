@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2026-01-24
+
+### Added
+- AlbumPilot now supports 13 language versions! Two more languages added: Dutch, Chinese. Updated translations: Italian, Hebrew.  
+  
+  Many thanks to our community contributors!
+
+- Video metadata synchronization is now available directly in Step 3 (Generate Video Posters) using the existing VideoJS “Synchronize metadata” option.  
+
+  This allows metadata to be written only for videos that are actually processed or changed, instead of requiring a full metadata update via Step 2, which always affects all existing files.
+
+- Step 1 (File Synchronization) now explicitly lists detected changes (added and deleted files) in the progress output and writes the same detailed change list to the AlbumPilot log.
+
+- Minor internal adjustment to extend the fallback label mapping for newly introduced Piwigo 16 derivative sizes (3XL / 4XL), ensuring consistent thumbnail naming in rare cases where core translations are unavailable.
+
+### Changed
+- Unified visual rendering of step output blocks in the admin interface to ensure consistent typography and spacing across all synchronization steps (1–10).
+
 ## [1.2.1] - 2025-10-26
 
 ### Fixed

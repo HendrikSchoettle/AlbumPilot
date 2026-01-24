@@ -1,15 +1,15 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 1.2.1  
-**Release Date:** 2025-10-26
-**Tested with:** Piwigo 15.7.0
+**Version:** 1.3.0  
+**Release Date:** 2026-01-24
+**Tested with:** Piwigo 16.2.0
 
 ---
 
 ## Table of Contents
 
 - [Overview](#overview)
-- [What's New in v1.2.1](#whats-new-in-v121)
+- [What's New in v1.3.0](#whats-new-in-v130)
 - [Synchronization Steps](#synchronization-steps)
   - [Step 1: Sync Files](#step-1-sync-files)
   - [Step 2: Update Metadata](#step-2-update-metadata)
@@ -39,15 +39,27 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 Thanks to its chunked processing architecture, long-running tasks, including metadata updates for existing files, run reliably to completion, even when they take considerable time.
 
 ---
-## What's New in v1.2.1
+## What's New in v1.3.0
 
-### Fixed
-- Unfortunately, the plugin header in `main.inc.php` in earlier versions (up to v1.2.0) was missing the `Plugin URI` line that Piwigo uses to check for new releases.  
-  This line has now been added to the plugin header so that future updates will automatically appear in the Piwigo Extensions Manager as intended.
+### Added
+- AlbumPilot now supports 13 language versions! Two more languages added: Dutch, Chinese. Updated translations: Italian, Hebrew.  
+  
+  Many thanks to our community contributors!
+
+- Video metadata synchronization is now available directly in Step 3 (Generate Video Posters) using the existing VideoJS “Synchronize metadata” option.  
+
+  This allows metadata to be written only for videos that are actually processed or changed, instead of requiring a full metadata update via Step 2, which always affects all existing files.
+
+- Step 1 (File Synchronization) now explicitly lists detected changes (added and deleted files) in the progress output and writes the same detailed change list to the AlbumPilot log.
+
+- Minor internal adjustment to extend the fallback label mapping for newly introduced Piwigo 16 derivative sizes (3XL / 4XL), ensuring consistent thumbnail naming in rare cases where core translations are unavailable.
+
+### Changed
+- Unified visual rendering of step output blocks in the admin interface to ensure consistent typography and spacing across all synchronization steps (1–10).
 
 ### Important Note
 Because of this missing line in previous versions, **automatic updates will not work for AlbumPilot < v1.2.1**.  
-To **update manually once to v1.2.1** (and enable automatic update functionality for all future versions), please follow these quick steps:
+To **update manually once to the newest version** (and enable automatic update functionality for all future versions), please follow these quick steps:
 
 1. In your Piwigo admin panel, click **Plugins** in the left-hand navigation.  
 2. Click **Add a new plugin**.  
@@ -83,6 +95,8 @@ This step reads metadata (EXIF, IPTC, etc.) from the image files and updates the
 For video files, this step generates preview images ("video posters"), optionally using the "filmstrip" effect. By default, it captures a frame 4 seconds into the video, but this and other VideoJS parameters (poster time, overlay, thumbnail interval, output format, etc.) are fully customizable via the plugin UI. When a poster is regenerated, any previously generated thumbnails are automatically deleted, preventing stale images from appearing (unlike the official VideoJS behavior).
 
 In addition to a single poster, the plugin can also automatically produce **video thumbnails** at a defined interval (e.g. every 5 seconds), creating a series of preview frames throughout the duration of the video. These video thumbnails differ from the standard image thumbnails generated in **Step 4**, which are simply resized copies of original photos, in that they are actual frames extracted from the video itself, offering a storyboard-like sequence.
+
+If the option “Synchronize metadata” is enabled, video metadata is written to the database using the VideoJS metadata synchronization logic, and only for the videos processed in this step. This avoids running a full metadata update via Step 2, which always affects all existing files.
 
 This step requires the **piwigo-videojs** plugin to be installed and active; it is otherwise disabled. Video posters (and video thumbnails) are generated only for videos that do not yet have a poster image, or when you explicitly choose to overwrite them.
 
@@ -176,7 +190,7 @@ This screenshot shows the progress interface while generating video posters (Ste
 
 A huge thank you to **windracer**/[@jradwan](https://github.com/jradwan) for his ongoing support, extensive testing, detailed feedback and countless suggestions!
 
-Many thanks to our translators **epifeny**, **flaviove**, **Katryne**, **paulen**, **sveinki**, **TheFax** and **Tirs** for making AlbumPilot available in multiple languages.
+Many thanks to our translators **epifeny**, **flaviove**, **Katryne**, **pauldaytona**, **paulen**, **rio**, **sveinki**, **TheFax**, **Tirs**, **walle** for making AlbumPilot available in multiple languages.
 
 ## Personal Note
 
@@ -213,4 +227,4 @@ This project is triple-licensed under the following terms, you may choose the on
 
 *See [LICENSE](LICENSE) for further details.*
 
-(c) 2025 Hendrik Schöttle
+(c) 2026 Hendrik Schöttle

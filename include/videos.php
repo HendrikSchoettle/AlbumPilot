@@ -57,7 +57,6 @@ function insert_videojs_metadata($image_id, $video_path)
     pwg_query($query);
 }
 
-// Get video duration in seconds via ffprobe
 function get_video_duration(string $filename): int
 {
     $cmd    = 'ffprobe -v error -show_entries format=duration '
@@ -67,6 +66,139 @@ function get_video_duration(string $filename): int
     $duration = (int) floor((float) trim((string) $output));
     
     return $duration;
+}
+
+
+// Default behavior: sync video metadata (closest to Piwigo/VideoJS standard) 
+function album_pilot_video_metadata_sync_enabled(): bool
+{
+    // Allow the UI to control this behavior via GET parameter.
+    // Default stays enabled for backward compatibility.
+    if (isset($_GET['videojs_sync_metadata'])) {
+        return $_GET['videojs_sync_metadata'] === '1';
+    }
+
+    return true;
+}
+
+// Run VideoJS "standard" metadata sync (metadata-only) for selected video IDs 
+function album_pilot_videojs_sync_metadata(array $imageIds, bool $simulate, array &$log): bool
+{
+    global $conf;
+
+    $syncBase = $conf['vjs_sync'] ?? null;
+    if (!is_array($syncBase) && is_string($syncBase) && function_exists('safe_unserialize')) {
+        $tmp = @safe_unserialize($syncBase);
+        if (is_array($tmp)) {
+            $syncBase = $tmp;
+        }
+    }
+    if (!is_array($syncBase)) {
+        return false;
+    }
+
+    $videojsIncludeDir = PHPWG_PLUGINS_PATH . 'piwigo-videojs/include/';
+    if (!is_dir($videojsIncludeDir) || !is_file($videojsIncludeDir . 'function_sync.php')) {
+        return false;
+    }
+
+    $ids = array_values(array_unique(array_map('intval', $imageIds)));
+    $ids = array_values(array_filter($ids, function ($v) { return $v > 0; }));
+    if (empty($ids)) {
+        return false;
+    }
+
+    // Build sync options based on VideoJS defaults, but force metadata-only sync.
+    $sync_options = $syncBase;
+    $sync_options['metadata']       = true;
+    $sync_options['representative'] = false;
+    $sync_options['poster']         = false;
+    $sync_options['thumb']          = false;
+    $sync_options['simulate']       = $simulate;
+
+    $upload_dir = $conf['upload_dir'] ?? 'upload';
+
+    // PHPWG_ROOT_PATH can be relative (e.g. "./") depending on execution context.
+    // Use an absolute filesystem root so VideoJS sync gets absolute paths even after chdir().
+    $rootReal = realpath(PHPWG_ROOT_PATH);
+    $root     = rtrim(($rootReal !== false ? $rootReal : PHPWG_ROOT_PATH), '/') . '/';
+
+    $rootSql   = pwg_db_real_escape_string($root);
+    $uploadSql = pwg_db_real_escape_string(trim($upload_dir, '/'));
+
+    // Provide absolute filesystem paths to VideoJS sync so it works regardless of current working directory.
+    $query = "
+SELECT id, file,
+CASE
+  WHEN path LIKE 'galleries/%' OR path LIKE '%/galleries/%'
+    THEN CONCAT('{$rootSql}', path)
+  ELSE CONCAT('{$rootSql}', '{$uploadSql}', '/', path)
+END AS path,
+representative_ext
+FROM " . IMAGES_TABLE . "
+WHERE id IN (" . implode(',', $ids) . ")
+";
+
+    // Ensure a logger exists for VideoJS sync (it expects $logger->debug()).
+    if (!isset($GLOBALS['logger']) || !is_object($GLOBALS['logger']) || !method_exists($GLOBALS['logger'], 'debug')) {
+        $GLOBALS['logger'] = new class {
+            public function debug($message): void { /* no-op */ }
+        };
+    }
+
+    $cwd       = @getcwd();
+    $errors    = [];
+    $warnings  = [];
+    $infos     = [];
+    $sync_infos = [];
+
+    try {
+        // VideoJS expects $prefixeTable in its include scope. When included from inside a function,
+        // globals are not automatically available unless we explicitly provide them.
+        $prefixeTable = $GLOBALS['prefixeTable'] ?? null;
+
+        @chdir($videojsIncludeDir);
+
+        // Prevent any PHP warnings/notices from breaking our JSON response.
+        ob_start();
+        include 'function_sync.php';
+        ob_end_clean();
+    } catch (Throwable $e) {
+        // Ensure buffered output is discarded on exceptions as well.
+        if (ob_get_level()) {
+            @ob_end_clean();
+        }
+
+        $uiMsg = '⚠️ ' . l10n('error_during_step') . ': ' . l10n('Synchronize metadata');
+
+        if (function_exists('log_message')) {
+            log_message($uiMsg . ' – ' . $e->getMessage());
+        }
+        $log[] = $uiMsg;
+
+        if ($cwd !== false) {
+            @chdir($cwd);
+        }
+        return false;
+    }
+
+    if ($cwd !== false) {
+        @chdir($cwd);
+    }
+
+    if (!empty($errors)) {
+        $uiMsg = '⚠️ ' . l10n('error_during_step') . ': ' . l10n('Synchronize metadata');
+
+        if (function_exists('log_message')) {
+            log_message($uiMsg . ' – ' . implode(' | ', $errors));
+        }
+        $log[] = $uiMsg;
+
+        return false;
+    }
+
+    // $metadata is defined inside function_sync.php; success means at least one item was synced.
+    return isset($metadata) && (int) $metadata > 0;
 }
 
 // Main video poster & thumbnail generation block
@@ -358,7 +490,15 @@ isset($_GET['video_thumb_block'], $_GET['cat_id'], $_GET['pwg_token'])
                     }
                 }
                 
-                insert_videojs_metadata((int) $img['id'], $filename);
+                $didSyncMeta = false;
+                if (album_pilot_video_metadata_sync_enabled()) {
+                    $didSyncMeta = album_pilot_videojs_sync_metadata([(int) $img['id']], $simulate, $log);
+
+                    // Fallback to the previous lightweight metadata insert if VideoJS sync is unavailable/fails.
+                    if (!$didSyncMeta) {
+                        insert_videojs_metadata((int) $img['id'], $filename);
+                    }
+                }
                 
                 if ($addOverlay && function_exists('add_movie_frame')) {
                     
@@ -373,6 +513,7 @@ isset($_GET['video_thumb_block'], $_GET['cat_id'], $_GET['pwg_token'])
                         ob_end_clean();
                     }
                 }
+
                 
                 // Ensure DB flag for representative_ext
                 $check = pwg_db_fetch_assoc(
