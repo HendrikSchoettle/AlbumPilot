@@ -125,3 +125,5 @@ $lang['VideoJS_PosterSec'] = 'sekunder';
 $lang['VideoJS_RepAdd'] = 'Bruk opplastet plakat (hvis tilgjengelig)';
 $lang['VideoJS_ThumbSec'] = 'sekunder';
 $lang['VideoJS_ThumbSize'] = 'Miniatyrbildestørrelse';
+$lang['Album_search_placeholder'] = 'Søk i album …';
+$lang['log_thumb_progress_line'] = 'Miniatyrbilde %d av %d (%d%%) – Bilde-ID %d%s – Type: %s | Sti: %s';
