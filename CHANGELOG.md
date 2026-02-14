@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.1] - 2026-02-14
+
+### Changed
+- Translation updates (community contributions):
+  - Norwegian Bokmål (nb_NO)
+  - Hebrew (he_IL)
+  - Italian (it_IT)
+
 ## [1.3.0] - 2026-01-24
 
 ### Added

@@ -1,7 +1,7 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 1.3.0  
-**Release Date:** 2026-01-24
+**Version:** 1.3.1  
+**Release Date:** 2026-02-14
 **Tested with:** Piwigo 16.2.0
 
 ---
@@ -9,7 +9,7 @@
 ## Table of Contents
 
 - [Overview](#overview)
-- [What's New in v1.3.0](#whats-new-in-v130)
+- [What's New in v1.3.1](#whats-new-in-v131)
 - [Synchronization Steps](#synchronization-steps)
   - [Step 1: Sync Files](#step-1-sync-files)
   - [Step 2: Update Metadata](#step-2-update-metadata)
@@ -39,23 +39,13 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 Thanks to its chunked processing architecture, long-running tasks, including metadata updates for existing files, run reliably to completion, even when they take considerable time.
 
 ---
-## What's New in v1.3.0
-
-### Added
-- AlbumPilot now supports 13 language versions! Two more languages added: Dutch, Chinese. Updated translations: Italian, Hebrew.  
-  
-  Many thanks to our community contributors!
-
-- Video metadata synchronization is now available directly in Step 3 (Generate Video Posters) using the existing VideoJS “Synchronize metadata” option.  
-
-  This allows metadata to be written only for videos that are actually processed or changed, instead of requiring a full metadata update via Step 2, which always affects all existing files.
-
-- Step 1 (File Synchronization) now explicitly lists detected changes (added and deleted files) in the progress output and writes the same detailed change list to the AlbumPilot log.
-
-- Minor internal adjustment to extend the fallback label mapping for newly introduced Piwigo 16 derivative sizes (3XL / 4XL), ensuring consistent thumbnail naming in rare cases where core translations are unavailable.
+## What's New in v1.3.1
 
 ### Changed
-- Unified visual rendering of step output blocks in the admin interface to ensure consistent typography and spacing across all synchronization steps (1–10).
+- Translation updates (community contributions):
+  - Norwegian Bokmål (nb_NO)
+  - Hebrew (he_IL)
+  - Italian (it_IT)
 
 ### Important Note
 Because of this missing line in previous versions, **automatic updates will not work for AlbumPilot < v1.2.1**.  
@@ -132,7 +122,9 @@ Corresponds to clicking the **"Check database integrity"** button on the **Maint
   start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --new-window --autoplay-policy=no-user-gesture-required --disable-blink-features=AutomationControlled --disable-popup-blocking --disable-features=SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure --disable-background-timer-throttling --disable-renderer-backgrounding --disable-infobars "https://..."
   ```
   
-**Note:** The browser used must be logged in to Piwigo with "stay signed in" enabled, otherwise the sync URL will prompt for authentication.
+  The browser used must be logged in to Piwigo with "stay signed in" enabled, otherwise the sync URL will prompt for authentication.
+
+  **Note (Chrome reliability for unattended runs):** In some environments, I have recently noticed that opening the sync URL from a script does not always start the run immediately or reliably. Chrome may throttle JavaScript execution in background/occluded windows, and with Energy Saver enabled it can even freeze  CPU-intensive background tabs. If you see unreliable autostarts, keep the Chrome window visible/active during startup, or consider running the URL via a dedicated automation setup (e.g., headless Chrome) for more deterministic unattended execution. 
 
 - **State Preservation of Checkbox Settings**  
 AlbumPilot remembers your selections across sessions, so you do not need to reselect options each time. You can reset these stored settings manually if needed.
@@ -227,4 +219,4 @@ This project is triple-licensed under the following terms, you may choose the on
 
 *See [LICENSE](LICENSE) for further details.*
 
-(c) 2026 Hendrik Schöttle
+(c) 2025-2026 Hendrik Schöttle
