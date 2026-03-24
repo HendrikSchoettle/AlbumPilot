@@ -1,6 +1,6 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 1.3.2  
+**Version:** 1.4.0  
 **Release Date:** 2026-03-24
 **Tested with:** Piwigo 16.3.0
 
@@ -9,7 +9,7 @@
 ## Table of Contents
 
 - [Overview](#overview)
-- [What's New in v1.3.2](#whats-new-in-v132)
+- [What's New in v1.4.0](#whats-new-in-v140)
 - [Synchronization Steps](#synchronization-steps)
   - [Step 1: Sync Files](#step-1-sync-files)
   - [Step 2: Update Metadata](#step-2-update-metadata)
@@ -39,7 +39,7 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 Thanks to its chunked processing architecture, long-running tasks, including metadata updates for existing files, run reliably to completion, even when they take considerable time.
 
 ---
-## What's New in v1.3.2
+## What's New in v1.4.0
 
 ### Added
 - New language added: Korean, bringing AlbumPilot to 14 supported languages. Many thanks to our community contributors!
