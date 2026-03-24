@@ -42,7 +42,7 @@ Thanks to its chunked processing architecture, long-running tasks, including met
 ## What's New in v1.3.2
 
 ### Added
-- New language added: Korean, bringing AlbumPilot to 15 supported languages. Many thanks to our community contributors!
+- New language added: Korean, bringing AlbumPilot to 14 supported languages. Many thanks to our community contributors!
 
 ### Important Note
 Because of this missing line in previous versions, **automatic updates will not work for AlbumPilot < v1.2.1**.  
