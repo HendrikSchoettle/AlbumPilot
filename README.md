@@ -1,15 +1,15 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 1.3.1  
-**Release Date:** 2026-02-14
-**Tested with:** Piwigo 16.2.0
+**Version:** 1.3.2  
+**Release Date:** 2026-03-24
+**Tested with:** Piwigo 16.3.0
 
 ---
 
 ## Table of Contents
 
 - [Overview](#overview)
-- [What's New in v1.3.1](#whats-new-in-v131)
+- [What's New in v1.3.2](#whats-new-in-v132)
 - [Synchronization Steps](#synchronization-steps)
   - [Step 1: Sync Files](#step-1-sync-files)
   - [Step 2: Update Metadata](#step-2-update-metadata)
@@ -39,13 +39,10 @@ AlbumPilot automates several key synchronization steps within Piwigo, saving you
 Thanks to its chunked processing architecture, long-running tasks, including metadata updates for existing files, run reliably to completion, even when they take considerable time.
 
 ---
-## What's New in v1.3.1
+## What's New in v1.3.2
 
-### Changed
-- Translation updates (community contributions):
-  - Norwegian Bokmål (nb_NO)
-  - Hebrew (he_IL)
-  - Italian (it_IT)
+### Added
+- New language added: Korean, bringing AlbumPilot to 15 supported languages. Many thanks to our community contributors!
 
 ### Important Note
 Because of this missing line in previous versions, **automatic updates will not work for AlbumPilot < v1.2.1**.  
@@ -182,7 +179,7 @@ This screenshot shows the progress interface while generating video posters (Ste
 
 A huge thank you to **windracer**/[@jradwan](https://github.com/jradwan) for his ongoing support, extensive testing, detailed feedback and countless suggestions!
 
-Many thanks to our translators **epifeny**, **flaviove**, **Katryne**, **pauldaytona**, **paulen**, **rio**, **sveinki**, **TheFax**, **Tirs**, **walle** for making AlbumPilot available in multiple languages.
+Many thanks to our translators **epifeny**, **flaviove**, **Katryne**, **pauldaytona**, **paulen**, **rio**, **sveinki**, **TheFax**, **Tirs**, **walle**, **yjchoi** for making AlbumPilot available in multiple languages.
 
 ## Personal Note
 

@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.2] - 2026-03-24
+
+### Added
+- New language added: Korean, bringing AlbumPilot to 15 supported languages. Many thanks to our community contributors!
+
 ## [1.3.1] - 2026-02-14
 
 ### Changed
