@@ -1,7 +1,7 @@
 # AlbumPilot Plugin for Piwigo
 
-**Version:** 1.4.0  
-**Release Date:** 2026-03-24
+**Version:** 1.4.1  
+**Release Date:** 2026-06-20
 **Tested with:** Piwigo 16.3.0
 
 ---
@@ -136,7 +136,7 @@ Each of the 10 steps can be individually enabled or disabled. Plugin-dependent s
 Quickly select or deselect all steps with one click to simplify setup.
 
 - **Synchronization Status and Logs**  
-A detailed log (`album_pilot.log`) is written to the plugin's home directory during synchronization, recording each step's progress and any errors. Once the log exceeds 100 MB, the current `album_pilot.log` is renamed to `album_pilot_old.log` (overwriting any existing `album_pilot_old.log`), and a fresh `album_pilot.log` is created. Ensure the web server has write permissions in the plugin directory so logging functions correctly.
+A detailed log (`album_pilot.log`) is written to Piwigo's `_data/logs/` directory (`_data/logs/album_pilot.log`) during synchronization, recording each step's progress and any errors. Once the log exceeds 100 MB, the current `album_pilot.log` is renamed to `album_pilot_old.log` (overwriting any existing `album_pilot_old.log`), and a fresh `album_pilot.log` is created. Ensure the web server has write permissions in Piwigo's `_data/logs/` directory so logging functions correctly.
 
 - **Reset Settings**  
 Allows you to manually reset all saved checkbox selections in the plugin interface. Use this if you want to start fresh with default options for your next synchronization run.
@@ -155,7 +155,7 @@ Sync operations run over HTTP and require a stable network connection. Intermitt
 
 2. **Manual Installation (ZIP archive):**  
  - Download and unzip the archive into `plugins/AlbumPilot` (folder name must not contain hyphens, only letters, numbers, and underscores).
- - Make sure your web server user can write to `plugins/AlbumPilot/` (for logging, e.g. `chmod -R 755 plugins/AlbumPilot/` or `chmod -R 775` depending on your server setup).
+ - Make sure your web server user can write to Piwigo's `_data/logs/` directory (for logging, e.g. `chmod -R 755 _data/logs/` or `chmod -R 775` depending on your server setup).
 
 3. **Dependencies:**  
  - For full functionality, install and activate the **piwigo-videojs** and **SmartAlbums** plugins as needed.
